@@ -1,12 +1,12 @@
-# anki-sync-server
+# anki-cloud-sync
 
-Rust Cargo workspace containing the Anki sync server binary, forked from
-[`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09).
+Stateless Anki sync server backed by user-owned cloud storage (Google Drive, Dropbox, S3).
+Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) rslib, AGPLv3.
 
 ## What's in here
 
 ```
-anki-sync-server/
+/
 ├── Cargo.toml               ← workspace root — the only file NOT from upstream
 ├── Cargo.lock               ← copied from upstream for reproducible builds
 ├── README.md                ← this file
@@ -65,15 +65,23 @@ anki-sync-server/
 
 ## Build
 
+### Local
+
 ```bash
-source ~/.cargo/env   # if cargo isn't on PATH yet
-cd anki-sync-server
 cargo build --bin anki-sync-server
 ```
 
 The binary lands at `target/debug/anki-sync-server`.
 
+### Docker
+
+```bash
+docker build -t anki-cloud-sync:local .
+```
+
 ## Run
+
+### Local binary
 
 ```bash
 DATABASE_URL=file:/path/to/anki-cloud.db \
@@ -81,7 +89,20 @@ DATABASE_URL=file:/path/to/anki-cloud.db \
   GOOGLE_CLIENT_ID=<client-id> \
   GOOGLE_CLIENT_SECRET=<client-secret> \
   ./target/debug/anki-sync-server
-# Listens on 0.0.0.0:8080 by default. See https://docs.ankiweb.net/sync-server.html
+# Listens on 0.0.0.0:8080 by default.
+```
+
+### Docker
+
+```bash
+docker run \
+  -e DATABASE_URL=file:/data/anki-cloud.db \
+  -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
+  -e GOOGLE_CLIENT_ID=<client-id> \
+  -e GOOGLE_CLIENT_SECRET=<client-secret> \
+  -v /path/to/data:/data \
+  -p 8080:8080 \
+  anki-cloud-sync:local
 ```
 
 Users authenticate with their email address and a per-user sync password set via the web UI
