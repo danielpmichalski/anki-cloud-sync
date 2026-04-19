@@ -113,7 +113,7 @@ docker run \
 | `SYNC_HOST`           | `0.0.0.0`       | Bind address for the Anki sync protocol                                                 |
 | `SYNC_PORT`           | `8080`          | Port for the Anki sync protocol                                                         |
 | `SYNC_USER1`          | —               | `username:password` — repeat for `SYNC_USER2`, `SYNC_USER3`, …                          |
-| `SYNC_INTERNAL_HOST`  | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                       |
+| `SYNC_INTERNAL_HOST`  | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                        |
 | `SYNC_INTERNAL_PORT`  | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                      |
 | `SYNC_INTERNAL_TOKEN` | —               | Bearer token required on every internal API request; if unset, internal API is disabled |
 
@@ -143,8 +143,9 @@ SYNC_MODE=cloud \
   TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
   GOOGLE_CLIENT_ID=<client-id> \
   GOOGLE_CLIENT_SECRET=<client-secret> \
+  SYNC_INTERNAL_TOKEN=<secret-token> \
   ./target/debug/anki-sync-server
-# Listens on 0.0.0.0:8080 by default.
+# Listens on 0.0.0.0:8080 (sync) and 127.0.0.1:8081 (internal API) by default.
 ```
 
 #### Docker
@@ -156,8 +157,11 @@ docker run \
   -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
   -e GOOGLE_CLIENT_ID=<client-id> \
   -e GOOGLE_CLIENT_SECRET=<client-secret> \
+  -e SYNC_INTERNAL_HOST=0.0.0.0 \
+  -e SYNC_INTERNAL_TOKEN=<secret-token> \
   -v /path/to/data:/data \
   -p 8080:8080 \
+  -p 8081:8081 \
   anki-cloud-sync:local
 ```
 
@@ -172,9 +176,9 @@ docker run \
 | `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
 | `SYNC_HOST`            | `0.0.0.0`       | Bind address for the Anki sync protocol                                                      |
 | `SYNC_PORT`            | `8080`          | Port for the Anki sync protocol                                                              |
-| `SYNC_INTERNAL_HOST`   | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                            |
+| `SYNC_INTERNAL_HOST`   | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                             |
 | `SYNC_INTERNAL_PORT`   | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                           |
-| `SYNC_INTERNAL_TOKEN`  | —               | Bearer token required on every internal API request; if unset, internal API is disabled      |
+| `SYNC_INTERNAL_TOKEN`  | —               | Bearer token for internal API requests; if unset, internal API is disabled                   |
 
 ### Authentication
 
