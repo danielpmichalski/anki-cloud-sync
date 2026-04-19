@@ -32,6 +32,7 @@ prost-reflect.workspace = true
 syn.workspace = true
 
 [dev-dependencies]
+anyhow.workspace = true
 async-stream.workspace = true
 reqwest = { workspace = true, features = ["native-tls"] }
 wiremock.workspace = true
@@ -92,8 +93,6 @@ serde-aux.workspace = true
 serde_json.workspace = true
 serde_repr.workspace = true
 sync-storage-api.workspace = true
-sync-storage-backends.workspace = true
-sync-storage-config.workspace = true
 serde_tuple.workspace = true
 sha1.workspace = true
 snafu.workspace = true

@@ -16,6 +16,8 @@ name = "anki-sync-server"
 
 [target.'cfg(windows)'.dependencies]
 anki = { workspace = true, features = ["native-tls"] }
+sync-storage-server = { workspace = true }
 
 [target.'cfg(not(windows))'.dependencies]
 anki = { workspace = true, features = ["rustls"] }
+sync-storage-server = { workspace = true }

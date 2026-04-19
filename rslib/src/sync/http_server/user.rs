@@ -2,7 +2,9 @@
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
 use std::path::PathBuf;
+use std::sync::Arc;
 
+use sync_storage_api::BackendResolver;
 use tracing::info;
 
 use crate::collection::Collection;
@@ -12,16 +14,14 @@ use crate::sync::collection::start::ServerSyncState;
 use crate::sync::error::HttpResult;
 use crate::sync::error::OrHttpErr;
 use crate::sync::http_server::media_manager::ServerMediaManager;
-use crate::sync::http_server::SyncMode;
 
 pub(in crate::sync) struct User {
     pub name: String,
-    pub password_hash: String,
     pub col: Option<Collection>,
     pub sync_state: Option<ServerSyncState>,
     pub media: ServerMediaManager,
     pub folder: PathBuf,
-    pub mode: SyncMode,
+    pub backend_resolver: Arc<dyn BackendResolver>,
 }
 
 impl User {
@@ -92,8 +92,6 @@ impl User {
     where
         F: FnOnce(&mut Collection) -> HttpResult<R>,
     {
-        use sync_storage_backends::StorageBackendFactory;
-
         self.abort_stateful_sync_if_active();
         self.ensure_col_open()?;
         let result = op(self.col.as_mut().unwrap())?;
@@ -107,28 +105,10 @@ impl User {
             .or_internal_err("checkpoint collection")?;
 
         let col_path = self.folder.join("collection.anki2");
-
-        let backend = match self.mode {
-            SyncMode::Standalone => StorageBackendFactory::create("local", "")
-                .or_internal_err("create local backend")?,
-            SyncMode::Cloud => {
-                use sync_storage_config as db;
-                let (provider, refresh_token) = db::fetch_storage_connection(&self.name)
-                    .or_internal_err("lookup storage connection")?;
-                let access_token = if provider == "local" {
-                    String::new()
-                } else {
-                    tokio::task::block_in_place(|| {
-                        tokio::runtime::Handle::current()
-                            .block_on(db::exchange_refresh_token(&refresh_token))
-                    })
-                    .or_internal_err("exchange refresh token")?
-                };
-                StorageBackendFactory::create(&provider, &access_token)
-                    .or_internal_err("create storage backend")?
-            }
-        };
-
+        let backend = self
+            .backend_resolver
+            .resolve_for_user(&self.name)
+            .or_internal_err("resolve storage backend")?;
         backend
             .commit(&self.name, &col_path)
             .or_internal_err("commit collection to storage")?;
@@ -137,31 +117,11 @@ impl User {
     }
 
     fn open_collection(&mut self) -> HttpResult<Collection> {
-        use sync_storage_backends::StorageBackendFactory;
-
         let col_path = self.folder.join("collection.anki2");
-
-        let backend = match self.mode {
-            SyncMode::Standalone => StorageBackendFactory::create("local", "")
-                .or_internal_err("create local backend")?,
-            SyncMode::Cloud => {
-                use sync_storage_config as db;
-                let (provider, refresh_token) = db::fetch_storage_connection(&self.name)
-                    .or_internal_err("lookup storage connection")?;
-                let access_token = if provider == "local" {
-                    String::new()
-                } else {
-                    tokio::task::block_in_place(|| {
-                        tokio::runtime::Handle::current()
-                            .block_on(db::exchange_refresh_token(&refresh_token))
-                    })
-                    .or_internal_err("exchange refresh token")?
-                };
-                StorageBackendFactory::create(&provider, &access_token)
-                    .or_internal_err("create storage backend")?
-            }
-        };
-
+        let backend = self
+            .backend_resolver
+            .resolve_for_user(&self.name)
+            .or_internal_err("resolve storage backend")?;
         backend
             .fetch(&self.name, &col_path)
             .or_internal_err("fetch collection from storage")?;

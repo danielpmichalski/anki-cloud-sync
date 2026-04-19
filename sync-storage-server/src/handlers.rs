@@ -1,8 +1,15 @@
-// Copyright: Ankitects Pty Ltd and contributors
-// License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+// Sidecar (internal API) request handlers — moved from rslib/src/sync/http_server/internal_handlers.rs
 
 use std::sync::Arc;
 
+use anki::notes::AddNoteRequest;
+use anki::notes::Note;
+use anki::prelude::*;
+use anki::search::SortMode;
+use anki::sync::error::HttpResult;
+use anki::sync::error::OrHttpErr;
+use anki::sync::http_server::SidecarUserHandle;
+use anki::sync::http_server::SimpleServer;
 use axum::extract::Path;
 use axum::extract::Query;
 use axum::extract::State;
@@ -13,15 +20,6 @@ use axum::Json;
 use serde::Deserialize;
 use serde_json::json;
 use serde_json::Value;
-
-use crate::notes::AddNoteRequest;
-use crate::notes::Note;
-use crate::prelude::*;
-use crate::search::SortMode;
-use crate::sync::error::HttpResult;
-use crate::sync::error::OrHttpErr;
-use crate::sync::http_server::user::User;
-use crate::sync::http_server::SimpleServer;
 
 fn user_email(headers: &HeaderMap) -> &str {
     headers
@@ -35,18 +33,12 @@ fn err_response(status: StatusCode, msg: impl std::fmt::Display) -> (StatusCode,
 }
 
 /// Lock state, look up/create the user, check no sync is active, then run op.
-/// Returns 409 if a sync is in progress — caller must not abort it.
+/// Returns 409 if a sync is in progress.
 fn with_user<F, R>(server: &Arc<SimpleServer>, email: &str, op: F) -> HttpResult<R>
 where
-    F: FnOnce(&mut User) -> HttpResult<R>,
+    F: FnOnce(&mut SidecarUserHandle<'_>) -> HttpResult<R>,
 {
-    let mode = server.mode();
-    let mut state = server.state.lock().unwrap();
-    let user = state.get_or_create_sidecar_user(email, &server.base_folder, mode)?;
-    if user.sync_state.is_some() {
-        return None.or_conflict("sync in progress, try again later")?;
-    }
-    op(user)
+    server.with_sidecar_user(email, op)
 }
 
 fn note_to_json(note: &Note, col: &mut Collection) -> Value {
@@ -108,8 +100,8 @@ pub async fn list_decks(
     Query(pagination): Query<PaginationQuery>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
             let cursor_id = parse_cursor(&pagination.cursor)?;
             let limit = pagination.limit.min(MAX_LIMIT);
 
@@ -150,8 +142,8 @@ pub async fn get_deck(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col(|col| col.get_deck(DeckId(id)).or_internal_err("get deck"))
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| col.get_deck(DeckId(id)).or_internal_err("get deck"))
     });
     match result {
         Ok(Some(deck)) => {
@@ -176,8 +168,8 @@ pub async fn create_deck(
     Json(body): Json<CreateDeckBody>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             col.get_or_create_normal_deck(&body.name)
                 .map(|deck| json!({"id": deck.id.0.to_string(), "name": deck.name.human_name()}))
                 .or_internal_err("create deck")
@@ -195,8 +187,8 @@ pub async fn delete_deck(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             col.remove_decks_and_child_decks(&[DeckId(id)])
                 .map(|_| ())
                 .or_internal_err("delete deck")
@@ -217,8 +209,8 @@ pub async fn list_notes(
     Query(pagination): Query<PaginationQuery>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
             let cursor_id = parse_cursor(&pagination.cursor)?;
             let limit = pagination.limit.min(MAX_LIMIT);
 
@@ -263,8 +255,8 @@ pub async fn get_note(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
             let note = col.storage.get_note(NoteId(id)).or_internal_err("get note")?;
             Ok(note.map(|n| note_to_json(&n, col)))
         })
@@ -290,8 +282,8 @@ pub async fn search_notes(
     Query(params): Query<SearchQuery>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
             let cursor_id = parse_cursor(&params.cursor)?;
             let limit = params.limit.min(MAX_LIMIT);
 
@@ -347,8 +339,8 @@ pub async fn create_note(
     Json(body): Json<CreateNoteBody>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             let nt = if let Some(ntid_str) = &body.note_type_id {
                 let ntid = ntid_str
                     .parse::<i64>()
@@ -396,8 +388,8 @@ pub async fn bulk_create_notes(
     Json(body): Json<BulkCreateNotesBody>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             let mut requests: Vec<AddNoteRequest> = Vec::with_capacity(body.notes.len());
             for note_body in &body.notes {
                 let nt = if let Some(ntid_str) = &note_body.note_type_id {
@@ -457,8 +449,8 @@ pub async fn update_note(
     Json(body): Json<UpdateNoteBody>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             let mut note = OrHttpErr::or_not_found(
                 col.storage.get_note(NoteId(id)).or_internal_err("get note")?,
                 "note not found",
@@ -489,8 +481,8 @@ pub async fn delete_note(
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let email = user_email(&headers).to_string();
-    let result = with_user(&server, &email, |user| {
-        user.with_col_and_commit(|col| {
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col_and_commit(|col| {
             col.remove_notes(&[NoteId(id)])
                 .map(|_| ())
                 .or_internal_err("delete note")

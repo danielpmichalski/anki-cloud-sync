@@ -48,15 +48,77 @@ Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) r
 
 ### Our crates vs upstream
 
-| Crate                   | Origin            | Touches upgrade?              |
-|-------------------------|-------------------|-------------------------------|
-| `sync-storage-api`      | ours              | No                            |
-| `sync-storage-backends` | ours              | No                            |
-| `sync-storage-config`   | ours              | No                            |
-| `rslib/` and sub-crates | upstream verbatim | Yes — replaced by fork script |
+| Crate                   | Origin              | Touches upgrade?                             |
+|-------------------------|---------------------|----------------------------------------------|
+| `sync-storage-api`      | ours                | Never                                        |
+| `sync-storage-backends` | ours                | Never                                        |
+| `sync-storage-config`   | ours                | Never                                        |
+| `sync-storage-server`   | ours                | Only if rslib's public types change          |
+| `rslib/` and sub-crates | upstream (verbatim) | Yes — replaced by fork script, then re-patch |
 
-`rslib/` is a pure upstream copy. We keep our diff to it minimal: two small touch points in
-`http_server/user.rs` (fetch before open, commit after finish). See [ADR-0003](../docs/decisions/0003-fork-rust-ankitects-sync-server.md).
+### rslib delta — what we keep in upstream code
+
+`rslib/` is replaced wholesale by the fork script. After each replacement, **four files** must be
+patched to wire in our auth and storage providers. All other rslib files stay verbatim.
+
+**Design:** two traits from `sync-storage-api` are injected at server startup; rslib never imports
+`sync-storage-config` or `sync-storage-backends` directly. `SyncMode` logic lives entirely in
+`sync-storage-server`. See the [upgrade section](#upgrading-to-a-new-anki-release) for how to re-apply.
+
+#### `rslib/Cargo.toml` — add one dependency
+
+```toml
+# in [dependencies]
+sync-storage-api.workspace = true
+# also add anyhow to [dev-dependencies]
+```
+
+#### `rslib/sync/Cargo.toml` — add binary dependency
+
+```toml
+# in [target.'cfg(...)'.dependencies] (both windows and non-windows blocks)
+sync-storage-server = { workspace = true }
+```
+
+#### `rslib/sync/main.rs` — call our run() instead of SimpleServer::run()
+
+```rust
+println!("{}", sync_storage_server::run());
+```
+
+#### `rslib/src/sync/http_server/mod.rs`
+
+- `SimpleServer` struct: replace `mode: SyncMode` with `auth: Arc<dyn AuthProvider>` and
+  `backend_resolver: Arc<dyn BackendResolver>` (both from `sync_storage_api`)
+- `SyncServerConfig`: remove `mode: SyncMode` field (SYNC_MODE is read in `sync-storage-server`)
+- `SimpleServer::new()`: takes `auth` + `backend_resolver` instead of `mode`
+- `SimpleServer::make_server()`: takes pre-built `Arc<SimpleServer>` as second argument; no sidecar spawn (that moves to `sync-storage-server`)
+- `with_authenticated_user()`: single code path — calls `self.auth.lookup_by_hkey()`
+- `get_host_key()`: single code path — calls `self.auth.authenticate()`
+- `ensure_user()`: takes `backend_resolver: Arc<dyn BackendResolver>` instead of `mode`
+- `get_or_create_sidecar_user()`: same — takes `backend_resolver` instead of `mode`
+- Add `SidecarUserHandle<'a>` struct (opaque handle exposing `with_col` / `with_col_and_commit`)
+- Add `SimpleServer::with_sidecar_user()` pub method (used by sidecar handlers in `sync-storage-server`)
+- Add `pub fn derive_hkey(s: &str) -> String` (used by `StandaloneAuthProvider`)
+- Add `pub fn base_folder(&self) -> &Path` accessor
+- Remove `SimpleServer::run()` (replaced by `sync_storage_server::run()`)
+- Remove `mod internal_handlers` and `mod internal_server` declarations
+
+#### `rslib/src/sync/http_server/user.rs`
+
+- `User` struct: replace `mode: SyncMode` with `backend_resolver: Arc<dyn BackendResolver>`
+- `open_collection()`: replace 20-line match block with two lines: `resolve_for_user()` + `backend.fetch()`
+- `with_col_and_commit()`: replace 20-line match block with two lines: `resolve_for_user()` + `backend.commit()`
+
+#### `rslib/src/sync/http_server/handlers.rs`
+
+- `finish()`: replace 20-line duplicated match block with two lines: `resolve_for_user()` + `backend.commit()`
+- `upload()`: same
+
+#### `rslib/src/sync/collection/tests.rs`
+
+- Replace `mode: SyncMode::Standalone` in `SyncServerConfig` literal with inline `TestAuthProvider` and `LocalBackendResolver` test doubles
+- Update `make_server(config)` call to `make_server(config, server)` (pass pre-built `Arc<SimpleServer>`)
 
 ## Prerequisites
 
@@ -287,11 +349,62 @@ collisions with Anki's own patch versions (`25.09`, `25.09.1`, `25.09.2`, …).
 
 ## Upgrading to a new Anki release
 
-Run the fork script with the new tag. It replaces `rslib/` and `Cargo.lock`
-while leaving `Cargo.toml` and this `README.md` untouched.
+### Step 1 — replace rslib
+
+Run the fork script with the new upstream tag. It replaces `rslib/`, `ftl/`, `proto/`, and
+`Cargo.lock` while leaving `Cargo.toml`, our custom crates, and this file untouched.
 
 ```bash
 ./scripts/fork-anki-sync-server.zsh 25.12
 ```
 
-After upgrading, rebuild and re-run tests to verify compatibility.
+### Step 2 — re-apply the rslib delta
+
+The fork script wipes our patches. Re-apply the changes listed in the
+[rslib delta](#rslib-delta--what-we-keep-in-upstream-code) section above. The diff is small and
+intentionally stable — if upstream renames a type or restructures a method, that's the only thing
+that needs updating.
+
+Quick checklist:
+
+- [ ] `rslib/Cargo.toml` — `sync-storage-api` in `[dependencies]`, `anyhow` in `[dev-dependencies]`
+- [ ] `rslib/sync/Cargo.toml` — `sync-storage-server` in both platform dependency blocks
+- [ ] `rslib/sync/main.rs` — calls `sync_storage_server::run()` not `SimpleServer::run()`
+- [ ] `rslib/src/sync/http_server/mod.rs` — DI fields, simplified auth methods, `SidecarUserHandle`, `derive_hkey`, `base_folder()`, updated `new()` / `make_server()` signatures
+- [ ] `rslib/src/sync/http_server/user.rs` — `backend_resolver` field, collapsed `open_collection` / `with_col_and_commit`
+- [ ] `rslib/src/sync/http_server/handlers.rs` — collapsed `finish` / `upload` commit blocks
+- [ ] `rslib/src/sync/collection/tests.rs` — inline test doubles, updated `make_server` call
+- [ ] `rslib/src/sync/http_server/internal_handlers.rs` — **delete** (lives in `sync-storage-server`)
+- [ ] `rslib/src/sync/http_server/internal_server.rs` — **delete** (lives in `sync-storage-server`)
+
+### Step 3 — verify structure
+
+```bash
+# zero-tolerance checks — all must return empty
+grep -r 'SyncMode'                     rslib/src/
+grep -r 'sync_storage_config'          rslib/src/
+grep -r 'sync_storage_backends'        rslib/src/
+ls rslib/src/sync/http_server/internal_*.rs 2>/dev/null
+
+cargo build --bin anki-sync-server
+```
+
+### Step 4 — run automated tests
+
+```bash
+# sync protocol integration tests (uses StandaloneAuthProvider + LocalBackendResolver)
+cargo test -p anki
+
+# custom crate unit tests
+cargo test -p sync-storage-config -p sync-storage-backends -p sync-storage-server
+```
+
+All tests must pass before tagging.
+
+### Step 5 — tag the new release
+
+```bash
+# example: upgrading to Anki 25.12
+git tag v25.12-r1
+git push origin v25.12-r1
+```
