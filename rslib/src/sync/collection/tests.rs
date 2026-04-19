@@ -88,6 +88,9 @@ where
         port: 0,
         base_folder: base_folder.path().into(),
         ip_header: default_ip_header(),
+        internal_port: 8081,
+        internal_token: None,
+        mode: crate::sync::http_server::SyncMode::Standalone,
     })
     .await
     .unwrap();
