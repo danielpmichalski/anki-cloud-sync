@@ -3,7 +3,7 @@
 Stateless Anki sync server backed by user-owned cloud storage (Google Drive, Dropbox, S3).
 Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) rslib, AGPLv3.
 
-## What's in here
+## What's in here?
 
 ```
 /
@@ -79,53 +79,116 @@ The binary lands at `target/debug/anki-sync-server`.
 docker build -t anki-cloud-sync:local .
 ```
 
-## Run
+## Standalone mode
 
-### Local binary
+No database or cloud credentials are required. Users are defined via `SYNC_USER*` env vars.
+Behaves identically to the original [Anki's rslib sync server](https://github.com/ankitects/anki/tree/master/rslib). Default mode (`SYNC_MODE=standalone`).
+
+### Run
+
+#### Local build
 
 ```bash
-DATABASE_URL=file:/path/to/anki-cloud.db \
-  TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
-  GOOGLE_CLIENT_ID=<client-id> \
-  GOOGLE_CLIENT_SECRET=<client-secret> \
+SYNC_USER1=alice@example.com:secret \
   ./target/debug/anki-sync-server
 # Listens on 0.0.0.0:8080 by default.
 ```
 
-### Docker
+Add `SYNC_USER2`, `SYNC_USER3`, … for additional users.
+
+#### Docker
 
 ```bash
 docker run \
-  -e DATABASE_URL=file:/data/anki-cloud.db \
-  -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
-  -e GOOGLE_CLIENT_ID=<client-id> \
-  -e GOOGLE_CLIENT_SECRET=<client-secret> \
-  -v /path/to/data:/data \
+  -e SYNC_USER1=alice@example.com:secret \
   -p 8080:8080 \
   anki-cloud-sync:local
 ```
 
-Users authenticate with their email address and a per-user sync password set via the web UI
-(`GET /v1/me/sync-password`). No `SYNC_USER*` env vars are needed.
+### Environment variables
 
-Key environment variables:
-
-| Variable               | Default         | Description                                                                                  |
-|------------------------|-----------------|----------------------------------------------------------------------------------------------|
-| `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
-| `SYNC_HOST`            | `0.0.0.0`       | Bind address                                                                                 |
-| `SYNC_PORT`            | `8080`          | Bind port                                                                                    |
-| `DATABASE_URL`         | —               | Path to the shared SQLite database (e.g. `file:/data/anki-cloud.db`)                         |
-| `TOKEN_ENCRYPTION_KEY` | —               | 32-byte AES-256 key used to decrypt OAuth tokens in the DB (64 hex chars or 44 base64 chars) |
-| `GOOGLE_CLIENT_ID`     | —               | Google OAuth2 client ID — used to exchange refresh tokens for fresh access tokens            |
-| `GOOGLE_CLIENT_SECRET` | —               | Google OAuth2 client secret                                                                  |
+| Variable              | Default         | Description                                                                             |
+|-----------------------|-----------------|-----------------------------------------------------------------------------------------|
+| `SYNC_BASE`           | `~/.syncserver` | Directory for temporary user collection files during sync                               |
+| `SYNC_HOST`           | `0.0.0.0`       | Bind address for the Anki sync protocol                                                 |
+| `SYNC_PORT`           | `8080`          | Port for the Anki sync protocol                                                         |
+| `SYNC_USER1`          | —               | `username:password` — repeat for `SYNC_USER2`, `SYNC_USER3`, …                          |
+| `SYNC_INTERNAL_HOST`  | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                        |
+| `SYNC_INTERNAL_PORT`  | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                      |
+| `SYNC_INTERNAL_TOKEN` | —               | Bearer token required on every internal API request; if unset, internal API is disabled |
 
 ### Authentication
 
 On `/sync/hostKey` (Anki login):
 
-1. Verifies `email` + `password` against `users.sync_password_hash` (bcrypt, timing-safe)
-2. Derives `hkey = SHA1(email:password)` and upserts it into `users_sync_state.sync_key`
+1. Derives `hkey = SHA1(username:password)`
+2. Looks up user in in-memory map (populated from `SYNC_USER*` at startup)
+3. Verifies password against stored PBKDF2 hash
+4. Returns `hkey` to Anki client as session token
+
+On subsequent sync requests: looks up `hkey` in in-memory session map.
+
+## Cloud mode
+
+Backed by a shared SQLite database and per-user cloud storage (Google Drive, etc.).
+Set `SYNC_MODE=cloud`.
+
+### Run
+
+#### Local build
+
+```bash
+SYNC_MODE=cloud \
+  DATABASE_URL=file:/path/to/anki-cloud.db \
+  TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
+  GOOGLE_CLIENT_ID=<client-id> \
+  GOOGLE_CLIENT_SECRET=<client-secret> \
+  SYNC_INTERNAL_TOKEN=<secret-token> \
+  ./target/debug/anki-sync-server
+# Listens on 0.0.0.0:8080 (sync) and 127.0.0.1:8081 (internal API) by default.
+```
+
+#### Docker
+
+```bash
+docker run \
+  -e SYNC_MODE=cloud \
+  -e DATABASE_URL=file:/data/anki-cloud.db \
+  -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
+  -e GOOGLE_CLIENT_ID=<client-id> \
+  -e GOOGLE_CLIENT_SECRET=<client-secret> \
+  -e SYNC_INTERNAL_HOST=0.0.0.0 \
+  -e SYNC_INTERNAL_TOKEN=<secret-token> \
+  -v /path/to/data:/data \
+  -p 8080:8080 \
+  -p 8081:8081 \
+  anki-cloud-sync:local
+```
+
+### Environment variables
+
+| Variable               | Default         | Description                                                                                  |
+|------------------------|-----------------|----------------------------------------------------------------------------------------------|
+| `DATABASE_URL`         | —               | Path to the shared SQLite database (e.g. `file:/data/anki-cloud.db`)                         |
+| `TOKEN_ENCRYPTION_KEY` | —               | 32-byte AES-256 key used to decrypt OAuth tokens in the DB (64 hex chars or 44 base64 chars) |
+| `GOOGLE_CLIENT_ID`     | —               | Google OAuth2 client ID — used to exchange refresh tokens for fresh access tokens            |
+| `GOOGLE_CLIENT_SECRET` | —               | Google OAuth2 client secret                                                                  |
+| `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
+| `SYNC_HOST`            | `0.0.0.0`       | Bind address for the Anki sync protocol                                                      |
+| `SYNC_PORT`            | `8080`          | Port for the Anki sync protocol                                                              |
+| `SYNC_INTERNAL_HOST`   | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                             |
+| `SYNC_INTERNAL_PORT`   | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                           |
+| `SYNC_INTERNAL_TOKEN`  | —               | Bearer token for internal API requests; if unset, internal API is disabled                   |
+
+### Authentication
+
+Users authenticate with their email address and a per-user sync password set via the web UI.
+No `SYNC_USER*` env vars are needed.
+
+On `/sync/hostKey` (Anki login):
+
+1. Verifies `email` + `password` against `users.sync_password_hash` db table (bcrypt, timing-safe)
+2. Derives `hkey = SHA1(email:password)` and upserts it into `users_sync_state.sync_key` db table
 3. Returns `hkey` to Anki client as session token
 
 On subsequent sync requests (hkey in `anki-sync` header):
@@ -133,7 +196,7 @@ On subsequent sync requests (hkey in `anki-sync` header):
 1. Looks up hkey in in-memory session map
 2. If not found (server restart or different instance): queries `users_sync_state` by hkey to re-hydrate
 
-### How per-request storage lookup works
+### Per-request storage lookup
 
 On each sync operation that requires storage access (open, finish, upload), the sync server:
 
@@ -143,6 +206,61 @@ On each sync operation that requires storage access (open, finish, upload), the 
 4. Passes the access token to `StorageBackendFactory` to create the appropriate backend
 
 This makes each sync server instance stateless — no per-user config in memory, safe to run behind a load balancer.
+
+## Internal API
+
+When `SYNC_INTERNAL_TOKEN` is set, the server exposes a second HTTP listener on `SYNC_INTERNAL_PORT` (default `8081`). This API lets the rest of the platform (e.g. the anki-cloud REST API) read and write deck/note data
+without going through the Anki sync protocol.
+
+Every request must carry two headers:
+
+| Header             | Value                               |
+|--------------------|-------------------------------------|
+| `X-Internal-Token` | value of `SYNC_INTERNAL_TOKEN`      |
+| `X-User-Email`     | email address of the user to act as |
+
+### Endpoints
+
+| Method   | Path                                 | Description                            |
+|----------|--------------------------------------|----------------------------------------|
+| `GET`    | `/internal/v1/decks`                 | List decks (paginated)                 |
+| `POST`   | `/internal/v1/decks`                 | Create a deck                          |
+| `GET`    | `/internal/v1/decks/{id}`            | Get a deck by ID                       |
+| `DELETE` | `/internal/v1/decks/{id}`            | Delete a deck                          |
+| `GET`    | `/internal/v1/decks/{id}/notes`      | List notes in a deck (paginated)       |
+| `POST`   | `/internal/v1/decks/{id}/notes`      | Create a single note                   |
+| `POST`   | `/internal/v1/decks/{id}/notes/bulk` | Create multiple notes in one request   |
+| `GET`    | `/internal/v1/notes/search`          | Search notes by Anki query (paginated) |
+| `GET`    | `/internal/v1/notes/{id}`            | Get a note by ID                       |
+| `PUT`    | `/internal/v1/notes/{id}`            | Update a note                          |
+| `DELETE` | `/internal/v1/notes/{id}`            | Delete a note                          |
+
+### Pagination
+
+List and search endpoints accept:
+
+| Query param | Default | Max    | Description                              |
+|-------------|---------|--------|------------------------------------------|
+| `limit`     | `100`   | `1000` | Number of items to return                |
+| `cursor`    | —       | —      | Opaque string from previous `nextCursor` |
+
+Responses include `"nextCursor": "<string>"` (or `null` when no more pages).
+
+### Example
+
+```bash
+# List decks (first page)
+curl -s "http://localhost:8081/internal/v1/decks?limit=10" \
+  -H "X-Internal-Token: $SYNC_INTERNAL_TOKEN" \
+  -H "X-User-Email: alice@example.com"
+
+# Bulk-create notes in deck 1234567890
+curl -s -X POST "http://localhost:8081/internal/v1/decks/1234567890/notes/bulk" \
+  -H "X-Internal-Token: $SYNC_INTERNAL_TOKEN" \
+  -H "X-User-Email: alice@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{"notes":[{"fields":{"Front":"Q","Back":"A"},"tags":[]}]}'
+```
 
 ## Test
 

@@ -12,6 +12,7 @@ use crate::sync::collection::start::ServerSyncState;
 use crate::sync::error::HttpResult;
 use crate::sync::error::OrHttpErr;
 use crate::sync::http_server::media_manager::ServerMediaManager;
+use crate::sync::http_server::SyncMode;
 
 pub(in crate::sync) struct User {
     pub name: String,
@@ -20,6 +21,7 @@ pub(in crate::sync) struct User {
     pub sync_state: Option<ServerSyncState>,
     pub media: ServerMediaManager,
     pub folder: PathBuf,
+    pub mode: SyncMode,
 }
 
 impl User {
@@ -85,26 +87,81 @@ impl User {
         Ok(())
     }
 
+    /// Run op with collection access, checkpoint WAL, and commit to storage.
+    pub(in crate::sync) fn with_col_and_commit<F, R>(&mut self, op: F) -> HttpResult<R>
+    where
+        F: FnOnce(&mut Collection) -> HttpResult<R>,
+    {
+        use sync_storage_backends::StorageBackendFactory;
+
+        self.abort_stateful_sync_if_active();
+        self.ensure_col_open()?;
+        let result = op(self.col.as_mut().unwrap())?;
+
+        // Flush WAL into main DB file before upload
+        self.col
+            .as_ref()
+            .unwrap()
+            .storage
+            .checkpoint()
+            .or_internal_err("checkpoint collection")?;
+
+        let col_path = self.folder.join("collection.anki2");
+
+        let backend = match self.mode {
+            SyncMode::Standalone => StorageBackendFactory::create("local", "")
+                .or_internal_err("create local backend")?,
+            SyncMode::Cloud => {
+                use sync_storage_config as db;
+                let (provider, refresh_token) = db::fetch_storage_connection(&self.name)
+                    .or_internal_err("lookup storage connection")?;
+                let access_token = if provider == "local" {
+                    String::new()
+                } else {
+                    tokio::task::block_in_place(|| {
+                        tokio::runtime::Handle::current()
+                            .block_on(db::exchange_refresh_token(&refresh_token))
+                    })
+                    .or_internal_err("exchange refresh token")?
+                };
+                StorageBackendFactory::create(&provider, &access_token)
+                    .or_internal_err("create storage backend")?
+            }
+        };
+
+        backend
+            .commit(&self.name, &col_path)
+            .or_internal_err("commit collection to storage")?;
+
+        Ok(result)
+    }
+
     fn open_collection(&mut self) -> HttpResult<Collection> {
         use sync_storage_backends::StorageBackendFactory;
 
-        use sync_storage_config as db;
+        let col_path = self.folder.join("collection.anki2");
 
-        let (provider, refresh_token) = db::fetch_storage_connection(&self.name)
-            .or_internal_err("lookup storage connection")?;
-        let access_token = if provider == "local" {
-            String::new()
-        } else {
-            tokio::task::block_in_place(|| {
-                tokio::runtime::Handle::current()
-                    .block_on(db::exchange_refresh_token(&refresh_token))
-            })
-            .or_internal_err("exchange refresh token")?
+        let backend = match self.mode {
+            SyncMode::Standalone => StorageBackendFactory::create("local", "")
+                .or_internal_err("create local backend")?,
+            SyncMode::Cloud => {
+                use sync_storage_config as db;
+                let (provider, refresh_token) = db::fetch_storage_connection(&self.name)
+                    .or_internal_err("lookup storage connection")?;
+                let access_token = if provider == "local" {
+                    String::new()
+                } else {
+                    tokio::task::block_in_place(|| {
+                        tokio::runtime::Handle::current()
+                            .block_on(db::exchange_refresh_token(&refresh_token))
+                    })
+                    .or_internal_err("exchange refresh token")?
+                };
+                StorageBackendFactory::create(&provider, &access_token)
+                    .or_internal_err("create storage backend")?
+            }
         };
 
-        let col_path = self.folder.join("collection.anki2");
-        let backend = StorageBackendFactory::create(&provider, &access_token)
-            .or_internal_err("create storage backend")?;
         backend
             .fetch(&self.name, &col_path)
             .or_internal_err("fetch collection from storage")?;

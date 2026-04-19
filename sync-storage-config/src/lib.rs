@@ -62,7 +62,6 @@ fn db_path() -> Result<String> {
 /// Returns (provider, plaintext_refresh_token).
 pub fn fetch_storage_connection(username: &str) -> Result<(String, String)> {
     let path = db_path()?;
-    let enc_key = load_enc_key()?;
 
     let conn = rusqlite::Connection::open_with_flags(
         &path,
@@ -86,6 +85,7 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String)> {
         return Ok((provider, String::new()));
     }
 
+    let enc_key = load_enc_key()?;
     let refresh_token = decrypt_token(
         &encrypted_refresh.ok_or_else(|| anyhow!("missing oauth_refresh_token"))?,
         &enc_key,
