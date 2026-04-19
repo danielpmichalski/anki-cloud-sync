@@ -7,7 +7,7 @@ pub struct StandaloneBackendResolver;
 
 impl BackendResolver for StandaloneBackendResolver {
     fn resolve_for_user(&self, _username: &str) -> Result<Box<dyn StorageBackend>> {
-        StorageBackendFactory::create("local", "")
+        StorageBackendFactory::create("local", "", "")
     }
 }
 
@@ -18,7 +18,7 @@ pub struct CloudBackendResolver;
 impl BackendResolver for CloudBackendResolver {
     fn resolve_for_user(&self, username: &str) -> Result<Box<dyn StorageBackend>> {
         use sync_storage_config as db;
-        let (provider, refresh_token) = db::fetch_storage_connection(username)?;
+        let (provider, refresh_token, folder_path) = db::fetch_storage_connection(username)?;
         let access_token = if provider == "local" {
             String::new()
         } else {
@@ -27,6 +27,6 @@ impl BackendResolver for CloudBackendResolver {
                     .block_on(db::exchange_refresh_token(&refresh_token))
             })?
         };
-        StorageBackendFactory::create(&provider, &access_token)
+        StorageBackendFactory::create(&provider, &access_token, &folder_path)
     }
 }

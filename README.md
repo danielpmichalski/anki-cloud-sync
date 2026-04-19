@@ -297,6 +297,16 @@ Every request must carry two headers:
 | `PUT`    | `/internal/v1/notes/{id}`            | Update a note                          |
 | `DELETE` | `/internal/v1/notes/{id}`            | Delete a note                          |
 
+### Data freshness
+
+The internal API reads from a local `.anki2` file at `SYNC_BASE/<email>/collection.anki2`. This file is downloaded from cloud storage when an Anki client opens a sync session (`open_collection` → `backend.fetch()`), and uploaded back when the session closes (`backend.commit()`). Between syncs the local file is not refreshed.
+
+Consequences:
+
+- **Reads reflect the last Anki client sync**, not the live state in cloud storage. If no sync has happened yet for a user, the file may be absent or stale.
+- **Writes (create/update/delete) are committed immediately** to both the local file and cloud storage (`with_col_and_commit` → `backend.commit()`), so they are durable and will be picked up by the next Anki client sync.
+- Changing `folder_path` in `storage_connections` takes effect on the next Anki client sync. Until then, the internal API continues reading from the existing local file.
+
 ### Pagination
 
 List and search endpoints accept:

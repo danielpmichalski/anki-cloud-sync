@@ -10,9 +10,9 @@ pub struct StorageBackendFactory;
 impl StorageBackendFactory {
     /// Create a backend for `provider` using the given OAuth token.
     /// `provider` matches `storage_connections.provider` in SQLite.
-    pub fn create(provider: &str, oauth_token: &str) -> Result<Box<dyn StorageBackend>> {
+    pub fn create(provider: &str, oauth_token: &str, folder_path: &str) -> Result<Box<dyn StorageBackend>> {
         match provider {
-            "gdrive" => Ok(Box::new(GoogleDriveBackend::new(oauth_token))),
+            "gdrive" => Ok(Box::new(GoogleDriveBackend::new(oauth_token, folder_path))),
             "local" => Ok(Box::new(LocalBackend)),
             _ => Err(anyhow!("unknown storage provider: {provider}")),
         }
