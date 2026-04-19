@@ -3,7 +3,7 @@
 Stateless Anki sync server backed by user-owned cloud storage (Google Drive, Dropbox, S3).
 Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) rslib, AGPLv3.
 
-## What's in here
+## What's in here?
 
 ```
 /
@@ -79,12 +79,64 @@ The binary lands at `target/debug/anki-sync-server`.
 docker build -t anki-cloud-sync:local .
 ```
 
-## Run
+## Standalone mode
 
-### Local binary
+No database or cloud credentials are required. Users are defined via `SYNC_USER*` env vars.
+Behaves identically to the original [Anki's rslib sync server](https://github.com/ankitects/anki/tree/master/rslib). Default mode (`SYNC_MODE=standalone`).
+
+### Run
+
+#### Local build
 
 ```bash
-DATABASE_URL=file:/path/to/anki-cloud.db \
+SYNC_USER1=alice@example.com:secret \
+  ./target/debug/anki-sync-server
+# Listens on 0.0.0.0:8080 by default.
+```
+
+Add `SYNC_USER2`, `SYNC_USER3`, … for additional users.
+
+#### Docker
+
+```bash
+docker run \
+  -e SYNC_USER1=alice@example.com:secret \
+  -p 8080:8080 \
+  anki-cloud-sync:local
+```
+
+### Environment variables
+
+| Variable     | Default         | Description                                                    |
+|--------------|-----------------|----------------------------------------------------------------|
+| `SYNC_BASE`  | `~/.syncserver` | Directory for temporary user collection files during sync      |
+| `SYNC_HOST`  | `0.0.0.0`       | Bind address                                                   |
+| `SYNC_PORT`  | `8080`          | Bind port                                                      |
+| `SYNC_USER1` | —               | `username:password` — repeat for `SYNC_USER2`, `SYNC_USER3`, … |
+
+### Authentication
+
+On `/sync/hostKey` (Anki login):
+
+1. Derives `hkey = SHA1(username:password)`
+2. Looks up user in in-memory map (populated from `SYNC_USER*` at startup)
+3. Verifies password against stored PBKDF2 hash
+4. Returns `hkey` to Anki client as session token
+
+On subsequent sync requests: looks up `hkey` in in-memory session map.
+
+## Cloud mode
+
+Backed by a shared SQLite database and per-user cloud storage (Google Drive, etc.).
+Set `SYNC_MODE=cloud`.
+
+### Run
+
+#### Local build
+
+```bash
+SYNC_MODE=cloud \
+  DATABASE_URL=file:/path/to/anki-cloud.db \
   TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
   GOOGLE_CLIENT_ID=<client-id> \
   GOOGLE_CLIENT_SECRET=<client-secret> \
@@ -92,10 +144,11 @@ DATABASE_URL=file:/path/to/anki-cloud.db \
 # Listens on 0.0.0.0:8080 by default.
 ```
 
-### Docker
+#### Docker
 
 ```bash
 docker run \
+  -e SYNC_MODE=cloud \
   -e DATABASE_URL=file:/data/anki-cloud.db \
   -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
   -e GOOGLE_CLIENT_ID=<client-id> \
@@ -105,27 +158,27 @@ docker run \
   anki-cloud-sync:local
 ```
 
-Users authenticate with their email address and a per-user sync password set via the web UI
-(`GET /v1/me/sync-password`). No `SYNC_USER*` env vars are needed.
-
-Key environment variables:
+### Environment variables
 
 | Variable               | Default         | Description                                                                                  |
 |------------------------|-----------------|----------------------------------------------------------------------------------------------|
-| `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
-| `SYNC_HOST`            | `0.0.0.0`       | Bind address                                                                                 |
-| `SYNC_PORT`            | `8080`          | Bind port                                                                                    |
 | `DATABASE_URL`         | —               | Path to the shared SQLite database (e.g. `file:/data/anki-cloud.db`)                         |
 | `TOKEN_ENCRYPTION_KEY` | —               | 32-byte AES-256 key used to decrypt OAuth tokens in the DB (64 hex chars or 44 base64 chars) |
 | `GOOGLE_CLIENT_ID`     | —               | Google OAuth2 client ID — used to exchange refresh tokens for fresh access tokens            |
 | `GOOGLE_CLIENT_SECRET` | —               | Google OAuth2 client secret                                                                  |
+| `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
+| `SYNC_HOST`            | `0.0.0.0`       | Bind address                                                                                 |
+| `SYNC_PORT`            | `8080`          | Bind port                                                                                    |
 
 ### Authentication
 
+Users authenticate with their email address and a per-user sync password set via the web UI.
+No `SYNC_USER*` env vars are needed.
+
 On `/sync/hostKey` (Anki login):
 
-1. Verifies `email` + `password` against `users.sync_password_hash` (bcrypt, timing-safe)
-2. Derives `hkey = SHA1(email:password)` and upserts it into `users_sync_state.sync_key`
+1. Verifies `email` + `password` against `users.sync_password_hash` db table (bcrypt, timing-safe)
+2. Derives `hkey = SHA1(email:password)` and upserts it into `users_sync_state.sync_key` db table
 3. Returns `hkey` to Anki client as session token
 
 On subsequent sync requests (hkey in `anki-sync` header):
@@ -133,7 +186,7 @@ On subsequent sync requests (hkey in `anki-sync` header):
 1. Looks up hkey in in-memory session map
 2. If not found (server restart or different instance): queries `users_sync_state` by hkey to re-hydrate
 
-### How per-request storage lookup works
+### Per-request storage lookup
 
 On each sync operation that requires storage access (open, finish, upload), the sync server:
 
