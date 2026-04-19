@@ -156,6 +156,17 @@ To run only the sync-storage-config tests:
 cargo test -p sync-storage-config
 ```
 
+## Versioning
+
+Tags follow `v<anki-version>-r<revision>` (e.g. `v25.09-r1`).
+
+The Anki version prefix signals sync protocol compatibility. `-rX` is our revision counter for changes layered on top of that upstream base — it resets to `-r1` whenever the upstream Anki version changes. This avoids
+collisions with Anki's own patch versions (`25.09`, `25.09.1`, `25.09.2`, …).
+
+| Docker image tag                                     | Anki client version |
+|------------------------------------------------------|---------------------|
+| `ghcr.io/danielpmichalski/anki-cloud-sync:v25.09-r1` | 25.09.x             |
+
 ## Upgrading to a new Anki release
 
 Run the fork script with the new tag. It replaces `rslib/` and `Cargo.lock`

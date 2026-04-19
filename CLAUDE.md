@@ -16,6 +16,7 @@ at tag `25.09`, plus three custom crates that implement the cloud storage adapte
 
 The sync server is consumed by the wider `anki-cloud` platform as an **external Docker image**.
 It has no knowledge of the REST API, MCP server, or web UI — it only knows about:
+
 - The Anki sync protocol (upstream, unmodified)
 - SQLite (shared with the rest of the platform; read-only from this server's perspective)
 - Cloud storage backends (Google Drive, local)
@@ -75,13 +76,13 @@ To upgrade upstream, run `scripts/fork-anki-sync-server.zsh <new-tag>`.
 
 ## 3. Custom Crates vs. Upstream
 
-| Crate | Files | Purpose | Edit? |
-|---|---|---|---|
-| `sync-storage-api` | `src/lib.rs` (12 lines) | `StorageBackend` trait — the only interface between upstream and our code | Yes |
-| `sync-storage-backends` | `src/lib.rs` + `backends/*.rs` | Factory + per-provider implementations | Yes |
-| `sync-storage-config` | `src/lib.rs` | DB lookups, AES-256-GCM token decryption, bcrypt credential check, OAuth token exchange | Yes |
-| `rslib` and sub-crates | all files | Upstream Anki sync protocol + binary | **No** |
-| `ftl/`, `proto/` | all files | Upstream build deps | **No** |
+| Crate                   | Files                          | Purpose                                                                                 | Edit?  |
+|-------------------------|--------------------------------|-----------------------------------------------------------------------------------------|--------|
+| `sync-storage-api`      | `src/lib.rs` (12 lines)        | `StorageBackend` trait — the only interface between upstream and our code               | Yes    |
+| `sync-storage-backends` | `src/lib.rs` + `backends/*.rs` | Factory + per-provider implementations                                                  | Yes    |
+| `sync-storage-config`   | `src/lib.rs`                   | DB lookups, AES-256-GCM token decryption, bcrypt credential check, OAuth token exchange | Yes    |
+| `rslib` and sub-crates  | all files                      | Upstream Anki sync protocol + binary                                                    | **No** |
+| `ftl/`, `proto/`        | all files                      | Upstream build deps                                                                     | **No** |
 
 The three custom crates are minimal and deliberately decoupled so upstream upgrades
 don't require touching our code.
@@ -178,21 +179,21 @@ Used for local development and self-hosting without cloud storage.
 
 ### Required
 
-| Variable | Description | Example |
-|---|---|---|
-| `DATABASE_URL` | Path to shared SQLite DB | `file:/data/anki-cloud.db` |
-| `TOKEN_ENCRYPTION_KEY` | 32-byte AES-256 key (64 hex or 44 base64 chars) | `deadbeef...` |
-| `GOOGLE_CLIENT_ID` | Google OAuth2 client ID | `123...apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret | `GOCSPX-...` |
+| Variable               | Description                                     | Example                            |
+|------------------------|-------------------------------------------------|------------------------------------|
+| `DATABASE_URL`         | Path to shared SQLite DB                        | `file:/data/anki-cloud.db`         |
+| `TOKEN_ENCRYPTION_KEY` | 32-byte AES-256 key (64 hex or 44 base64 chars) | `deadbeef...`                      |
+| `GOOGLE_CLIENT_ID`     | Google OAuth2 client ID                         | `123...apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret                     | `GOCSPX-...`                       |
 
 ### Optional (with defaults)
 
-| Variable | Default | Description |
-|---|---|---|
+| Variable    | Default         | Description                                     |
+|-------------|-----------------|-------------------------------------------------|
 | `SYNC_BASE` | `~/.syncserver` | Temp directory for user collections during sync |
-| `SYNC_HOST` | `0.0.0.0` | Bind address |
-| `SYNC_PORT` | `8080` | Bind port |
-| `RUST_LOG` | `anki=info` | Log level (tracing filter) |
+| `SYNC_HOST` | `0.0.0.0`       | Bind address                                    |
+| `SYNC_PORT` | `8080`          | Bind port                                       |
+| `RUST_LOG`  | `anki=info`     | Log level (tracing filter)                      |
 
 `SYNC_*` vars are loaded via `envy::prefixed("SYNC_")` into `SyncServerConfig`.
 The others (`DATABASE_URL`, `TOKEN_ENCRYPTION_KEY`, `GOOGLE_CLIENT_*`) are read directly
@@ -247,17 +248,32 @@ Used by Docker and docker-compose health checks.
 
 ## 7. Versioning
 
-This repo uses **Anki version numbers** (e.g. `25.09`), not independent semver.
-The sync protocol has a hard dependency on a specific Anki release; the version number
-is a meaningful compatibility signal.
+Tags follow the format **`v<anki-version>-r<revision>`** (e.g. `v25.09-r1`).
+
+- The Anki version prefix signals sync protocol compatibility.
+- `-rX` is our revision counter for changes on top of that upstream base.
+- `-rX` resets to `-r1` whenever the upstream Anki version changes.
+- Anki uses `25.09`, `25.09.1`, `25.09.2` style — the `-r` suffix avoids collision.
+
+**Examples:**
+
+| Event                          | Tag           |
+|--------------------------------|---------------|
+| Initial release on Anki 25.09  | `v25.09-r1`   |
+| Add Dropbox backend            | `v25.09-r2`   |
+| Add S3 backend                 | `v25.09-r3`   |
+| Upgrade to Anki 25.09.3        | `v25.09.3-r1` |
+| Add OneDrive on top of 25.09.3 | `v25.09.3-r2` |
+| Upgrade to Anki 25.10          | `v25.10-r1`   |
 
 A compatibility table in README maps Anki client versions to sync-server image tags.
 
 When Anki releases a new version, the upgrade path is:
+
 1. `./scripts/fork-anki-sync-server.zsh <new-tag>` — re-syncs rslib/ from upstream
 2. Verify custom crates still compile against updated rslib
 3. Run tests
-4. Tag new release matching Anki version (e.g. `v25.10`)
+4. Tag new release resetting revision (e.g. `v25.10-r1`)
 
 ---
 
@@ -295,6 +311,7 @@ sync-server:
 ```
 
 **Dependency contract:**
+
 - Shares the **same SQLite database** as the REST API and DB packages
 - Reads from: `users`, `storage_connections`, `users_sync_state` tables
 - Writes to: `users_sync_state.sync_key` (upsert on auth)
