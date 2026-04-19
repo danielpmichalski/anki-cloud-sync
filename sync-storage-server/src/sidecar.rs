@@ -1,9 +1,9 @@
-// Copyright: Ankitects Pty Ltd and contributors
-// License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+// InternalServer — moved from rslib/src/sync/http_server/internal_server.rs
 
 use std::net::IpAddr;
 use std::sync::Arc;
 
+use anki::sync::http_server::SimpleServer;
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::middleware;
@@ -15,8 +15,7 @@ use axum::routing::post;
 use axum::Router;
 use tokio::net::TcpListener;
 
-use crate::sync::http_server::internal_handlers;
-use crate::sync::http_server::SimpleServer;
+use crate::handlers;
 
 pub struct InternalServer {
     server: Arc<SimpleServer>,
@@ -33,29 +32,26 @@ impl InternalServer {
         let app = Router::new()
             .route(
                 "/internal/v1/decks",
-                get(internal_handlers::list_decks).post(internal_handlers::create_deck),
+                get(handlers::list_decks).post(handlers::create_deck),
             )
             .route(
                 "/internal/v1/decks/{id}",
-                get(internal_handlers::get_deck).delete(internal_handlers::delete_deck),
+                get(handlers::get_deck).delete(handlers::delete_deck),
             )
             .route(
                 "/internal/v1/decks/{id}/notes",
-                get(internal_handlers::list_notes).post(internal_handlers::create_note),
+                get(handlers::list_notes).post(handlers::create_note),
             )
             .route(
                 "/internal/v1/decks/{id}/notes/bulk",
-                post(internal_handlers::bulk_create_notes),
+                post(handlers::bulk_create_notes),
             )
-            .route(
-                "/internal/v1/notes/search",
-                get(internal_handlers::search_notes),
-            )
+            .route("/internal/v1/notes/search", get(handlers::search_notes))
             .route(
                 "/internal/v1/notes/{id}",
-                get(internal_handlers::get_note)
-                    .put(internal_handlers::update_note)
-                    .delete(internal_handlers::delete_note),
+                get(handlers::get_note)
+                    .put(handlers::update_note)
+                    .delete(handlers::delete_note),
             )
             .layer(middleware::from_fn(move |req, next| {
                 let token = token.clone();

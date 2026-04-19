@@ -50,23 +50,26 @@ use crate::sync::http_server::SyncServerConfig;
 use crate::sync::login::HostKeyRequest;
 use crate::sync::login::SyncAuth;
 use crate::sync::request::IntoSyncRequest;
+use sync_storage_api::AuthProvider;
+use sync_storage_api::BackendResolver;
+use sync_storage_api::StorageBackend;
 
-struct TestAuth {
+struct TestCredentials {
     username: String,
     password: String,
     host_key: String,
 }
 
-static AUTH: LazyLock<TestAuth> = LazyLock::new(|| {
+static AUTH: LazyLock<TestCredentials> = LazyLock::new(|| {
     if let Ok(auth) = std::env::var("TEST_AUTH") {
         let mut auth = auth.split(':');
-        TestAuth {
+        TestCredentials {
             username: auth.next().unwrap().into(),
             password: auth.next().unwrap().into(),
             host_key: auth.next().unwrap().into(),
         }
     } else {
-        TestAuth {
+        TestCredentials {
             username: "user".to_string(),
             password: "pass".to_string(),
             host_key: "b2619aa1529dfdc4248e6edbf3c1b2a2b014cf6d".to_string(),
@@ -74,25 +77,78 @@ static AUTH: LazyLock<TestAuth> = LazyLock::new(|| {
     }
 });
 
+/// Minimal auth provider for tests: accepts "user:pass" only.
+struct TestAuthProvider;
+
+impl AuthProvider for TestAuthProvider {
+    fn authenticate(&self, username: &str, password: &str) -> anyhow::Result<(String, String)> {
+        let expected = std::env::var("SYNC_USER1").unwrap_or_default();
+        let provided = format!("{username}:{password}");
+        if expected == provided {
+            let hkey = crate::sync::http_server::derive_hkey(&provided);
+            Ok((hkey, username.to_string()))
+        } else {
+            anyhow::bail!("invalid credentials")
+        }
+    }
+
+    fn lookup_by_hkey(&self, hkey: &str) -> anyhow::Result<String> {
+        if hkey == AUTH.host_key {
+            Ok(AUTH.username.clone())
+        } else {
+            anyhow::bail!("unknown hkey")
+        }
+    }
+}
+
+/// No-op backend resolver for tests: collection stays on local filesystem.
+struct LocalBackendResolver;
+
+impl BackendResolver for LocalBackendResolver {
+    fn resolve_for_user(&self, _username: &str) -> anyhow::Result<Box<dyn StorageBackend>> {
+        struct Noop;
+        impl StorageBackend for Noop {
+            fn fetch(&self, _: &str, _: &std::path::Path) -> anyhow::Result<()> {
+                Ok(())
+            }
+            fn commit(&self, _: &str, _: &std::path::Path) -> anyhow::Result<()> {
+                Ok(())
+            }
+        }
+        Ok(Box::new(Noop))
+    }
+}
+
 pub(in crate::sync) async fn with_active_server<F, O>(op: F) -> Result<()>
 where
     F: FnOnce(HttpSyncClient) -> O,
     O: Future<Output = Result<()>>,
 {
+    use std::sync::Arc;
     let _ = set_global_logger(None);
     // start server
     let base_folder = tempdir()?;
     std::env::set_var("SYNC_USER1", "user:pass");
-    let (addr, server_fut) = SimpleServer::make_server(SyncServerConfig {
-        host: "127.0.0.1".parse().unwrap(),
-        port: 0,
-        base_folder: base_folder.path().into(),
-        ip_header: default_ip_header(),
-        internal_port: 8081,
-        internal_host: "127.0.0.1".parse().unwrap(),
-        internal_token: None,
-        mode: crate::sync::http_server::SyncMode::Standalone,
-    })
+    let server = Arc::new(
+        SimpleServer::new(
+            base_folder.path(),
+            Arc::new(TestAuthProvider),
+            Arc::new(LocalBackendResolver),
+        )
+        .unwrap(),
+    );
+    let (addr, server_fut) = SimpleServer::make_server(
+        SyncServerConfig {
+            host: "127.0.0.1".parse().unwrap(),
+            port: 0,
+            base_folder: base_folder.path().into(),
+            ip_header: default_ip_header(),
+            internal_port: 8081,
+            internal_host: "127.0.0.1".parse().unwrap(),
+            internal_token: None,
+        },
+        server,
+    )
     .await
     .unwrap();
     tokio::spawn(server_fut.instrument(Span::current()));

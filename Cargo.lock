@@ -182,8 +182,6 @@ dependencies = [
  "strum 0.27.2",
  "syn",
  "sync-storage-api",
- "sync-storage-backends",
- "sync-storage-config",
  "tempfile",
  "tokio",
  "tokio-util",
@@ -205,6 +203,7 @@ name = "anki-sync-server"
 version = "0.0.0"
 dependencies = [
  "anki",
+ "sync-storage-server",
 ]
 
 [[package]]
@@ -5263,6 +5262,27 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+]
+
+[[package]]
+name = "sync-storage-server"
+version = "0.0.0"
+dependencies = [
+ "anki",
+ "anyhow",
+ "axum",
+ "axum-client-ip",
+ "envy",
+ "hex",
+ "pbkdf2",
+ "serde",
+ "serde_json",
+ "snafu",
+ "sync-storage-api",
+ "sync-storage-backends",
+ "sync-storage-config",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]

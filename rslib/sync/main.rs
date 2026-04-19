@@ -17,7 +17,7 @@ fn main() {
         env::set_var("RUST_LOG", "anki=info")
     }
     set_global_logger(None).unwrap();
-    println!("{}", SimpleServer::run());
+    println!("{}", sync_storage_server::run());
 }
 
 fn run_health_check() {

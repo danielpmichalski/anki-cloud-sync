@@ -21,6 +21,7 @@ members = [
   "sync-storage-api",
   "sync-storage-backends",
   "sync-storage-config",
+  "sync-storage-server",
   "rslib",
   "rslib/i18n",
   "rslib/io",
@@ -55,6 +56,7 @@ anki_proto_gen = { path = "rslib/proto_gen" }
 sync-storage-api = { path = "sync-storage-api" }
 sync-storage-backends = { path = "sync-storage-backends" }
 sync-storage-config = { path = "sync-storage-config" }
+sync-storage-server = { path = "sync-storage-server" }
 
 # pinned
 unicase = "=2.6.0" # any changes could invalidate sqlite indexes

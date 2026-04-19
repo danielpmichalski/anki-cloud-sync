@@ -1,0 +1,27 @@
+[package]
+name = "sync-storage-server"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+rust-version.workspace = true
+description = "Composition root: wires auth/storage strategies into the Anki sync server"
+
+[dependencies]
+anki.workspace = true
+sync-storage-api.workspace = true
+sync-storage-backends.workspace = true
+sync-storage-config.workspace = true
+
+anyhow.workspace = true
+axum.workspace = true
+axum-client-ip.workspace = true
+envy.workspace = true
+hex.workspace = true
+pbkdf2.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+snafu.workspace = true
+tokio.workspace = true
+tracing.workspace = true

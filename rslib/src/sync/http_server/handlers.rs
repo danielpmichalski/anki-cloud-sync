@@ -36,7 +36,6 @@ use crate::sync::collection::upload::UploadResponse;
 use crate::sync::error::HttpResult;
 use crate::sync::error::OrHttpErr;
 use crate::sync::http_server::SimpleServer;
-use crate::sync::http_server::SyncMode;
 use crate::sync::login::HostKeyRequest;
 use crate::sync::login::HostKeyResponse;
 use crate::sync::media;
@@ -152,32 +151,14 @@ impl SyncProtocol for Arc<SimpleServer> {
         req: SyncRequest<EmptyInput>,
     ) -> HttpResult<SyncResponse<TimestampMillis>> {
         self.with_authenticated_user(req, |user, req| {
-            use sync_storage_backends::StorageBackendFactory;
-
             let _ = req.json()?;
             let now = user.with_sync_state(req.skey()?, |col, _state| server_finish(col))?;
             user.sync_state = None;
             let col_path = user.folder.join("collection.anki2");
-            let backend = match user.mode {
-                SyncMode::Standalone => StorageBackendFactory::create("local", "")
-                    .or_internal_err("create local backend")?,
-                SyncMode::Cloud => {
-                    use sync_storage_config as db;
-                    let (provider, refresh_token) = db::fetch_storage_connection(&user.name)
-                        .or_internal_err("lookup storage connection")?;
-                    let access_token = if provider == "local" {
-                        String::new()
-                    } else {
-                        tokio::task::block_in_place(|| {
-                            tokio::runtime::Handle::current()
-                                .block_on(db::exchange_refresh_token(&refresh_token))
-                        })
-                        .or_internal_err("exchange refresh token")?
-                    };
-                    StorageBackendFactory::create(&provider, &access_token)
-                        .or_internal_err("create storage backend")?
-                }
-            };
+            let backend = user
+                .backend_resolver
+                .resolve_for_user(&user.name)
+                .or_internal_err("resolve storage backend")?;
             backend
                 .commit(&user.name, &col_path)
                 .or_internal_err("commit collection to storage")?;
@@ -197,33 +178,15 @@ impl SyncProtocol for Arc<SimpleServer> {
 
     async fn upload(&self, req: SyncRequest<Vec<u8>>) -> HttpResult<SyncResponse<UploadResponse>> {
         self.with_authenticated_user(req, |user, req| {
-            use sync_storage_backends::StorageBackendFactory;
-
             user.abort_stateful_sync_if_active();
             user.ensure_col_open()?;
             let resp = handle_received_upload(&mut user.col, req.data)
                 .map(SyncResponse::from_upload_response)?;
             let col_path = user.folder.join("collection.anki2");
-            let backend = match user.mode {
-                SyncMode::Standalone => StorageBackendFactory::create("local", "")
-                    .or_internal_err("create local backend")?,
-                SyncMode::Cloud => {
-                    use sync_storage_config as db;
-                    let (provider, refresh_token) = db::fetch_storage_connection(&user.name)
-                        .or_internal_err("lookup storage connection")?;
-                    let access_token = if provider == "local" {
-                        String::new()
-                    } else {
-                        tokio::task::block_in_place(|| {
-                            tokio::runtime::Handle::current()
-                                .block_on(db::exchange_refresh_token(&refresh_token))
-                        })
-                        .or_internal_err("exchange refresh token")?
-                    };
-                    StorageBackendFactory::create(&provider, &access_token)
-                        .or_internal_err("create storage backend")?
-                }
-            };
+            let backend = user
+                .backend_resolver
+                .resolve_for_user(&user.name)
+                .or_internal_err("resolve storage backend")?;
             backend
                 .commit(&user.name, &col_path)
                 .or_internal_err("commit collection to storage")?;
