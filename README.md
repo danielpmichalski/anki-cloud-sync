@@ -299,7 +299,8 @@ Every request must carry two headers:
 
 ### Data freshness
 
-The internal API reads from a local `.anki2` file at `SYNC_BASE/<email>/collection.anki2`. This file is downloaded from cloud storage when an Anki client opens a sync session (`open_collection` → `backend.fetch()`), and uploaded back when the session closes (`backend.commit()`). Between syncs the local file is not refreshed.
+The internal API reads from a local `.anki2` file at `SYNC_BASE/<email>/collection.anki2`. This file is downloaded from cloud storage when an Anki client opens a sync session (`open_collection` → `backend.fetch()`), and
+uploaded back when the session closes (`backend.commit()`). Between syncs the local file is not refreshed.
 
 Consequences:
 
@@ -352,6 +353,10 @@ Tags follow `v<anki-version>-r<revision>` (e.g. `v25.09-r1`).
 
 The Anki version prefix signals sync protocol compatibility. `-rX` is our revision counter for changes layered on top of that upstream base — it resets to `-r1` whenever the upstream Anki version changes. This avoids
 collisions with Anki's own patch versions (`25.09`, `25.09.1`, `25.09.2`, …).
+
+**Releases are automated.** Merging a PR to `main` with at least one `feat:`, `fix:`, or `perf:` commit triggers `.github/workflows/auto-tag.yml`, which reads `.version`, finds the latest matching tag, increments the
+revision, and pushes the new tag. The `release.yml` workflow then fires on that tag to build and publish the Docker image and create a GitHub release. `chore:`, `docs:`, `refactor:`, and similar commit types do not
+trigger a release.
 
 | Docker image tag                                     | Anki client version |
 |------------------------------------------------------|---------------------|
@@ -411,10 +416,7 @@ cargo test -p sync-storage-config -p sync-storage-backends -p sync-storage-serve
 
 All tests must pass before tagging.
 
-### Step 5 — tag the new release
+### Step 5 — merge and let automation tag
 
-```bash
-# example: upgrading to Anki 25.12
-git tag v25.12-r1
-git push origin v25.12-r1
-```
+Use a `feat:` commit type for the upgrade PR (e.g. `feat: upgrade to anki 25.12`). When the PR merges to `main`, the auto-tag workflow reads the updated `.version` file, finds no existing tags for the new Anki version,
+and creates `v25.12-r1` automatically.
