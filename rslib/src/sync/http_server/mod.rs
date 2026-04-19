@@ -91,6 +91,8 @@ pub struct SyncServerConfig {
     pub ip_header: ClientIpSource,
     #[serde(default = "default_internal_port")]
     pub internal_port: u16,
+    #[serde(default = "default_internal_host")]
+    pub internal_host: IpAddr,
     #[serde(default)]
     pub internal_token: Option<String>,
     #[serde(default)]
@@ -99,6 +101,10 @@ pub struct SyncServerConfig {
 
 fn default_internal_port() -> u16 {
     8081
+}
+
+fn default_internal_host() -> IpAddr {
+    "127.0.0.1".parse().unwrap()
 }
 
 fn default_host() -> IpAddr {
@@ -375,7 +381,8 @@ impl SimpleServer {
         if let Some(token) = config.internal_token.clone() {
             let internal = internal_server::InternalServer::new(Arc::clone(&server), token);
             let port = config.internal_port;
-            tokio::spawn(async move { internal.run(port).await });
+            let host = config.internal_host;
+            tokio::spawn(async move { internal.run(host, port).await });
         }
         let address = &format!("{}:{}", config.host, config.port);
         let listener = TcpListener::bind(address)

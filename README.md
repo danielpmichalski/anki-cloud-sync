@@ -107,12 +107,15 @@ docker run \
 
 ### Environment variables
 
-| Variable     | Default         | Description                                                    |
-|--------------|-----------------|----------------------------------------------------------------|
-| `SYNC_BASE`  | `~/.syncserver` | Directory for temporary user collection files during sync      |
-| `SYNC_HOST`  | `0.0.0.0`       | Bind address                                                   |
-| `SYNC_PORT`  | `8080`          | Bind port                                                      |
-| `SYNC_USER1` | —               | `username:password` — repeat for `SYNC_USER2`, `SYNC_USER3`, … |
+| Variable              | Default         | Description                                                                             |
+|-----------------------|-----------------|-----------------------------------------------------------------------------------------|
+| `SYNC_BASE`           | `~/.syncserver` | Directory for temporary user collection files during sync                               |
+| `SYNC_HOST`           | `0.0.0.0`       | Bind address for the Anki sync protocol                                                 |
+| `SYNC_PORT`           | `8080`          | Port for the Anki sync protocol                                                         |
+| `SYNC_USER1`          | —               | `username:password` — repeat for `SYNC_USER2`, `SYNC_USER3`, …                          |
+| `SYNC_INTERNAL_HOST`  | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                       |
+| `SYNC_INTERNAL_PORT`  | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                      |
+| `SYNC_INTERNAL_TOKEN` | —               | Bearer token required on every internal API request; if unset, internal API is disabled |
 
 ### Authentication
 
@@ -167,8 +170,11 @@ docker run \
 | `GOOGLE_CLIENT_ID`     | —               | Google OAuth2 client ID — used to exchange refresh tokens for fresh access tokens            |
 | `GOOGLE_CLIENT_SECRET` | —               | Google OAuth2 client secret                                                                  |
 | `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
-| `SYNC_HOST`            | `0.0.0.0`       | Bind address                                                                                 |
-| `SYNC_PORT`            | `8080`          | Bind port                                                                                    |
+| `SYNC_HOST`            | `0.0.0.0`       | Bind address for the Anki sync protocol                                                      |
+| `SYNC_PORT`            | `8080`          | Port for the Anki sync protocol                                                              |
+| `SYNC_INTERNAL_HOST`   | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                            |
+| `SYNC_INTERNAL_PORT`   | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                           |
+| `SYNC_INTERNAL_TOKEN`  | —               | Bearer token required on every internal API request; if unset, internal API is disabled      |
 
 ### Authentication
 
@@ -196,6 +202,61 @@ On each sync operation that requires storage access (open, finish, upload), the 
 4. Passes the access token to `StorageBackendFactory` to create the appropriate backend
 
 This makes each sync server instance stateless — no per-user config in memory, safe to run behind a load balancer.
+
+## Internal API
+
+When `SYNC_INTERNAL_TOKEN` is set, the server exposes a second HTTP listener on `SYNC_INTERNAL_PORT` (default `8081`). This API lets the rest of the platform (e.g. the anki-cloud REST API) read and write deck/note data
+without going through the Anki sync protocol.
+
+Every request must carry two headers:
+
+| Header             | Value                               |
+|--------------------|-------------------------------------|
+| `X-Internal-Token` | value of `SYNC_INTERNAL_TOKEN`      |
+| `X-User-Email`     | email address of the user to act as |
+
+### Endpoints
+
+| Method   | Path                                 | Description                            |
+|----------|--------------------------------------|----------------------------------------|
+| `GET`    | `/internal/v1/decks`                 | List decks (paginated)                 |
+| `POST`   | `/internal/v1/decks`                 | Create a deck                          |
+| `GET`    | `/internal/v1/decks/{id}`            | Get a deck by ID                       |
+| `DELETE` | `/internal/v1/decks/{id}`            | Delete a deck                          |
+| `GET`    | `/internal/v1/decks/{id}/notes`      | List notes in a deck (paginated)       |
+| `POST`   | `/internal/v1/decks/{id}/notes`      | Create a single note                   |
+| `POST`   | `/internal/v1/decks/{id}/notes/bulk` | Create multiple notes in one request   |
+| `GET`    | `/internal/v1/notes/search`          | Search notes by Anki query (paginated) |
+| `GET`    | `/internal/v1/notes/{id}`            | Get a note by ID                       |
+| `PUT`    | `/internal/v1/notes/{id}`            | Update a note                          |
+| `DELETE` | `/internal/v1/notes/{id}`            | Delete a note                          |
+
+### Pagination
+
+List and search endpoints accept:
+
+| Query param | Default | Max    | Description                              |
+|-------------|---------|--------|------------------------------------------|
+| `limit`     | `100`   | `1000` | Number of items to return                |
+| `cursor`    | —       | —      | Opaque string from previous `nextCursor` |
+
+Responses include `"nextCursor": "<string>"` (or `null` when no more pages).
+
+### Example
+
+```bash
+# List decks (first page)
+curl -s "http://localhost:8081/internal/v1/decks?limit=10" \
+  -H "X-Internal-Token: $SYNC_INTERNAL_TOKEN" \
+  -H "X-User-Email: alice@example.com"
+
+# Bulk-create notes in deck 1234567890
+curl -s -X POST "http://localhost:8081/internal/v1/decks/1234567890/notes/bulk" \
+  -H "X-Internal-Token: $SYNC_INTERNAL_TOKEN" \
+  -H "X-User-Email: alice@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{"notes":[{"fields":{"Front":"Q","Back":"A"},"tags":[]}]}'
+```
 
 ## Test
 

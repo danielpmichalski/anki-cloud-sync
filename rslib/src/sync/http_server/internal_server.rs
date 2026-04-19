@@ -1,6 +1,7 @@
 // Copyright: Ankitects Pty Ltd and contributors
 // License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
+use std::net::IpAddr;
 use std::sync::Arc;
 
 use axum::extract::Request;
@@ -27,7 +28,7 @@ impl InternalServer {
         Self { server, token }
     }
 
-    pub async fn run(self, port: u16) {
+    pub async fn run(self, host: IpAddr, port: u16) {
         let token = self.token.clone();
         let app = Router::new()
             .route(
@@ -62,7 +63,7 @@ impl InternalServer {
             }))
             .with_state(self.server);
 
-        let addr = format!("127.0.0.1:{port}");
+        let addr = format!("{host}:{port}");
         let listener = TcpListener::bind(&addr).await.unwrap();
         tracing::info!("internal sidecar listening on {addr}");
         axum::serve(listener, app).await.unwrap();
