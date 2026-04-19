@@ -493,3 +493,53 @@ pub async fn delete_note(
         Err(e) => err_response(e.code, e).into_response(),
     }
 }
+
+// ---- Note types (read-only: with_col) ----
+
+pub async fn list_note_types(
+    State(server): State<Arc<SimpleServer>>,
+    headers: HeaderMap,
+) -> impl IntoResponse {
+    let email = user_email(&headers).to_string();
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
+            let notetypes = col.get_all_notetypes().or_internal_err("list note types")?;
+            let note_types: Vec<Value> = notetypes
+                .iter()
+                .map(|nt| {
+                    let fields: Vec<String> =
+                        nt.fields.iter().map(|f| f.name.clone()).collect();
+                    json!({"id": nt.id.0.to_string(), "name": nt.name, "fields": fields})
+                })
+                .collect();
+            Ok(note_types)
+        })
+    });
+    match result {
+        Ok(note_types) => Json(json!({"noteTypes": note_types})).into_response(),
+        Err(e) => err_response(e.code, e).into_response(),
+    }
+}
+
+pub async fn get_note_type(
+    State(server): State<Arc<SimpleServer>>,
+    headers: HeaderMap,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
+    let email = user_email(&headers).to_string();
+    let result = with_user(&server, &email, |handle| {
+        handle.with_col(|col| {
+            col.get_notetype(NotetypeId(id))
+                .or_internal_err("get note type")
+        })
+    });
+    match result {
+        Ok(Some(nt)) => {
+            let fields: Vec<String> = nt.fields.iter().map(|f| f.name.clone()).collect();
+            Json(json!({"id": nt.id.0.to_string(), "name": nt.name, "fields": fields}))
+                .into_response()
+        }
+        Ok(None) => err_response(StatusCode::NOT_FOUND, "note type not found").into_response(),
+        Err(e) => err_response(e.code, e).into_response(),
+    }
+}

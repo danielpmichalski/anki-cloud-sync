@@ -53,6 +53,14 @@ impl InternalServer {
                     .put(handlers::update_note)
                     .delete(handlers::delete_note),
             )
+            .route(
+                "/internal/v1/note-types",
+                get(handlers::list_note_types),
+            )
+            .route(
+                "/internal/v1/note-types/{id}",
+                get(handlers::get_note_type),
+            )
             .layer(middleware::from_fn(move |req, next| {
                 let token = token.clone();
                 validate_token(req, next, token)
