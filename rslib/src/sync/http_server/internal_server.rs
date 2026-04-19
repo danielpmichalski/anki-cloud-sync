@@ -35,15 +35,15 @@ impl InternalServer {
                 get(internal_handlers::list_decks).post(internal_handlers::create_deck),
             )
             .route(
-                "/internal/v1/decks/:id",
+                "/internal/v1/decks/{id}",
                 get(internal_handlers::get_deck).delete(internal_handlers::delete_deck),
             )
             .route(
-                "/internal/v1/decks/:id/notes",
+                "/internal/v1/decks/{id}/notes",
                 get(internal_handlers::list_notes).post(internal_handlers::create_note),
             )
             .route(
-                "/internal/v1/decks/:id/notes/bulk",
+                "/internal/v1/decks/{id}/notes/bulk",
                 post(internal_handlers::bulk_create_notes),
             )
             .route(
@@ -51,7 +51,7 @@ impl InternalServer {
                 get(internal_handlers::search_notes),
             )
             .route(
-                "/internal/v1/notes/:id",
+                "/internal/v1/notes/{id}",
                 get(internal_handlers::get_note)
                     .put(internal_handlers::update_note)
                     .delete(internal_handlers::delete_note),
