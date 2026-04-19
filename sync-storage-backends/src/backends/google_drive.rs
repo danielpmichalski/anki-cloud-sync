@@ -8,7 +8,6 @@ use serde_json::{json, Value};
 use sync_storage_api::StorageBackend;
 use tokio::fs;
 
-const ANKI_FOLDER_NAME: &str = "AnkiSync";
 const COLLECTION_FILE_NAME: &str = "collection.anki2";
 const CHUNK_SIZE: usize = 256 * 1024; // 256 KB per research doc
 const DRIVE_FILES_URL: &str = "https://www.googleapis.com/drive/v3/files";
@@ -16,14 +15,16 @@ const DRIVE_UPLOAD_URL: &str = "https://www.googleapis.com/upload/drive/v3/files
 
 pub struct GoogleDriveBackend {
     oauth_token: String,
+    folder_name: String,
     files_base_url: String,
     upload_base_url: String,
 }
 
 impl GoogleDriveBackend {
-    pub fn new(oauth_token: impl Into<String>) -> Self {
+    pub fn new(oauth_token: impl Into<String>, folder_path: impl AsRef<str>) -> Self {
         Self {
             oauth_token: oauth_token.into(),
+            folder_name: folder_path.as_ref().trim_start_matches('/').to_string(),
             files_base_url: DRIVE_FILES_URL.to_string(),
             upload_base_url: DRIVE_UPLOAD_URL.to_string(),
         }
@@ -32,11 +33,13 @@ impl GoogleDriveBackend {
     #[cfg(test)]
     pub fn with_base_urls(
         oauth_token: impl Into<String>,
+        folder_path: impl AsRef<str>,
         files_url: String,
         upload_url: String,
     ) -> Self {
         Self {
             oauth_token: oauth_token.into(),
+            folder_name: folder_path.as_ref().trim_start_matches('/').to_string(),
             files_base_url: files_url,
             upload_base_url: upload_url,
         }
@@ -63,7 +66,7 @@ impl GoogleDriveBackend {
         let client = reqwest::Client::new();
         let query = format!(
             "name='{}' and mimeType='application/vnd.google-apps.folder' and trashed=false",
-            ANKI_FOLDER_NAME
+            self.folder_name
         );
 
         let response = client
@@ -96,7 +99,7 @@ impl GoogleDriveBackend {
             .post(&self.files_base_url)
             .headers(self.auth_header())
             .json(&json!({
-                "name": ANKI_FOLDER_NAME,
+                "name": self.folder_name,
                 "mimeType": "application/vnd.google-apps.folder"
             }))
             .send()
@@ -326,7 +329,7 @@ mod tests {
         let folder_response = json!({
             "files": [{
                 "id": "folder-123",
-                "name": ANKI_FOLDER_NAME
+                "name": "AnkiCloudSync"
             }]
         });
 
@@ -338,6 +341,7 @@ mod tests {
 
         let backend = GoogleDriveBackend::with_base_urls(
             "test-token",
+            "/AnkiCloudSync",
             format!("{}/drive/v3/files", mock_server.uri()),
             format!("{}/upload/drive/v3/files", mock_server.uri()),
         );
@@ -364,6 +368,7 @@ mod tests {
 
         let backend = GoogleDriveBackend::with_base_urls(
             "test-token",
+            "/AnkiCloudSync",
             format!("{}/drive/v3/files", mock_server.uri()),
             format!("{}/upload/drive/v3/files", mock_server.uri()),
         );
@@ -385,6 +390,7 @@ mod tests {
 
         let backend = GoogleDriveBackend::with_base_urls(
             "test-token",
+            "/AnkiCloudSync",
             format!("{}/drive/v3/files", mock_server.uri()),
             format!("{}/upload/drive/v3/files", mock_server.uri()),
         );

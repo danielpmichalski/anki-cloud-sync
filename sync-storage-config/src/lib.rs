@@ -59,8 +59,8 @@ fn db_path() -> Result<String> {
 }
 
 /// Look up storage_connections for the given user (matched by email).
-/// Returns (provider, plaintext_refresh_token).
-pub fn fetch_storage_connection(username: &str) -> Result<(String, String)> {
+/// Returns (provider, plaintext_refresh_token, folder_path).
+pub fn fetch_storage_connection(username: &str) -> Result<(String, String, String)> {
     let path = db_path()?;
 
     let conn = rusqlite::Connection::open_with_flags(
@@ -69,20 +69,20 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String)> {
     )
     .with_context(|| format!("open SQLite at {path}"))?;
 
-    let (provider, encrypted_refresh): (String, Option<String>) = conn
+    let (provider, encrypted_refresh, folder_path): (String, Option<String>, String) = conn
         .query_row(
-            "SELECT sc.provider, sc.oauth_refresh_token \
+            "SELECT sc.provider, sc.oauth_refresh_token, sc.folder_path \
              FROM storage_connections sc \
              JOIN users u ON u.id = sc.user_id \
              WHERE u.email = ?1 \
              LIMIT 1",
             rusqlite::params![username],
-            |row| Ok((row.get(0)?, row.get(1)?)),
+            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
         )
         .with_context(|| format!("no storage connection found for user '{username}'"))?;
 
     if provider == "local" {
-        return Ok((provider, String::new()));
+        return Ok((provider, String::new(), folder_path));
     }
 
     let enc_key = load_enc_key()?;
@@ -90,7 +90,7 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String)> {
         &encrypted_refresh.ok_or_else(|| anyhow!("missing oauth_refresh_token"))?,
         &enc_key,
     )?;
-    Ok((provider, refresh_token))
+    Ok((provider, refresh_token, folder_path))
 }
 
 // ── Sync credential auth ──────────────────────────────────────────────────────
