@@ -10,6 +10,7 @@ use axum::middleware::Next;
 use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::routing::get;
+use axum::routing::post;
 use axum::Router;
 use tokio::net::TcpListener;
 
@@ -40,6 +41,10 @@ impl InternalServer {
             .route(
                 "/internal/v1/decks/:id/notes",
                 get(internal_handlers::list_notes).post(internal_handlers::create_note),
+            )
+            .route(
+                "/internal/v1/decks/:id/notes/bulk",
+                post(internal_handlers::bulk_create_notes),
             )
             .route(
                 "/internal/v1/notes/search",
