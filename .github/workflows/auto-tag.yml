@@ -1,0 +1,64 @@
+name: Auto Tag
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if HEAD already tagged
+        id: already_tagged
+        run: |
+          if git tag --points-at HEAD | grep -q .; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for releasable commits
+        id: check_commits
+        if: steps.already_tagged.outputs.skip == 'false'
+        run: |
+          LAST_TAG=$(git tag --sort=-version:refname | head -1)
+          if [ -z "$LAST_TAG" ]; then
+            SUBJECTS=$(git log --format=%s)
+          else
+            SUBJECTS=$(git log "${LAST_TAG}..HEAD" --format=%s)
+          fi
+          if echo "$SUBJECTS" | grep -qE "^(feat|fix|perf)(\(.*\))?!?:"; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compute next tag
+        id: next_tag
+        if: steps.check_commits.outputs.should_release == 'true'
+        run: |
+          ANKI_VERSION=$(cat .version)
+          PREFIX="v${ANKI_VERSION}-r"
+          LATEST=$(git tag --list "${PREFIX}*" --sort=-version:refname | head -1)
+          if [ -z "$LATEST" ]; then
+            NEXT_REV=1
+          else
+            CURRENT_REV=$(echo "$LATEST" | sed "s/${PREFIX}//")
+            NEXT_REV=$((CURRENT_REV + 1))
+          fi
+          echo "tag=${PREFIX}${NEXT_REV}" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        if: steps.check_commits.outputs.should_release == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.next_tag.outputs.tag }}
+          git push origin ${{ steps.next_tag.outputs.tag }}
