@@ -347,7 +347,7 @@ To run only the sync-storage-config tests:
 cargo test -p sync-storage-config
 ```
 
-## Versioning
+## Versioning 
 
 Tags follow `v<anki-version>-r<revision>` (e.g. `v25.09-r1`).
 
