@@ -58,7 +58,7 @@ fn db_path() -> Result<String> {
     Ok(path)
 }
 
-/// Look up storage_connection for the given user (matched by email).
+/// Look up user_storage_connection for the given user (matched by email).
 /// Returns (provider, plaintext_refresh_token, folder_path).
 pub fn fetch_storage_connection(username: &str) -> Result<(String, String, String)> {
     let path = db_path()?;
@@ -72,7 +72,7 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String, Strin
     let (provider, encrypted_refresh, folder_path): (String, Option<String>, String) = conn
         .query_row(
             "SELECT sc.provider, sc.oauth_refresh_token, sc.folder_path \
-             FROM storage_connection sc \
+             FROM user_storage_connection sc \
              JOIN user u ON u.id = sc.user_id \
              WHERE u.email = ?1 \
              LIMIT 1",
