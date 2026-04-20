@@ -10,7 +10,33 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  wait-for-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+    steps:
+      - name: Wait for CI checks
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          SHA="${{ github.sha }}"
+          REPO="${{ github.repository }}"
+          for i in $(seq 1 30); do
+            RESULT=$(gh api "repos/$REPO/commits/$SHA/check-runs" \
+              --jq '[.check_runs[] | select(.name == "build-and-test" or .name == "docker-smoke-test")] |
+                    if length < 2 then "pending"
+                    elif all(.status == "completed") then
+                      if all(.conclusion == "success") then "success" else "failure" end
+                    else "pending" end')
+            echo "Attempt $i: $RESULT"
+            if [ "$RESULT" = "success" ]; then exit 0; fi
+            if [ "$RESULT" = "failure" ]; then echo "CI failed — aborting release"; exit 1; fi
+            sleep 30
+          done
+          echo "Timed out waiting for CI"; exit 1
+
   publish:
+    needs: wait-for-ci
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,7 +50,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_PAT }}
 
       - name: Extract metadata
         id: meta
