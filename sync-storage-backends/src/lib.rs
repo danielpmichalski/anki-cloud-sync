@@ -12,7 +12,7 @@ impl StorageBackendFactory {
     /// `provider` matches `storage_connections.provider` in SQLite.
     pub fn create(provider: &str, oauth_token: &str, folder_path: &str) -> Result<Box<dyn StorageBackend>> {
         match provider {
-            "gdrive" => Ok(Box::new(GoogleDriveBackend::new(oauth_token, folder_path))),
+            "google" => Ok(Box::new(GoogleDriveBackend::new(oauth_token, folder_path))),
             "local" => Ok(Box::new(LocalBackend)),
             _ => Err(anyhow!("unknown storage provider: {provider}")),
         }
