@@ -58,7 +58,7 @@ fn db_path() -> Result<String> {
     Ok(path)
 }
 
-/// Look up storage_connections for the given user (matched by email).
+/// Look up user_storage_connection for the given user (matched by email).
 /// Returns (provider, plaintext_refresh_token, folder_path).
 pub fn fetch_storage_connection(username: &str) -> Result<(String, String, String)> {
     let path = db_path()?;
@@ -72,8 +72,8 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String, Strin
     let (provider, encrypted_refresh, folder_path): (String, Option<String>, String) = conn
         .query_row(
             "SELECT sc.provider, sc.oauth_refresh_token, sc.folder_path \
-             FROM storage_connections sc \
-             JOIN users u ON u.id = sc.user_id \
+             FROM user_storage_connection sc \
+             JOIN user u ON u.id = sc.user_id \
              WHERE u.email = ?1 \
              LIMIT 1",
             rusqlite::params![username],
@@ -97,7 +97,7 @@ pub fn fetch_storage_connection(username: &str) -> Result<(String, String, Strin
 
 const DUMMY_HASH: &str = "$2b$10$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-/// Verify email + plaintext sync password against users.sync_password_hash (bcrypt).
+/// Verify email + plaintext sync password against user_sync_config.sync_password_hash (bcrypt).
 /// Timing-safe: always runs a bcrypt compare, even for unknown users or null hashes.
 pub fn verify_sync_credentials(email: &str, password: &str) -> Result<()> {
     let path = db_path()?;
@@ -109,12 +109,15 @@ pub fn verify_sync_credentials(email: &str, password: &str) -> Result<()> {
 
     let hash: Option<String> = conn
         .query_row(
-            "SELECT sync_password_hash FROM users WHERE email = ?1 LIMIT 1",
+            "SELECT usc.sync_password_hash \
+             FROM user_sync_config usc \
+             JOIN user u ON u.id = usc.user_id \
+             WHERE u.email = ?1 LIMIT 1",
             rusqlite::params![email],
             |row| row.get(0),
         )
         .optional()
-        .context("query users")?
+        .context("query user_sync_config")?
         .flatten();
 
     let hash_to_verify = hash.as_deref().unwrap_or(DUMMY_HASH);
@@ -126,7 +129,7 @@ pub fn verify_sync_credentials(email: &str, password: &str) -> Result<()> {
     Ok(())
 }
 
-/// Upsert hkey into users_sync_state.sync_key for the user with this email.
+/// Upsert hkey into user_sync_state.sync_key for the user with this email.
 pub fn store_sync_key(email: &str, hkey: &str) -> Result<()> {
     let path = db_path()?;
     let conn = rusqlite::Connection::open_with_flags(
@@ -136,9 +139,9 @@ pub fn store_sync_key(email: &str, hkey: &str) -> Result<()> {
     .with_context(|| format!("open SQLite at {path}"))?;
 
     conn.execute(
-        "INSERT INTO users_sync_state (id, user_id, sync_key)
+        "INSERT INTO user_sync_state (id, user_id, sync_key)
          SELECT lower(hex(randomblob(16))), u.id, ?2
-         FROM users u WHERE u.email = ?1
+         FROM user u WHERE u.email = ?1
          ON CONFLICT (user_id) DO UPDATE SET sync_key = excluded.sync_key",
         rusqlite::params![email, hkey],
     )
@@ -147,7 +150,7 @@ pub fn store_sync_key(email: &str, hkey: &str) -> Result<()> {
     Ok(())
 }
 
-/// Reverse-lookup: find the user's email from hkey stored in users_sync_state.sync_key.
+/// Reverse-lookup: find the user's email from hkey stored in user_sync_state.sync_key.
 pub fn lookup_user_by_sync_key(hkey: &str) -> Result<String> {
     let path = db_path()?;
     let conn = rusqlite::Connection::open_with_flags(
@@ -158,8 +161,8 @@ pub fn lookup_user_by_sync_key(hkey: &str) -> Result<String> {
 
     let email: String = conn
         .query_row(
-            "SELECT u.email FROM users u
-             JOIN users_sync_state s ON s.user_id = u.id
+            "SELECT u.email FROM user u
+             JOIN user_sync_state s ON s.user_id = u.id
              WHERE s.sync_key = ?1 LIMIT 1",
             rusqlite::params![hkey],
             |row| row.get(0),

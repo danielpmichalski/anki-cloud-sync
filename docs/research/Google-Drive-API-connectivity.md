@@ -33,7 +33,7 @@ Refresh tokens are automatically invalidated if:
 
 ## 2. Core Drive API Operations
 
-Your `/AnkiSync/` folder will use these REST endpoints:
+Your `/AnkiCloudSync` folder will use these REST endpoints:
 
 ### Reading Collection Files
 
@@ -118,7 +118,7 @@ GET /drive/v3/files/{fileId}/revisions  ← version history
 - **Security:** Limits blast radius if your OAuth credentials leak
 - **User trust:** Minimal consent screen, clear intent
 - **Faster deployment:** No restricted scope verification needed
-- **Sufficient for MVP:** You create `/AnkiSync/` on first connect; all deck data lives there
+- **Sufficient for MVP:** You create `/AnkiCloudSync` on first connect; all deck data lives there
 
 ---
 
@@ -126,13 +126,13 @@ GET /drive/v3/files/{fileId}/revisions  ← version history
 
 Your sync server must handle these hard constraints:
 
-| Limit             | Value                                          | Handling Strategy                                      |
-|-------------------|------------------------------------------------|--------------------------------------------------------|
-| **Query quota**   | 12,000 per 60 seconds (per-user + per-project) | Spread syncs with request coalescing; batch operations |
-| **Write limit**   | 3 requests/second sustained per account        | Queue heavy syncs; batch collection updates            |
-| **Daily upload**  | 750 GB/24h hard cap                            | Monitor media usage; document as limitation for MVP    |
-| **Folder items**  | 500,000 files per folder                       | Not an issue (single collection file per `/AnkiSync/`) |
-| **Per-file size** | 5 TB max                                       | Not an issue for Anki collections                      |
+| Limit             | Value                                          | Handling Strategy                                          |
+|-------------------|------------------------------------------------|------------------------------------------------------------|
+| **Query quota**   | 12,000 per 60 seconds (per-user + per-project) | Spread syncs with request coalescing; batch operations     |
+| **Write limit**   | 3 requests/second sustained per account        | Queue heavy syncs; batch collection updates                |
+| **Daily upload**  | 750 GB/24h hard cap                            | Monitor media usage; document as limitation for MVP        |
+| **Folder items**  | 500,000 files per folder                       | Not an issue (single collection file per `/AnkiCloudSync`) |
+| **Per-file size** | 5 TB max                                       | Not an issue for Anki collections                          |
 
 ### Error Responses
 
@@ -226,12 +226,12 @@ where:
 
 ---
 
-## 7. GDrive Folder Structure for /AnkiSync/
+## 7. Google Drive Folder Structure for /AnkiCloudSync
 
 Based on the MVP design:
 
 ```
-/AnkiSync/
+/AnkiCloudSync
 ├── collection.anki2       ← Main collection file (the deck database)
 ├── backups/
 │   ├── collection.anki2.backup.20260418.153000
@@ -241,7 +241,7 @@ Based on the MVP design:
 
 **Folder creation:**
 
-- Create `/AnkiSync/` on first GDrive connection
+- Create `/AnkiCloudSync` on first Google Drive connection
 - Use `mimeType=application/vnd.google-apps.folder` in Drive API
 - Set folder metadata (created by app for easy identification)
 
@@ -291,7 +291,7 @@ Build these into your storage adapter layer:
 1. OAuth2 token refresh (proactive + reactive)
 2. Resumable upload for collection files
 3. Exponential backoff on rate limit errors
-4. Create `/AnkiSync/` folder on first connect
+4. Create `/AnkiCloudSync` folder on first connect
 5. Read/write single collection.anki2 file
 
 ### Nice-to-Have for MVP
@@ -320,7 +320,7 @@ Build these into your storage adapter layer:
 ### Integration Tests (requires Drive sandbox/test account)
 
 - End-to-end OAuth flow
-- Create `/AnkiSync/` folder
+- Create `/AnkiCloudSync` folder
 - Write and read collection.anki2
 - Simulate 403/429 errors → verify backoff
 - Simulate token expiry → verify refresh
