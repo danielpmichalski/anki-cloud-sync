@@ -80,17 +80,17 @@ Copy your `user_id` — you'll need it for curl-based tests below.
 Log in at `http://localhost:3000/v1/auth/google` in your browser.
 Copy the `session` cookie value from DevTools → Application → Cookies → `localhost`.
 
-### 4. GDrive connected (for full Anki sync)
+### 4. Google Drive connected (for full Anki sync)
 
-Complete the GDrive connect flow if you haven't already, or the sync server will fail when
+Complete the Google Drive connect flow if you haven't already, or the sync server will fail when
 Anki tries to fetch/commit the collection.
 
-For a **local storage** quick test (no GDrive needed):
+For a **local storage** quick test (no Google Drive needed):
 
 ```bash
 sqlite3 data/anki-cloud.db "
 INSERT INTO storage_connections (id, user_id, provider, oauth_token, oauth_refresh_token, folder_path)
-VALUES (lower(hex(randomblob(16))), '<your-user-id>', 'local', '', NULL, '/AnkiSync');
+VALUES (lower(hex(randomblob(16))), '<your-user-id>', 'local', '', NULL, '/AnkiCloudSync');
 "
 ```
 
@@ -125,6 +125,7 @@ curl http://localhost:3000/v1/me/sync-password \
 ```
 
 **Expected:**
+
 ```json
 {
   "username": "you@gmail.com",
@@ -145,6 +146,7 @@ curl http://localhost:3000/v1/me/sync-password \
 ```
 
 **Expected:**
+
 ```json
 {
   "username": "you@gmail.com",
@@ -174,6 +176,7 @@ sqlite3 data/anki-cloud.db \
 3. Scroll to **Sync Password** section
 
 If password was just generated (Tests 2-3 above already called the endpoint):
+
 - Shows **masked** display + **Reset sync password** button
 - Shows **username** (your email) with copy button
 - Shows instructions: _"Enter this username and password in Anki → Preferences → Syncing"_
@@ -190,11 +193,11 @@ To see the reveal banner:
 1. Open **Anki Desktop**
 2. **Tools → Preferences → Syncing** (on Mac: **Anki → Preferences → Syncing**)
 3. Set:
-   - **Self-hosted sync server:** `http://localhost:27701`
-   - Click **OK** and **restart Anki** when prompted
+    - **Self-hosted sync server:** `http://localhost:27701`
+    - Click **OK** and **restart Anki** when prompted
 4. After restart, Anki will ask for login credentials:
-   - **Username:** your email (e.g. `you@gmail.com`)
-   - **Password:** the sync password from Test 2
+    - **Username:** your email (e.g. `you@gmail.com`)
+    - **Password:** the sync password from Test 2
 
 ---
 
@@ -253,6 +256,7 @@ curl -s -X POST http://localhost:3000/v1/me/sync-password/reset \
 ```
 
 **Expected:**
+
 ```json
 {
   "username": "you@gmail.com",
@@ -304,6 +308,7 @@ This tests that the in-memory session map is rebuilt from DB after a restart.
 
 Sync server logs should show the `with_authenticated_user` path completing via DB lookup
 (no `hostKey` request — Anki reuses the cached hkey):
+
 ```
 request{uri="/sync/meta"} finished httpstatus=200
 ```
@@ -385,7 +390,7 @@ Check sync server logs for the `source` field. Common causes:
 Ensure you're logged in and the API server is running. Open DevTools → Network and check
 that `GET /v1/me/sync-password` returns `200` (not `401`).
 
-### GDrive sync fails after local storage insert
+### Google Drive sync fails after local storage insert
 
 Ensure the `provider` value is exactly `local` (lowercase) in the `storage_connections` row.
 
@@ -393,6 +398,5 @@ Ensure the `provider` value is exactly `local` (lowercase) in the `storage_conne
 
 ## See Also
 
-- [E2E Testing: Google OAuth2 Login + GDrive Connection](./e2e-testing-auth-and-gdrive-connect.md)
-- [E2E Testing: GDrive Sync Integration](./e2e-testing-gdrive-sync.md)
+- [E2E Testing: Google Drive Sync Integration](./e2e-testing-gdrive-sync.md)
 - [ADR-0003: Fork Rust Ankitects Sync Server](../decisions/0003-fork-rust-ankitects-sync-server.md)

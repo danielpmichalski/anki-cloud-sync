@@ -139,14 +139,14 @@ File-based, not transactional. Files identified by hash — immutable once creat
 
 ## Fork Strategy — Storage Abstraction
 
-SQLite **must be local** during an active sync (random access, WAL, locks). GDrive I/O cannot happen in real-time during sync operations.
+SQLite **must be local** during an active sync (random access, WAL, locks). Google Drive I/O cannot happen in real-time during sync operations.
 
 ### Approach: lifecycle hooks
 
 ```
-sync START  → download collection.anki2 + media.db from GDrive → local temp dir
+sync START  → download collection.anki2 + media.db from Google Drive → local temp dir
 [sync runs against local files normally]
-sync FINISH → upload modified files back to GDrive → clean up temp
+sync FINISH → upload modified files back to Google Drive → clean up temp
 ```
 
 ### Trait to introduce
@@ -159,7 +159,7 @@ trait CollectionStorage {
 ```
 
 - `LocalStorage` — passthrough (for self-hosters, default behavior)
-- `GDriveStorage` — download on fetch, upload on commit
+- `GoogleDriveStorage` — download on fetch, upload on commit
 
 ### Hook points in the source
 

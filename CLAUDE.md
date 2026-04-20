@@ -119,9 +119,9 @@ All storage complexity lives behind `fetch` and `commit`.
    → sync_storage_config::exchange_refresh_token(refresh_token)  [if provider != "local"]
        ← POST https://oauth2.googleapis.com/token
    → StorageBackendFactory::create(provider, access_token)
-   → backend.fetch(user, dest)  [downloads collection from GDrive]
+   → backend.fetch(user, dest)  [downloads collection from Google Drive]
 5. Sync operations run against local SQLite copy of collection
-6. backend.commit(user, src)  [uploads collection back to GDrive]
+6. backend.commit(user, src)  [uploads collection back to Google Drive]
 ```
 
 **Key property:** Fully stateless per request. Every request independently fetches storage

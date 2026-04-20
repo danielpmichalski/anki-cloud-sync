@@ -6,8 +6,8 @@ This guide walks through end-to-end testing of the GoogleDriveBackend storage ad
 
 - ✅ Sync server can fetch collection from Google Drive before sync
 - ✅ Sync server can commit collection to Google Drive after sync
-- ✅ Anki Desktop can sync with a custom server backed by GDrive
-- ✅ Collection file appears and persists in user's GDrive `/AnkiSync/` folder
+- ✅ Anki Desktop can sync with a custom server backed by Google Drive
+- ✅ Collection file appears and persists in user's Google Drive `/AnkiCloudSync` folder
 - ✅ Incremental syncs work correctly
 
 ## Prerequisites
@@ -18,7 +18,7 @@ You need a valid Google Drive API access token. Options:
 
 **Option A: Use existing token (if you have one)**
 
-- From a prior GDrive OAuth flow
+- From a prior Google OAuth flow
 - Must have `drive.file` scope
 - Must not be expired (1 hour TTL)
 
@@ -61,12 +61,12 @@ cargo build --bin anki-sync-server
 
 Binary lands at `target/debug/anki-sync-server`.
 
-### Step 2: Start the Sync Server with GDrive Backend
+### Step 2: Start the Sync Server with Google Drive Backend
 
 ```bash
 SYNC_USER1=testuser:testpass \
-SYNC_STORAGE_PROVIDER=gdrive \
-SYNC_OAUTH_TOKEN=<your-gdrive-access-token> \
+SYNC_STORAGE_PROVIDER=google \
+SYNC_OAUTH_TOKEN=<your-google-access-token> \
 ./target/debug/anki-sync-server
 ```
 
@@ -93,7 +93,7 @@ Leave this running in a terminal. Watch the logs for sync operations.
 1. In Anki: **File → Sync** (or **Ctrl+Shift+S** / **Cmd+Shift+S**)
 2. Watch the sync server logs for:
     - `fetch collection from storage` message (should succeed; no file on first sync is OK)
-    - `commit collection to storage` message (indicates upload to GDrive)
+    - `commit collection to storage` message (indicates upload to Google Drive)
 3. Anki Desktop should show "Sync successful" or similar
 
 ### Step 5: Verify Collection in Google Drive
@@ -110,12 +110,12 @@ Leave this running in a terminal. Watch the logs for sync operations.
     - Make a small change (e.g., add a note with "Test" as front)
 2. **File → Sync** again
 3. Watch server logs:
-    - `fetch collection from storage` (downloads latest from GDrive)
+    - `fetch collection from storage` (downloads latest from Google Drive)
     - Apply diff from client
     - `commit collection to storage` (uploads updated collection)
 4. Verify:
     - Anki shows "Sync successful"
-    - GDrive shows updated timestamp on `collection.anki2`
+    - Google Drive shows updated timestamp on `collection.anki2`
     - Check file size increased (now includes your new content)
 
 ### Step 7: Test Sync on Fresh Anki Profile
@@ -128,7 +128,7 @@ Leave this running in a terminal. Watch the logs for sync operations.
 4. Click **File → Download** (full download from server)
 5. Verify:
     - Your deck(s) and cards are downloaded
-    - Everything synced correctly from GDrive
+    - Everything synced correctly from Google Drive
 
 ## Success Criteria
 
@@ -136,8 +136,8 @@ Leave this running in a terminal. Watch the logs for sync operations.
 
 - [ ] Sync server starts without errors on `localhost:8080`
 - [ ] First sync completes (fetch returns gracefully even if no file exists)
-- [ ] Collection file created in GDrive `/AnkiSync/collection.anki2`
-- [ ] Incremental syncs work (add card → sync → verify in GDrive)
+- [ ] Collection file created in Google Drive `/AnkiCloudSync/collection.anki2`
+- [ ] Incremental syncs work (add card → sync → verify in Google Drive)
 - [ ] File timestamp/size updates on each sync
 - [ ] Fresh profile can download synced content from server
 - [ ] No HTTP errors in sync server logs
@@ -156,8 +156,8 @@ Leave this running in a terminal. Watch the logs for sync operations.
 ### "Folder not found" or 403 errors
 
 - Token may lack `drive.file` scope
-- User's GDrive may have restricted folder creation (rare)
-- Check GDrive OAuth app permissions in Google Account → Connected apps
+- User's Google Drive may have restricted folder creation (rare)
+- Check Google OAuth app permissions in Google Account → Connected apps
 
 ### Anki sync hangs or timeout
 
@@ -168,16 +168,16 @@ Leave this running in a terminal. Watch the logs for sync operations.
 - Check firewall isn't blocking port 8080
 - Server logs should show request details
 
-### Collection file not appearing in GDrive
+### Collection file not appearing in Google Drive
 
-- Check GDrive folder permissions (must be writable)
+- Check Google Drive folder permissions (must be writable)
 - Verify sync completed (check Anki status + server logs)
-- GDrive may cache folder listings; refresh or wait a moment
-- Check `/AnkiSync/` folder name spelling (case-sensitive)
+- Google Drive may cache folder listings; refresh or wait a moment
+- Check `/AnkiCloudSync` folder name spelling (case-sensitive)
 
 ### "create storage backend" errors in logs
 
-- Check `SYNC_STORAGE_PROVIDER=gdrive` was set
+- Check `SYNC_STORAGE_PROVIDER=google` was set
 - Check `SYNC_OAUTH_TOKEN` is not empty
 - If using `SYNC_STORAGE_PROVIDER=local`, no token needed (offline mode)
 
@@ -188,7 +188,7 @@ In M2, this test will evolve:
 - Token will be stored encrypted in SQLite `storage_connections` table
 - User won't need to set env vars; they'll authenticate via web UI
 - Per-user storage config (different users can use different storage providers)
-- This test will become: "User logs in → connects GDrive → syncs via Anki → verify in Drive"
+- This test will become: "User logs in → connects Google Drive → syncs via Anki → verify in Drive"
 
 For now (M1), the env var approach validates the core wiring works end-to-end.
 

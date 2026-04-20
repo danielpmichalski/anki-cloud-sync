@@ -20,7 +20,7 @@ First request for user:
   ensure_col_open() → col is None → open_collection()
     → fetch_storage_connection()    ← DB lookup
     → exchange_refresh_token()      ← OAuth HTTP
-    → backend.fetch(user, dest)     ← GDrive download
+    → backend.fetch(user, dest)     ← Google Drive download
     → CollectionBuilder::new().build()
   col = Some(...)   ← cached for all future requests on this instance
 
@@ -52,7 +52,7 @@ The sidecar (REST API → Rust internal HTTP bridge) made this implicit assumpti
 
 ```
 Instance A: user col cached → notes [N1, N2]
-Sidecar on A: adds N3, uploads to GDrive, col stays cached → [N1, N2, N3]
+Sidecar on A: adds N3, uploads to Google Drive, col stays cached → [N1, N2, N3]
 Load balancer routes next GET /decks/:id/notes to Instance B
 Instance B: col cached from earlier → [N1, N2]  ← stale, N3 missing
 ```
@@ -63,7 +63,7 @@ Instance B: col cached from earlier → [N1, N2]  ← stale, N3 missing
 Instance A cache: [N1, N2, N3]
 Instance B cache: [N1, N2]          ← stale, missed N3
 Sidecar on B: adds N4 to stale col → [N1, N2, N4]
-Sidecar on B: commits → GDrive now has [N1, N2, N4]
+Sidecar on B: commits → Google Drive now has [N1, N2, N4]
 N3 is permanently lost
 ```
 
@@ -80,11 +80,11 @@ identifier (email hash or hkey) at the load balancer.
 - Already required by the Anki sync protocol (no new constraint added)
 - Zero code changes to the sync server
 - Collection cache works correctly — one instance owns one user's collection at a time
-- Sidecar reads skip GDrive download; sidecar writes don't risk losing concurrent writes
+- Sidecar reads skip Google Drive download; sidecar writes don't risk losing concurrent writes
 
 **Cons:**
 - Uneven load distribution if some users sync far more than others (hot user problem)
-- Instance failure requires re-routing affected users, triggering GDrive re-fetch on next instance
+- Instance failure requires re-routing affected users, triggering Google Drive re-fetch on next instance
 - Load balancer must support header-based affinity (hkey in `anki-sync` header, or email in `X-User-Email`)
 
 **Load balancer config (nginx example):**
@@ -100,18 +100,18 @@ For Traefik, use a `sticky` cookie or custom header hash.
 
 ### Option B: No Collection Cache (Fetch+Upload Per Request)
 
-Remove `ensure_col_open()` short-circuit. Every request downloads from GDrive, runs the op,
-uploads to GDrive.
+Remove `ensure_col_open()` short-circuit. Every request downloads from Google Drive, runs the op,
+uploads to Google Drive.
 
 **Pros:**
 - Truly stateless — any instance can handle any request
 - No sticky session requirement
 
 **Cons:**
-- 2–10 second latency per request (GDrive roundtrip + OAuth token exchange)
-- GDrive API quota burned on every read, including cheap list-decks calls
+- 2–10 second latency per request (Google Drive roundtrip + OAuth token exchange)
+- Google Drive API quota burned on every read, including cheap list-decks calls
 - Anki sync (50+ sub-requests per sync) would download/upload the collection on every sub-step —
-  catastrophic for performance and GDrive quotas
+  catastrophic for performance and Google Drive quotas
 
 **Verdict:** Not viable.
 
@@ -152,13 +152,13 @@ Run one sync-server instance. Scale vertically (larger machine, more CPU/RAM).
   further
 - Zero code changes required — pure load balancer config
 - Collection cache works correctly within an instance
-- When an instance fails, affected users are rerouted; their next request triggers a GDrive
+- When an instance fails, affected users are rerouted; their next request triggers a Google Drive
   re-fetch (slow once, correct always)
 
 **For sidecar correctness under sticky sessions:**
 
-- Reads (`list_decks`, `get_note`, etc.): use cached collection, no GDrive roundtrip
-- Writes (`create_note`, `delete_deck`, etc.): use cached collection, upload to GDrive on completion
+- Reads (`list_decks`, `get_note`, etc.): use cached collection, no Google Drive roundtrip
+- Writes (`create_note`, `delete_deck`, etc.): use cached collection, upload to Google Drive on completion
 - Both return 409 if an Anki sync is in progress for that user (checked via `sync_state.is_some()`)
 
 ADR-0013 formalizes this decision and corrects ADR-0011's incorrect "stateless" claim.
