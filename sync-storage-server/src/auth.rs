@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use anyhow::{anyhow, Result};
 use pbkdf2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use pbkdf2::Pbkdf2;
-use sync_storage_api::AuthProvider;
+use sync_platform_api::AuthProvider;
 
 /// Authenticates via `SYNC_USER*` env vars + PBKDF2. No DB required.
 pub struct StandaloneAuthProvider {
@@ -64,26 +64,5 @@ impl AuthProvider for StandaloneAuthProvider {
             .get(hkey)
             .map(|(email, _)| email.clone())
             .ok_or_else(|| anyhow!("unknown hkey"))
-    }
-}
-
-/// Authenticates via SQLite DB with bcrypt. Persists session keys for cross-instance re-hydration.
-/// Note: these methods are called from within `block_in_place` contexts in rslib, so sync DB
-/// calls are safe here.
-pub struct CloudAuthProvider;
-
-impl AuthProvider for CloudAuthProvider {
-    fn authenticate(&self, username: &str, password: &str) -> Result<(String, String)> {
-        use sync_storage_config as ssc;
-        // block_in_place: called from async context; sqlite is blocking I/O
-        tokio::task::block_in_place(|| ssc::verify_sync_credentials(username, password))?;
-        let hkey = anki::sync::http_server::derive_hkey(&format!("{username}:{password}"));
-        tokio::task::block_in_place(|| ssc::store_sync_key(username, &hkey))?;
-        Ok((hkey, username.to_string()))
-    }
-
-    fn lookup_by_hkey(&self, hkey: &str) -> Result<String> {
-        use sync_storage_config as ssc;
-        tokio::task::block_in_place(|| ssc::lookup_user_by_sync_key(hkey))
     }
 }

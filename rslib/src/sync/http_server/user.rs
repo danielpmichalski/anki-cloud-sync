@@ -4,7 +4,7 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use sync_storage_api::BackendResolver;
+use sync_platform_api::BackendResolver;
 use tracing::info;
 
 use crate::collection::Collection;

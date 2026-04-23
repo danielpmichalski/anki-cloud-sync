@@ -50,9 +50,9 @@ use crate::sync::http_server::SyncServerConfig;
 use crate::sync::login::HostKeyRequest;
 use crate::sync::login::SyncAuth;
 use crate::sync::request::IntoSyncRequest;
-use sync_storage_api::AuthProvider;
-use sync_storage_api::BackendResolver;
-use sync_storage_api::StorageBackend;
+use sync_platform_api::AuthProvider;
+use sync_platform_api::BackendResolver;
+use sync_platform_api::StorageBackend;
 
 struct TestCredentials {
     username: String,
