@@ -1,6 +1,6 @@
 [package]
 name = "sync-storage-server"
-version.workspace = true
+version = "25.9.0"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
