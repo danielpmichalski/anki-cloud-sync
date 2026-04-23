@@ -7,19 +7,21 @@
 
 ## 1. What This Repository Is
 
-A **modified Anki sync server** that stores user collections in user-owned cloud storage
-(Google Drive, Dropbox, S3) instead of the local filesystem. Extracted from the
-[anki-cloud](https://github.com/danielpmichalski/anki-cloud) monorepo.
+A **platform-neutral Anki sync server** — a fork of the Rust sync server built into
+[ankitects/anki](https://github.com/ankitects/anki) at tag `25.09`, plus four custom crates
+that define the adapter trait boundary and one built-in implementation.
 
-It is a **fork of the Rust sync server** built into [ankitects/anki](https://github.com/ankitects/anki)
-at tag `25.09`, plus three custom crates that implement the cloud storage adapter layer.
+The server exposes a stable trait boundary (`sync-platform-api`) so external platform crates can
+supply their own `AuthProvider` and `BackendResolver` implementations without touching this repo.
+This repo ships one built-in implementation: **standalone mode** (env-var users, local filesystem),
+suitable for self-hosting and local development.
 
-The sync server is consumed by the wider `anki-cloud` platform as an **external Docker image**.
+The sync server is published as an **external Docker image** consumed by the `anki-cloud` platform.
 It has no knowledge of the REST API, MCP server, or web UI — it only knows about:
 
 - The Anki sync protocol (upstream, unmodified)
-- SQLite (shared with the rest of the platform; read-only from this server's perspective)
-- Cloud storage backends (Google Drive, local)
+- The `sync-platform-api` trait boundary (AuthProvider, BackendResolver, StorageBackend)
+- Cloud storage backends (Google Drive, local) — via `sync-storage-backends`
 
 ### Trademark note
 
@@ -40,8 +42,8 @@ not to Ankitects' product.
 ├── .version                        ← Anki version this is pinned to (e.g. "25.09")
 ├── README.md
 │
-├── sync-storage-api/               ← OUR CRATE: StorageBackend trait
-│   └── src/lib.rs
+├── sync-platform-api/              ← OUR CRATE: stable public trait boundary
+│   └── src/lib.rs                  ← AuthProvider, BackendResolver, StorageBackend
 │
 ├── sync-storage-backends/          ← OUR CRATE: backend factory + implementations
 │   └── src/
@@ -52,7 +54,14 @@ not to Ankitects' product.
 │           └── google_drive.rs     ← Google Drive implementation
 │
 ├── sync-storage-config/            ← OUR CRATE: DB lookups, token decryption, bcrypt auth
-│   └── src/lib.rs
+│   └── src/lib.rs                  ← TRANSITIONAL: moves to anki-cloud's sync-platform-cloud
+│
+├── sync-storage-server/            ← OUR CRATE: composition root (standalone mode)
+│   └── src/
+│       ├── lib.rs                  ← make_providers() → standalone pair
+│       ├── auth.rs                 ← StandaloneAuthProvider (SYNC_USER* env vars + PBKDF2)
+│       ├── resolver.rs             ← StandaloneBackendResolver (local filesystem)
+│       └── sidecar.rs              ← InternalServer (optional sidecar HTTP API)
 │
 ├── rslib/                          ← VERBATIM UPSTREAM (ankitects/anki@25.09 rslib/)
 │   ├── Cargo.toml
@@ -69,31 +78,49 @@ not to Ankitects' product.
 ```
 
 **Critical rule:** Never edit anything inside `rslib/`, `ftl/`, or `proto/` by hand.
-Those are verbatim upstream copies. Changes go in the three custom crates only.
+Those are verbatim upstream copies. Changes go in the four custom crates only.
+Exception: mechanical import-path updates (`use sync_platform_api::` etc.) when renaming our
+crates — these are unavoidable and do not touch protocol logic.
 To upgrade upstream, run `scripts/fork-anki-sync-server.zsh <new-tag>`.
 
 ---
 
 ## 3. Custom Crates vs. Upstream
 
-| Crate                   | Files                          | Purpose                                                                                 | Edit?  |
-|-------------------------|--------------------------------|-----------------------------------------------------------------------------------------|--------|
-| `sync-storage-api`      | `src/lib.rs` (12 lines)        | `StorageBackend` trait — the only interface between upstream and our code               | Yes    |
-| `sync-storage-backends` | `src/lib.rs` + `backends/*.rs` | Factory + per-provider implementations                                                  | Yes    |
-| `sync-storage-config`   | `src/lib.rs`                   | DB lookups, AES-256-GCM token decryption, bcrypt credential check, OAuth token exchange | Yes    |
-| `rslib` and sub-crates  | all files                      | Upstream Anki sync protocol + binary                                                    | **No** |
-| `ftl/`, `proto/`        | all files                      | Upstream build deps                                                                     | **No** |
+| Crate                   | Files                          | Purpose                                                                                                          | Edit?  |
+|-------------------------|--------------------------------|------------------------------------------------------------------------------------------------------------------|--------|
+| `sync-platform-api`     | `src/lib.rs` (~30 lines)       | Stable public contract: `AuthProvider`, `BackendResolver`, `StorageBackend` — external impls depend on this      | Yes    |
+| `sync-storage-backends` | `src/lib.rs` + `backends/*.rs` | Factory + per-provider storage implementations (Google Drive, local)                                             | Yes    |
+| `sync-storage-config`   | `src/lib.rs`                   | **Transitional** — DB lookups, AES-256-GCM token decryption, bcrypt auth, OAuth exchange. Moving to `anki-cloud` | Yes*   |
+| `sync-storage-server`   | `src/*.rs`                     | Composition root: standalone auth + resolver, optional sidecar server                                            | Yes    |
+| `rslib` and sub-crates  | all files                      | Upstream Anki sync protocol + binary                                                                             | **No** |
+| `ftl/`, `proto/`        | all files                      | Upstream build deps                                                                                              | **No** |
 
-The three custom crates are minimal and deliberately decoupled so upstream upgrades
-don't require touching our code.
+*`sync-storage-config` will be deleted once `anki-cloud` has its own `sync-platform-cloud` crate.
 
 ---
 
 ## 4. Architecture
 
-### 4.1 StorageBackend Trait
+### 4.1 Platform-API Traits (`sync-platform-api`)
+
+These three traits are the **only interface** between upstream rslib and any deployment target.
+External platform crates implement them; rslib imports them; this repo's built-in standalone
+implementation lives in `sync-storage-server`.
 
 ```rust
+pub trait AuthProvider: Send + Sync {
+    /// Validate credentials. Returns `(hkey, email)` on success.
+    fn authenticate(&self, username: &str, password: &str) -> Result<(String, String)>;
+
+    /// Reverse-lookup: `hkey` → `email`. Called once per authenticated request.
+    fn lookup_by_hkey(&self, hkey: &str) -> Result<String>;
+}
+
+pub trait BackendResolver: Send + Sync {
+    fn resolve_for_user(&self, username: &str) -> Result<Box<dyn StorageBackend>>;
+}
+
 pub trait StorageBackend: Send + Sync {
     /// Download user's collection to `dest` before sync begins.
     fn fetch(&self, user: &str, dest: &Path) -> Result<()>;
@@ -103,59 +130,70 @@ pub trait StorageBackend: Send + Sync {
 }
 ```
 
-This is the **entire interface** between upstream rslib and cloud storage.
-All storage complexity lives behind `fetch` and `commit`.
-
 ### 4.2 Request Lifecycle
+
+The server is wired at startup with concrete `AuthProvider` and `BackendResolver` instances.
+At runtime each request flows through them:
 
 ```
 1. Anki client → POST /sync/{method}
 2. Axum router (rslib/src/sync/http_server/routes.rs)
 3. SyncProtocol::with_authenticated_user()
-   → validates hkey: first check in-memory map, then DB (users_sync_state.sync_key)
+   → auth.lookup_by_hkey(hkey)
+     Standalone: in-memory map (populated from SYNC_USER* at startup)
+     Platform:   DB query on users_sync_state.sync_key
 4. User::open_collection()
-   → sync_storage_config::fetch_storage_connection(email)
-       ← SELECT provider, oauth_refresh_token FROM storage_connections JOIN users WHERE email = ?
-   → sync_storage_config::exchange_refresh_token(refresh_token)  [if provider != "local"]
-       ← POST https://oauth2.googleapis.com/token
-   → StorageBackendFactory::create(provider, access_token)
-   → backend.fetch(user, dest)  [downloads collection from Google Drive]
+   → resolver.resolve_for_user(email) → Box<dyn StorageBackend>
+     Standalone: StorageBackendFactory::create("local", …) → no-op
+     Platform:   DB lookup + OAuth token exchange → StorageBackendFactory::create("google", …)
+   → backend.fetch(user, dest)
+     Standalone: no-op (collection already on local disk)
+     Platform:   download collection.anki2 from Google Drive
 5. Sync operations run against local SQLite copy of collection
-6. backend.commit(user, src)  [uploads collection back to Google Drive]
+6. backend.commit(user, src)
+     Standalone: no-op
+     Platform:   upload collection.anki2 back to Google Drive
 ```
 
-**Key property:** Fully stateless per request. Every request independently fetches storage
-config from DB and exchanges a fresh OAuth access token. Safe for horizontal scaling.
+**Key property:** Fully stateless per request. Each request re-resolves auth and storage from
+scratch. Safe for horizontal scaling (platform impls must ensure the same).
 
 ### 4.3 Authentication
 
-Anki clients authenticate with **email + sync password** (not Google OAuth).
-The sync password is a separate credential generated in the web UI and stored as a
-bcrypt hash in `users.sync_password_hash`.
+**Standalone mode** (built into this binary): authenticates via `SYNC_USER*` env vars + PBKDF2.
 
 ```
 POST /sync/hostKey {username: email, password: sync_password}
-→ bcrypt.verify(password, users.sync_password_hash)  [timing-safe; always runs even for unknown users]
-→ hkey = SHA1(email:password)
-→ upsert users_sync_state SET sync_key = hkey WHERE user_id = ...
+→ lookup (username:password) in in-memory SYNC_USER* map
+→ PBKDF2.verify(password, stored_hash)
+→ hkey = SHA1(username:password)
 → return {key: hkey}
 
 Subsequent requests carry hkey in anki-sync header.
+On restart: hkey not in memory → re-derive from SYNC_USER* map (deterministic).
+```
+
+**Platform implementations** supply their own `AuthProvider`. A cloud implementation
+(e.g. `anki-cloud`'s `sync-platform-cloud`) uses bcrypt against a DB and persists hkeys:
+
+```
+→ bcrypt.verify(password, users.sync_password_hash)
+→ hkey = SHA1(email:password)
+→ upsert users_sync_state SET sync_key = hkey WHERE user_id = ...
 On restart/failover: hkey not in memory → lookup_user_by_sync_key(hkey) → re-hydrate.
 ```
 
-### 4.4 Token Encryption
+### 4.4 Token Encryption (platform layer concern)
 
 OAuth refresh tokens are stored **encrypted at rest** (AES-256-GCM) in `storage_connections.oauth_refresh_token`.
 
 Format: `base64url(IV[12 bytes] || ciphertext+tag)`
 
-The Rust `decrypt_token()` function in `sync-storage-config` must stay byte-for-byte compatible
-with the TypeScript `encrypt()`/`decrypt()` in `packages/db/src/encrypt.ts` in the main monorepo,
-since both read/write the same DB column.
+Currently implemented in `sync-storage-config::decrypt_token()` — **transitional**. Once
+`anki-cloud` owns `sync-platform-cloud`, this logic moves there and must remain byte-for-byte
+compatible with the TypeScript `encrypt()`/`decrypt()` in `packages/db/src/encrypt.ts`.
 
-Encryption key: `TOKEN_ENCRYPTION_KEY` env var — 32 bytes expressed as either 64 hex chars or
-44 base64 chars.
+Encryption key: `TOKEN_ENCRYPTION_KEY` env var — 32 bytes as 64 hex chars or 44 base64 chars.
 
 ### 4.5 Google Drive Backend
 
@@ -177,27 +215,22 @@ Used for local development and self-hosting without cloud storage.
 
 ## 5. Environment Variables
 
-### Required
+All variables listed here apply to the **standalone binary** published from this repo.
+Platform-specific vars (DATABASE_URL, TOKEN_ENCRYPTION_KEY, GOOGLE_CLIENT_*) belong to
+the external platform crate, not this binary.
 
-| Variable               | Description                                     | Example                            |
-|------------------------|-------------------------------------------------|------------------------------------|
-| `DATABASE_URL`         | Path to shared SQLite DB                        | `file:/data/anki-cloud.db`         |
-| `TOKEN_ENCRYPTION_KEY` | 32-byte AES-256 key (64 hex or 44 base64 chars) | `deadbeef...`                      |
-| `GOOGLE_CLIENT_ID`     | Google OAuth2 client ID                         | `123...apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret                     | `GOCSPX-...`                       |
-
-### Optional (with defaults)
-
-| Variable    | Default         | Description                                     |
-|-------------|-----------------|-------------------------------------------------|
-| `SYNC_BASE` | `~/.syncserver` | Temp directory for user collections during sync |
-| `SYNC_HOST` | `0.0.0.0`       | Bind address                                    |
-| `SYNC_PORT` | `8080`          | Bind port                                       |
-| `RUST_LOG`  | `anki=info`     | Log level (tracing filter)                      |
+| Variable              | Default         | Description                                                         |
+|-----------------------|-----------------|---------------------------------------------------------------------|
+| `SYNC_BASE`           | `~/.syncserver` | Temp directory for user collections during sync                     |
+| `SYNC_HOST`           | `0.0.0.0`       | Bind address                                                        |
+| `SYNC_PORT`           | `8080`          | Bind port                                                           |
+| `SYNC_USER1`          | —               | `username:password` — repeat as `SYNC_USER2`, `SYNC_USER3`, …       |
+| `SYNC_INTERNAL_TOKEN` | —               | Bearer token for internal API; if unset, sidecar server is disabled |
+| `SYNC_INTERNAL_HOST`  | `127.0.0.1`     | Bind address for internal API                                       |
+| `SYNC_INTERNAL_PORT`  | `8081`          | Port for internal API                                               |
+| `RUST_LOG`            | `anki=info`     | Log level (tracing filter)                                          |
 
 `SYNC_*` vars are loaded via `envy::prefixed("SYNC_")` into `SyncServerConfig`.
-The others (`DATABASE_URL`, `TOKEN_ENCRYPTION_KEY`, `GOOGLE_CLIENT_*`) are read directly
-via `std::env::var()` in `sync-storage-config`.
 
 ---
 
@@ -219,9 +252,9 @@ cargo build --bin anki-sync-server
 cargo build --release --bin anki-sync-server
 
 # run tests (custom crates only — upstream tests are not our concern)
-cargo test -p sync-storage-config
+cargo test -p sync-platform-api
 cargo test -p sync-storage-backends
-cargo test -p sync-storage-api
+cargo test -p sync-storage-server
 ```
 
 ### Docker
@@ -230,13 +263,9 @@ cargo test -p sync-storage-api
 # build image
 docker build -t anki-cloud-sync:local .
 
-# run (all required env vars must be set)
+# run (standalone mode — no DB or cloud credentials required)
 docker run \
-  -e DATABASE_URL=file:/data/anki-cloud.db \
-  -e TOKEN_ENCRYPTION_KEY=<key> \
-  -e GOOGLE_CLIENT_ID=<id> \
-  -e GOOGLE_CLIENT_SECRET=<secret> \
-  -v /path/to/data:/data \
+  -e SYNC_USER1=alice@example.com:secret \
   -p 8080:8080 \
   anki-cloud-sync:local
 ```
@@ -284,8 +313,9 @@ When Anki releases a new version, the upgrade path is:
 ./scripts/fork-anki-sync-server.zsh 25.10
 
 # after syncing:
-cargo build --bin anki-sync-server  # verify it compiles
-cargo test -p sync-storage-config   # verify custom crates still work
+cargo build --bin anki-sync-server   # verify it compiles
+cargo test -p sync-storage-backends  # verify custom crates still work
+cargo test -p sync-storage-server
 ```
 
 **Never manually edit** `rslib/`, `ftl/`, or `proto/`.
@@ -295,38 +325,27 @@ If upstream breaks our integration points, fix by adapting the custom crates, no
 
 ## 9. Integration with anki-cloud Monorepo
 
-This server is consumed by the main [anki-cloud](https://github.com/danielpmichalski/anki-cloud)
-repo as an **external Docker image** in `docker-compose.yml`:
+This repo publishes a Docker image containing the **standalone sync server binary**.
+The `anki-cloud` platform builds a **separate binary** that depends on `sync-platform-api`
+and links in its own `sync-platform-cloud` crate (DB auth + OAuth token exchange + AES decryption).
 
-```yaml
-sync-server:
-  image: ghcr.io/danielpmichalski/anki-cloud-sync:25.09
-  environment:
-    DATABASE_URL: file:/data/anki-cloud.db
-    TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY}
-    GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-    GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-  volumes:
-    - db-data:/data
-```
+**Schema contract (platform layer reads/writes, not this binary):**
 
-**Dependency contract:**
-
-- Shares the **same SQLite database** as the REST API and DB packages
 - Reads from: `users`, `storage_connections`, `users_sync_state` tables
 - Writes to: `users_sync_state.sync_key` (upsert on auth)
 - Never reads or writes: `api_keys` table
-- Schema migrations are owned by `packages/db` in the monorepo — this server is a read/write consumer, not the schema owner
+- Schema migrations are owned by `packages/db` in the monorepo — the platform crate is a consumer, not the schema owner
 
 ---
 
 ## 10. Key Design Principles
 
 1. **Never store deck data.** Collections pass through (temp file during sync), uploaded to user's cloud storage, then deleted locally.
-2. **Stateless per request.** No in-memory state that can't be re-derived from DB + OAuth. Safe for restart and horizontal scale.
-3. **Custom crates are thin adapters.** They translate between the upstream rslib interfaces and external systems (DB, cloud APIs). Keep them small.
-4. **Upstream is upstream.** `rslib/`, `ftl/`, `proto/` are verbatim copies. No hand-edits, ever.
-5. **AES-256-GCM encryption format must stay compatible** with `packages/db/src/encrypt.ts` in the monorepo. Both sides read the same DB column.
+2. **Stateless per request.** No in-memory state that can't be re-derived from auth/storage config. Safe for restart and horizontal scale.
+3. **`sync-platform-api` is the stable external contract.** External deployment targets (`anki-cloud`, `anki-cloud-android`) implement `AuthProvider`, `BackendResolver`, and `StorageBackend`. This repo has zero knowledge
+   of any DB schema, JNI, or Android specifics.
+4. **Custom crates are thin adapters.** They translate between the upstream rslib interfaces and external systems. Keep them small.
+5. **Upstream is upstream.** `rslib/`, `ftl/`, `proto/` are verbatim copies. No hand-edits, ever (exception: mechanical crate-import renames when our crate names change).
 6. **Conventional commits.** Required for automated changelog and semantic release.
 7. **AI Agents: Never auto-commit code.** Inform user that changes are ready; let user handle git commits themselves.
 
@@ -336,11 +355,11 @@ sync-server:
 
 GitHub Actions workflows:
 
-- **`ci.yml`** — runs on every push/PR: `cargo build`, `cargo test -p sync-storage-*`, Docker build
+- **`ci.yml`** — runs on every push/PR: `cargo build`, `cargo test -p sync-platform-api`, `cargo test -p sync-storage-*`, Docker build
 - **`release.yml`** — release-please + conventional commits → auto-bumps version, publishes Docker image to `ghcr.io/danielpmichalski/anki-cloud-sync:<tag>`
 
 Docker image published to: `ghcr.io/danielpmichalski/anki-cloud-sync`
 
 ---
 
-*Last updated: extracted from anki-cloud monorepo, 2026-04-19.*
+*Last updated: 2026-04-23.*

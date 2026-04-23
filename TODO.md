@@ -10,7 +10,7 @@ The sync server currently bundles two concerns that must be separated to support
 deployment targets (cloud Docker, Android embedded service):
 
 1. **Core sync protocol** — `rslib/` (upstream, verbatim), `sync-storage-backends/` (Google Drive
-   + local impls), `sync-storage-server/` (composition root). These are platform-agnostic.
+    + local impls), `sync-storage-server/` (composition root). These are platform-agnostic.
 
 2. **Platform-specific glue** — `sync-storage-config/` (SQLite queries, AES-256-GCM token
    decrypt, bcrypt auth, OAuth HTTP exchange). This knows about a specific DB schema and
@@ -21,6 +21,7 @@ The trait boundary already exists in `sync-storage-api`: `AuthProvider`, `Backen
 that external deployment targets depend on — and strips all platform knowledge from this repo.
 
 After this task:
+
 - `anki-cloud-sync` knows nothing about SQLite schemas, AES keys, JNI, or Android.
 - `anki-cloud` owns its own `sync-platform-cloud` crate (SQLite + OAuth + AES).
 - `anki-cloud-android` owns its own `sync-platform-android` crate (Room + Android Credential
@@ -28,40 +29,36 @@ After this task:
 
 ### Tasks
 
-**1. Rename `sync-storage-api` → `sync-platform-api`**
-- Rename directory and crate name in `sync-platform-api/Cargo.toml`
-- Update workspace `Cargo.toml`: replace `sync-storage-api` entry with `sync-platform-api`
-- Update all import paths across the workspace:
-  - `sync-storage-backends/` — `use sync_storage_api::*` → `use sync_platform_api::*`
-  - `sync-storage-server/` — same
-  - `rslib/src/sync/http_server/mod.rs` — same
-  - `rslib/src/sync/http_server/user.rs` — same
-- No logic changes. Traits are already correct as-is.
+**1. ✅ Rename `sync-storage-api` → `sync-platform-api`** _(done v25.09-r8)_
+
+- Renamed directory and crate name in `sync-platform-api/Cargo.toml`
+- Updated workspace `Cargo.toml`: replaced `sync-storage-api` entry with `sync-platform-api`
+- Updated all import paths across the workspace (9 files)
 
 **2. Delete `sync-storage-config` crate**
+
 - Coordinate with `anki-cloud` team: `sync-platform-cloud` must land there first (it takes
   ownership of all DB queries, token decryption, OAuth exchange, and bcrypt auth currently
   in `sync-storage-config`).
 - Once `anki-cloud` is ready:
-  - Remove `sync-storage-config/` directory
-  - Remove from workspace `Cargo.toml`
-  - Remove from `sync-storage-server/Cargo.toml` dependencies
+    - Remove `sync-storage-config/` directory
+    - Remove from workspace `Cargo.toml`
+    - Remove from `sync-storage-server/Cargo.toml` dependencies
 
-**3. Strip Cloud impls from `sync-storage-server`**
-- In `sync-storage-server/src/auth.rs`: delete `CloudAuthProvider`
-- In `sync-storage-server/src/resolver.rs`: delete `CloudBackendResolver`
-- In `sync-storage-server/src/lib.rs`:
-  - Delete `SyncMode::Cloud` variant and its `make_providers()` branch
-  - Remove `sync-storage-config` import
-- `sync-storage-server` retains only `StandaloneAuthProvider` + `StandaloneBackendResolver`
-  (env-var user list, no DB, no OAuth).
+**3. ✅ Strip Cloud impls from `sync-storage-server`** _(done v25.09-r8)_
 
-**4. Update CLAUDE.md**
-- Update crate table to reflect new names
-- Add section explaining `sync-platform-api` as the public contract for external impls
-- Clarify that this repo has zero knowledge of any DB schema, JNI, or Android
+- Deleted `CloudAuthProvider` from `sync-storage-server/src/auth.rs`
+- Deleted `CloudBackendResolver` from `sync-storage-server/src/resolver.rs`
+- Removed `SyncMode` enum, `mode_from_env()`, and Cloud branch from `sync-storage-server/src/lib.rs`
+- Removed `sync-storage-config` dep from `sync-storage-server/Cargo.toml`
+- `sync-storage-server` now retains only `StandaloneAuthProvider` + `StandaloneBackendResolver`
+
+**4. ✅ Update docs** _(done v25.09-r8)_
+
+- Updated CLAUDE.md, README.md, TODO.md, added ADR-0014
 
 ### Acceptance criteria
+
 - `cargo build --bin anki-sync-server` succeeds (standalone mode)
 - `cargo test -p sync-platform-api` passes
 - `cargo test -p sync-storage-backends` passes
