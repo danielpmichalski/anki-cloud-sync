@@ -5228,14 +5228,14 @@ dependencies = [
 
 [[package]]
 name = "sync-storage-api"
-version = "0.1.0"
+version = "25.9.0"
 dependencies = [
  "anyhow",
 ]
 
 [[package]]
 name = "sync-storage-backends"
-version = "0.1.0"
+version = "25.9.0"
 dependencies = [
  "anyhow",
  "bytes",
@@ -5250,7 +5250,7 @@ dependencies = [
 
 [[package]]
 name = "sync-storage-config"
-version = "0.1.0"
+version = "25.9.0"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -5266,7 +5266,7 @@ dependencies = [
 
 [[package]]
 name = "sync-storage-server"
-version = "0.0.0"
+version = "25.9.0"
 dependencies = [
  "anki",
  "anyhow",
