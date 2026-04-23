@@ -297,7 +297,7 @@ cargo test -p sync-storage-server
 
 ### Crate versions
 
-Custom crates (`sync-storage-api`, `sync-storage-backends`, `sync-storage-config`,
+Custom crates (`sync-platform-api`, `sync-storage-backends`, `sync-storage-config`,
 `sync-storage-server`) are versioned as `<anki-major>.<anki-minor>.<anki-patch>` in semver form —
 e.g. Anki `25.09` → `25.9.0`, Anki `25.09.2` → `25.9.2`. Leading zeros are dropped (Cargo strips
 them anyway). The `-rX` revision counter is **not** baked into the crate version to avoid collisions
