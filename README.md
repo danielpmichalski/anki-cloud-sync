@@ -295,6 +295,17 @@ cargo test -p sync-storage-server
 
 ## Versioning
 
+### Crate versions
+
+Custom crates (`sync-storage-api`, `sync-storage-backends`, `sync-storage-config`,
+`sync-storage-server`) are versioned as `<anki-major>.<anki-minor>.<anki-patch>` in semver form —
+e.g. Anki `25.09` → `25.9.0`, Anki `25.09.2` → `25.9.2`. Leading zeros are dropped (Cargo strips
+them anyway). The `-rX` revision counter is **not** baked into the crate version to avoid collisions
+with upstream patch releases. When upgrading rslib, bump all four crate versions to match the new
+upstream version.
+
+### Git tags
+
 Tags follow `v<anki-version>-r<revision>` (e.g. `v25.09-r1`).
 
 The Anki version prefix signals sync protocol compatibility. `-rX` is our revision counter for changes layered on top of that upstream base — it resets to `-r1` whenever the upstream Anki version changes. This avoids
@@ -328,6 +339,7 @@ that needs updating.
 
 Quick checklist:
 
+- [ ] `sync-storage-*/Cargo.toml` — bump `version` to match new Anki version (e.g. `25.9.2`)
 - [ ] `rslib/Cargo.toml` — `sync-platform-api` in `[dependencies]`, `anyhow` in `[dev-dependencies]`
 - [ ] `rslib/sync/Cargo.toml` — `sync-storage-server` in both platform dependency blocks
 - [ ] `rslib/sync/main.rs` — calls `sync_storage_server::run()` not `SimpleServer::run()`
