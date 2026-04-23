@@ -1,5 +1,5 @@
 [package]
-name = "sync-storage-api"
+name = "sync-platform-api"
 version = "25.9.0"
 edition = "2021"
 license = "AGPL-3.0-or-later"

@@ -5,7 +5,7 @@ edition = "2021"
 license = "AGPL-3.0-or-later"
 
 [dependencies]
-sync-storage-api = { path = "../sync-storage-api" }
+sync-platform-api = { path = "../sync-platform-api" }
 anyhow = { workspace = true }
 reqwest = { workspace = true, features = ["json", "stream"] }
 serde_json = { workspace = true }

@@ -10,7 +10,7 @@ Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) r
 ├── Cargo.toml               ← workspace root — the only file NOT from upstream
 ├── Cargo.lock               ← copied from upstream for reproducible builds
 ├── README.md                ← this file
-├── sync-storage-api/        ← StorageBackend trait (no cloud deps)
+├── sync-platform-api/       ← AuthProvider, BackendResolver, StorageBackend traits
 │   └── src/lib.rs
 ├── sync-storage-backends/   ← StorageBackendFactory + per-provider impls
 │   └── src/
@@ -50,9 +50,9 @@ Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) r
 
 | Crate                   | Origin              | Touches upgrade?                             |
 |-------------------------|---------------------|----------------------------------------------|
-| `sync-storage-api`      | ours                | Never                                        |
+| `sync-platform-api`     | ours                | Never                                        |
 | `sync-storage-backends` | ours                | Never                                        |
-| `sync-storage-config`   | ours                | Never                                        |
+| `sync-storage-config`   | ours (transitional) | Never                                        |
 | `sync-storage-server`   | ours                | Only if rslib's public types change          |
 | `rslib/` and sub-crates | upstream (verbatim) | Yes — replaced by fork script, then re-patch |
 
@@ -61,15 +61,15 @@ Fork of [`ankitects/anki@25.09`](https://github.com/ankitects/anki/tree/25.09) r
 `rslib/` is replaced wholesale by the fork script. After each replacement, **four files** must be
 patched to wire in our auth and storage providers. All other rslib files stay verbatim.
 
-**Design:** two traits from `sync-storage-api` are injected at server startup; rslib never imports
-`sync-storage-config` or `sync-storage-backends` directly. `SyncMode` logic lives entirely in
-`sync-storage-server`. See the [upgrade section](#upgrading-to-a-new-anki-release) for how to re-apply.
+**Design:** three traits from `sync-platform-api` are injected at server startup via `SimpleServer::new(base_folder, auth, resolver)`;
+rslib never imports `sync-storage-config` or `sync-storage-backends` directly.
+See the [upgrade section](#upgrading-to-a-new-anki-release) for how to re-apply after an upstream sync.
 
 #### `rslib/Cargo.toml` — add one dependency
 
 ```toml
 # in [dependencies]
-sync-storage-api.workspace = true
+sync-platform-api.workspace = true
 # also add anyhow to [dev-dependencies]
 ```
 
@@ -89,7 +89,7 @@ println!("{}", sync_storage_server::run());
 #### `rslib/src/sync/http_server/mod.rs`
 
 - `SimpleServer` struct: replace `mode: SyncMode` with `auth: Arc<dyn AuthProvider>` and
-  `backend_resolver: Arc<dyn BackendResolver>` (both from `sync_storage_api`)
+  `backend_resolver: Arc<dyn BackendResolver>` (both from `sync_platform_api`)
 - `SyncServerConfig`: remove `mode: SyncMode` field (SYNC_MODE is read in `sync-storage-server`)
 - `SimpleServer::new()`: takes `auth` + `backend_resolver` instead of `mode`
 - `SimpleServer::make_server()`: takes pre-built `Arc<SimpleServer>` as second argument; no sidecar spawn (that moves to `sync-storage-server`)
@@ -144,7 +144,7 @@ docker build -t anki-cloud-sync:local .
 ## Standalone mode
 
 No database or cloud credentials are required. Users are defined via `SYNC_USER*` env vars.
-Behaves identically to the original [Anki's rslib sync server](https://github.com/ankitects/anki/tree/master/rslib). Default mode (`SYNC_MODE=standalone`).
+Behaves identically to the original [Anki's rslib sync server](https://github.com/ankitects/anki/tree/master/rslib).
 
 ### Run
 
@@ -190,84 +190,34 @@ On `/sync/hostKey` (Anki login):
 
 On subsequent sync requests: looks up `hkey` in in-memory session map.
 
-## Cloud mode
+## Platform implementations
 
-Backed by a shared SQLite database and per-user cloud storage (Google Drive, etc.).
-Set `SYNC_MODE=cloud`.
+The binary in this repo runs in standalone mode only. Cloud deployments (or any other
+deployment target) supply their own `AuthProvider` and `BackendResolver` by implementing the
+three traits from `sync-platform-api`:
 
-### Run
+```rust
+pub trait AuthProvider: Send + Sync {
+    fn authenticate(&self, username: &str, password: &str) -> Result<(String, String)>;
+    fn lookup_by_hkey(&self, hkey: &str) -> Result<String>;
+}
 
-#### Local build
+pub trait BackendResolver: Send + Sync {
+    fn resolve_for_user(&self, username: &str) -> Result<Box<dyn StorageBackend>>;
+}
 
-```bash
-SYNC_MODE=cloud \
-  DATABASE_URL=file:/path/to/anki-cloud.db \
-  TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
-  GOOGLE_CLIENT_ID=<client-id> \
-  GOOGLE_CLIENT_SECRET=<client-secret> \
-  SYNC_INTERNAL_TOKEN=<secret-token> \
-  ./target/debug/anki-sync-server
-# Listens on 0.0.0.0:8080 (sync) and 127.0.0.1:8081 (internal API) by default.
+pub trait StorageBackend: Send + Sync {
+    fn fetch(&self, user: &str, dest: &Path) -> Result<()>;
+    fn commit(&self, user: &str, src: &Path) -> Result<()>;
+}
 ```
 
-#### Docker
+Wire them into the server with `SimpleServer::new(base_folder, auth, resolver)` and call
+`sync_storage_server::run()`. The platform crate owns all DB lookups, token decryption, and OAuth
+token exchange — this repo has no knowledge of any of those.
 
-```bash
-docker run \
-  -e SYNC_MODE=cloud \
-  -e DATABASE_URL=file:/data/anki-cloud.db \
-  -e TOKEN_ENCRYPTION_KEY=<64-hex-chars> \
-  -e GOOGLE_CLIENT_ID=<client-id> \
-  -e GOOGLE_CLIENT_SECRET=<client-secret> \
-  -e SYNC_INTERNAL_HOST=0.0.0.0 \
-  -e SYNC_INTERNAL_TOKEN=<secret-token> \
-  -v /path/to/data:/data \
-  -p 8080:8080 \
-  -p 8081:8081 \
-  anki-cloud-sync:local
-```
-
-### Environment variables
-
-| Variable               | Default         | Description                                                                                  |
-|------------------------|-----------------|----------------------------------------------------------------------------------------------|
-| `DATABASE_URL`         | —               | Path to the shared SQLite database (e.g. `file:/data/anki-cloud.db`)                         |
-| `TOKEN_ENCRYPTION_KEY` | —               | 32-byte AES-256 key used to decrypt OAuth tokens in the DB (64 hex chars or 44 base64 chars) |
-| `GOOGLE_CLIENT_ID`     | —               | Google OAuth2 client ID — used to exchange refresh tokens for fresh access tokens            |
-| `GOOGLE_CLIENT_SECRET` | —               | Google OAuth2 client secret                                                                  |
-| `SYNC_BASE`            | `~/.syncserver` | Directory for temporary user collection files during sync                                    |
-| `SYNC_HOST`            | `0.0.0.0`       | Bind address for the Anki sync protocol                                                      |
-| `SYNC_PORT`            | `8080`          | Port for the Anki sync protocol                                                              |
-| `SYNC_INTERNAL_HOST`   | `127.0.0.1`     | Bind address for the internal REST API — set `0.0.0.0` in Docker                             |
-| `SYNC_INTERNAL_PORT`   | `8081`          | Port for the internal REST API (see [Internal API](#internal-api))                           |
-| `SYNC_INTERNAL_TOKEN`  | —               | Bearer token for internal API requests; if unset, internal API is disabled                   |
-
-### Authentication
-
-Users authenticate with their email address and a per-user sync password set via the web UI.
-No `SYNC_USER*` env vars are needed.
-
-On `/sync/hostKey` (Anki login):
-
-1. Verifies `email` + `password` against `users.sync_password_hash` db table (bcrypt, timing-safe)
-2. Derives `hkey = SHA1(email:password)` and upserts it into `users_sync_state.sync_key` db table
-3. Returns `hkey` to Anki client as session token
-
-On subsequent sync requests (hkey in `anki-sync` header):
-
-1. Looks up hkey in in-memory session map
-2. If not found (server restart or different instance): queries `users_sync_state` by hkey to re-hydrate
-
-### Per-request storage lookup
-
-On each sync operation that requires storage access (open, finish, upload), the sync server:
-
-1. Looks up `storage_connections` in the shared SQLite DB, joining on `users.email`
-2. Decrypts the stored `oauth_refresh_token` (AES-256-GCM) — skipped for `provider = "local"`
-3. Exchanges the refresh token for a fresh Google access token via `https://oauth2.googleapis.com/token`
-4. Passes the access token to `StorageBackendFactory` to create the appropriate backend
-
-This makes each sync server instance stateless — no per-user config in memory, safe to run behind a load balancer.
+The `anki-cloud` repo contains the reference cloud platform implementation (`sync-platform-cloud`).
+See [ADR-0014](docs/decisions/0014-introduce-sync-platform-api-boundary.md) for the rationale.
 
 ## Internal API
 
@@ -338,20 +288,16 @@ curl -s -X POST "http://localhost:8081/internal/v1/decks/1234567890/notes/bulk" 
 ## Test
 
 ```bash
-cargo test -p anki-sync-server
-```
-
-To run only the sync-storage-config tests:
-
-```bash
-cargo test -p sync-storage-config
+cargo test -p sync-platform-api
+cargo test -p sync-storage-backends
+cargo test -p sync-storage-server
 ```
 
 ## Versioning
 
 ### Crate versions
 
-Custom crates (`sync-storage-api`, `sync-storage-backends`, `sync-storage-config`,
+Custom crates (`sync-platform-api`, `sync-storage-backends`, `sync-storage-config`,
 `sync-storage-server`) are versioned as `<anki-major>.<anki-minor>.<anki-patch>` in semver form —
 e.g. Anki `25.09` → `25.9.0`, Anki `25.09.2` → `25.9.2`. Leading zeros are dropped (Cargo strips
 them anyway). The `-rX` revision counter is **not** baked into the crate version to avoid collisions
@@ -394,7 +340,7 @@ that needs updating.
 Quick checklist:
 
 - [ ] `sync-storage-*/Cargo.toml` — bump `version` to match new Anki version (e.g. `25.9.2`)
-- [ ] `rslib/Cargo.toml` — `sync-storage-api` in `[dependencies]`, `anyhow` in `[dev-dependencies]`
+- [ ] `rslib/Cargo.toml` — `sync-platform-api` in `[dependencies]`, `anyhow` in `[dev-dependencies]`
 - [ ] `rslib/sync/Cargo.toml` — `sync-storage-server` in both platform dependency blocks
 - [ ] `rslib/sync/main.rs` — calls `sync_storage_server::run()` not `SimpleServer::run()`
 - [ ] `rslib/src/sync/http_server/mod.rs` — DI fields, simplified auth methods, `SidecarUserHandle`, `derive_hkey`, `base_folder()`, updated `new()` / `make_server()` signatures
@@ -408,7 +354,6 @@ Quick checklist:
 
 ```bash
 # zero-tolerance checks — all must return empty
-grep -r 'SyncMode'                     rslib/src/
 grep -r 'sync_storage_config'          rslib/src/
 grep -r 'sync_storage_backends'        rslib/src/
 ls rslib/src/sync/http_server/internal_*.rs 2>/dev/null
@@ -423,7 +368,7 @@ cargo build --bin anki-sync-server
 cargo test -p anki
 
 # custom crate unit tests
-cargo test -p sync-storage-config -p sync-storage-backends -p sync-storage-server
+cargo test -p sync-platform-api -p sync-storage-backends -p sync-storage-server
 ```
 
 All tests must pass before tagging.

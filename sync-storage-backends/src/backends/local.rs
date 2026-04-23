@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use anyhow::Result;
-use sync_storage_api::StorageBackend;
+use sync_platform_api::StorageBackend;
 
 /// No-op backend — collection already lives on local filesystem.
 /// Used for local dev/testing without cloud storage.

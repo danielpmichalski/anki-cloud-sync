@@ -10,9 +10,8 @@ description = "Composition root: wires auth/storage strategies into the Anki syn
 
 [dependencies]
 anki.workspace = true
-sync-storage-api.workspace = true
+sync-platform-api.workspace = true
 sync-storage-backends.workspace = true
-sync-storage-config.workspace = true
 
 anyhow.workspace = true
 axum.workspace = true

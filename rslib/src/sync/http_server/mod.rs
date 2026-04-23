@@ -25,8 +25,8 @@ use axum::Router;
 use axum_client_ip::ClientIpSource;
 use snafu::ResultExt;
 use snafu::Whatever;
-use sync_storage_api::AuthProvider;
-use sync_storage_api::BackendResolver;
+use sync_platform_api::AuthProvider;
+use sync_platform_api::BackendResolver;
 use tokio::net::TcpListener;
 use tracing::Span;
 

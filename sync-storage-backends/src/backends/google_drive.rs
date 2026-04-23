@@ -5,7 +5,7 @@ use anyhow::{anyhow, Result};
 use bytes::Bytes;
 use reqwest::header::{HeaderMap, AUTHORIZATION, CONTENT_TYPE};
 use serde_json::{json, Value};
-use sync_storage_api::StorageBackend;
+use sync_platform_api::StorageBackend;
 use tokio::fs;
 
 const COLLECTION_FILE_NAME: &str = "collection.anki2";
