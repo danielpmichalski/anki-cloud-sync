@@ -35,7 +35,7 @@ jobs:
         run: cargo build --bin anki-sync-server
 
       - name: Test
-        run: cargo test -p sync-storage-config -p sync-storage-backends -p sync-platform-api
+        run: cargo test -p sync-storage-backends -p sync-platform-api -p sync-storage-server
 
   docker-smoke-test:
     runs-on: ubuntu-latest
