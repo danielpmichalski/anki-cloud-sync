@@ -20,7 +20,6 @@ rust-version = "1.80"
 members = [
   "sync-platform-api",
   "sync-storage-backends",
-  "sync-storage-config",
   "sync-storage-server",
   "rslib",
   "rslib/i18n",
@@ -55,7 +54,6 @@ anki_proto = { path = "rslib/proto" }
 anki_proto_gen = { path = "rslib/proto_gen" }
 sync-platform-api = { path = "sync-platform-api" }
 sync-storage-backends = { path = "sync-storage-backends" }
-sync-storage-config = { path = "sync-storage-config" }
 sync-storage-server = { path = "sync-storage-server" }
 
 # pinned

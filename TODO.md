@@ -33,27 +33,12 @@ After this refactor:
 - Updated workspace `Cargo.toml`: replaced `sync-storage-api` entry with `sync-platform-api`
 - Updated all import paths across the workspace (9 files)
 
-**2. Delete `sync-storage-config` crate**
+**2. ✅ Delete `sync-storage-config` crate**
 
-Blocked on `anki-cloud` team landing `sync-platform-cloud` first (it takes ownership of all DB
-queries, token decryption, OAuth exchange, and bcrypt auth currently in `sync-storage-config`).
-
-Sequencing:
-
-```
-anki-cloud-sync (rename + strip) → TAG
-├── anki-cloud (sync-platform-cloud)           ┐ parallel
-└── anki-cloud-android (sync-platform-android) ┘
-↓
-anki-cloud-sync (delete sync-storage-config) → TAG
-↓
-anki-cloud (bump pinned tag)
-```
-
-Once `anki-cloud` signals ready:
-- Remove `sync-storage-config/` directory
-- Remove from workspace `Cargo.toml`
-- Remove from `sync-storage-server/Cargo.toml` dependencies
+`anki-cloud` landed `sync-platform-cloud` (owns DB queries, token decryption, OAuth exchange,
+bcrypt auth). Unblocked and completed:
+- Removed `sync-storage-config/` directory
+- Removed from workspace `Cargo.toml` (member + dep)
 
 **3. ✅ Strip Cloud impls from `sync-storage-server`**
 
