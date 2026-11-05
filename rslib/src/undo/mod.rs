@@ -29,17 +29,12 @@ impl UndoableOp {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Default)]
 enum UndoMode {
+    #[default]
     NormalOp,
     Undoing,
     Redoing,
-}
-
-impl Default for UndoMode {
-    fn default() -> Self {
-        Self::NormalOp
-    }
 }
 
 pub struct UndoStatus {
@@ -155,7 +150,7 @@ impl UndoManager {
         }
         let target = self.undo_steps.front_mut().unwrap();
         for step in removed.into_iter().rev() {
-            target.changes.extend(step.changes.into_iter());
+            target.changes.extend(step.changes);
         }
         self.counter = starting_from;
         Ok(OpChanges {

@@ -1,9 +1,9 @@
-card-stats-added = Добавлено
+card-stats-added = Добавлена
 card-stats-first-review = Первое повторение
 card-stats-latest-review = Последнее повторение
 card-stats-interval = Интервал
 card-stats-ease = Лёгкость
-card-stats-review-count = Повторено
+card-stats-review-count = Повторена
 card-stats-lapse-count = Забыта
 card-stats-average-time = Среднее время
 card-stats-total-time = Общее время
@@ -11,7 +11,7 @@ card-stats-new-card-position = Позиция
 card-stats-card-template = Тип карточки
 card-stats-note-type = Тип записи
 card-stats-deck-name = Колода
-card-stats-preset = Предустановка
+card-stats-preset = Конфигурация
 card-stats-note-id = ID записи
 card-stats-card-id = ID карточки
 card-stats-review-log-rating = Оценка
@@ -20,11 +20,11 @@ card-stats-review-log-date = Дата
 card-stats-review-log-time-taken = Время
 card-stats-review-log-type-learn = Изучаемые
 card-stats-review-log-type-review = Повторяемые
-card-stats-review-log-type-relearn = Переучиваемые
-card-stats-review-log-type-filtered = Отфильтрованые
+card-stats-review-log-type-relearn = Переучиваемая
+card-stats-review-log-type-filtered = Отфильтрованные
 card-stats-review-log-type-manual = Ручной
-card-stats-review-log-type-rescheduled = Перенесено
-card-stats-review-log-elapsed-time = Времени на ответ прошло
+card-stats-review-log-type-rescheduled = Перенесённые
+card-stats-review-log-elapsed-time = Времени на ответ
 card-stats-no-card = (Нет карточек для показа)
 card-stats-custom-data = Особые данные
 card-stats-fsrs-stability = Стабильность
@@ -44,4 +44,4 @@ card-stats-previous-card = Предыдущая карточка ({ $context })
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
-card-stats-fsrs-forgetting-curve-probability-of-recalling = Вероятность успешного отзыва
+card-stats-fsrs-forgetting-curve-probability-of-recalling = Вероятность вспоминания

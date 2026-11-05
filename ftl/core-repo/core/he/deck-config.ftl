@@ -137,7 +137,7 @@ deck-config-bury-priority-tooltip =
 ## Gather order and sort order of cards
 
 deck-config-ordering-title = סדר חזרה
-deck-config-new-gather-priority = קדימות לאיסוף כרטיס חדש
+deck-config-new-gather-priority = סדר איסוף כרטיסים חדשים
 deck-config-new-gather-priority-tooltip-2 =
     `חפיסה`: לחזרה נאספים כרטיסים מכל חפיסה לפי הסדר, החל מלמעלה. כרטיסים מכל חפיסה נאספים בסדר עולה. אם הכמות עולה על ההגבלה היומית של החפיסה שנבחרה, ייתכן שהאיסוף ייפסק לפני שכל החפיסות נבדקו. הסדר הזה הוא המהיר ביותר באוספים גדולים, ומאפשר לך לתעדף תת-חפיסות הקרובות יותר לראש.
     
@@ -161,12 +161,12 @@ deck-config-new-card-sort-order-tooltip-2 =
     `אקראי`: מערבב במלואו את הכרטיסים שנאספו.
 deck-config-new-review-priority = סדר חדש/חזרה
 deck-config-new-review-priority-tooltip = מתי להציג כרטיסים חדשים ביחס לכרטיסי חזרה.
-deck-config-interday-step-priority = סדר למידה/חזרה יומית
+deck-config-interday-step-priority = סדר למידה בין-יומית/חזרות
 deck-config-interday-step-priority-tooltip =
     מתי להציג (מחדש) כרטיסי למידה שנותרו מאתמול.
     
     במידה וכמות הכרטיסים לחזרה וללמידה גדולים מהמגבלה היומית, המגבלה תחול על הכרטיסים לחזרה ולא על אלה שללמידה. הגדרה זו משפיעה על הסדר שבו יוצגו הכרטיסים לאחר שנקבע אילו כרטיסים יופיעו היום במסגרת המגבלה היומית, אבל לא תשפיע על אילו כרטיסים לא יופיעו כלל.
-deck-config-review-sort-order = מיין סדר חזרה
+deck-config-review-sort-order = סדר מיון חזרות
 deck-config-review-sort-order-tooltip =
     סדר ברירת המחדל נותן עדיפות לכרטיסים שחיכו הכי הרבה זמן, כך
     שאם יש לך כמות כרטיסים גדולה לחזרה, הכרטיסים הממתינים במשך
@@ -213,7 +213,7 @@ deck-config-sort-order-due-date-then-random = תאריך יעד, ואז אקרא
 # Sort the cards first by due date, in ascending order (oldest due date to newest), then by deck within the same due date.
 deck-config-sort-order-due-date-then-deck = תאריך יעד, ואז חפיסה
 # Sort the cards first by deck, then by due date in ascending order (oldest due date to newest) within the same deck.
-deck-config-sort-order-deck-then-due-date = חפיסה, ואז תאריך היעד
+deck-config-sort-order-deck-then-due-date = חפיסה, ואז תאריך יעד
 # Sort the cards by the interval, in ascending order (shortest to longest).
 deck-config-sort-order-ascending-intervals = מרווחים עולים
 # Sort the cards by the interval, in descending order (longest to shortest).
@@ -266,7 +266,7 @@ deck-config-disable-autoplay = אל תפעיל שמע אוטומטית
 deck-config-disable-autoplay-tooltip =
     כאשר מופעל, אנקי לא ינגן קבצי שמע באופן אוטומטי.
     ניתן להפעיל אותו באופן ידני על ידי לחיצה/הקשה על סמל שמע, או על ידי שימוש בפעולת השמע שוב.
-deck-config-skip-question-when-replaying = דלג על השאלה בעת תשובה חוזרת
+deck-config-skip-question-when-replaying = דלג על השאלה בניגון חוזר של התשובה
 deck-config-always-include-question-audio-tooltip =
     הגדרה זו קובעת האם יש לכלול את שמע השאלה כאשר אפשרות ההשמעה מחדש
     מופעלת בעת הסתכלות בצד התשובה של כרטיס.
@@ -370,7 +370,6 @@ deck-config-which-deck = איזו חפיסה הינך רוצה?
 deck-config-updating-cards = מעדכן כרטיסים: { $current_cards_count }/{ $total_cards_count }...
 deck-config-invalid-parameters = פרמטרי ה-FSRS שסופקו אינם חוקיים. השאר אותם ריקים כדי להשתמש בפרמטרי ברירת המחדל.
 deck-config-not-enough-history = אין מספיק היסטוריית חזרות לביצוע פעולה זו.
-deck-config-unable-to-determine-desired-retention = לא ניתן לקבוע שימור אופטימלי.
 deck-config-must-have-400-reviews =
     { $count ->
         [one] נמצאה רק חזרה { $count }. עליך לבצע לפחות 400 חזרות עבור פעולה זו.
@@ -380,7 +379,6 @@ deck-config-must-have-400-reviews =
 # Numbers that control how aggressively the FSRS algorithm schedules cards
 deck-config-weights = משקלי מודל
 deck-config-compute-optimal-weights = בצע אופטימיזציה של משקלי FSRS
-deck-config-compute-minimum-recommended-retention = שמירה מינימלית מומלצת
 deck-config-optimize-button = בצע אופטימיזציה
 # Indicates that a given function or label, provided via the "text" variable, operates slowly.
 deck-config-slow-suffix = { $text } (איטי)
@@ -393,7 +391,6 @@ deck-config-historical-retention = שימור היסטורי
 deck-config-smaller-is-better = מספרים קטנים יותר מצביעים על התאמה טובה יותר להיסטוריית החזרות שלך.
 deck-config-steps-too-large-for-fsrs = כאשר FSRS מופעל, שלבי למידה במשך יום 1 אינם מומלצים.
 deck-config-get-params = קבל פרמטרים
-deck-config-predicted-minimum-recommended-retention = שמירה מינימלית מומלצת: { $num }
 deck-config-complete = { $num } % הושלם.
 deck-config-iterations = ביצוע: { $count }...
 deck-config-reschedule-cards-on-change = תזמון מחדש של כרטיסים בשינוי
@@ -408,7 +405,7 @@ deck-config-desired-retention-tooltip =
     בתדירות נמוכה יותר, ואתה תשכח יותר מהם. היה זהיר בעת התאמה זו - ערכים גבוהים
     יותר יגדילו מאוד את עומס החזרות שלך, וערכים נמוכים יותר עלולים לגרום לשכוח
     הרבה חומר.
-deck-config-desired-retention-tooltip2 = ערכי עומס העבודה המסופקים על ידי הבועה הם קירוב גס. לרמת דיוק גבוהה יותר, השתמש בסימולטור.
+deck-config-desired-retention-tooltip2 = רמות העומס המפורטות בתיבת המידע הן בהערכה גסה. לרמת דיוק גבוהה יותר, השתמש בסימולטור.
 deck-config-historical-retention-tooltip =
     כאשר חלק מהיסטוריית החזרות שלך חסר, FSRS צריך להשלים את החסר. כברירת מחדל, החישוב יוצא
     מנקודת הנחה שכשעשית את החזרות הישנות האלה, זכרת 90% מהחומר. אם השמירה הישנה שלך
@@ -434,7 +431,6 @@ deck-config-compute-optimal-weights-tooltip2 =
     כאשר תלחץ על כפתור האופטימיזציה, FSRS ינתח את היסטוריית החזרות שלך ויפיק פרמטרים אופטימליים לזיכרון שלך ולתוכן שאתה לומד. אם החפיסות שלך משתנות מאוד בקושי הסובייקטיבי, מומלץ להקצות להם הגדרות מוגדרות מראש נפרדות, מכיוון שהפרמטרים לחפיסות קלות וחפיסות קשות יהיו שונים. 
     אתה לא צריך לבצע אופטימיזציה של הפרמטרים שלך לעתים קרובות - אחת לכמה חודשים מספיקה.
     כברירת מחדל, הפרמטרים יחושבו מהיסטוריית החזרה של כל החפיסות תוך שימוש בהגדרה הנוכחית. אתה יכול להתאים את החיפוש לפני חישוב הפרמטרים, אם ברצונך לשנות את ההגדרה אילו כרטיסים משמשים לאופטימיזציה של הפרמטרים.
-deck-config-compute-optimal-retention-tooltip4 = כלי זה ינסה למצוא את ערך השמירה הרצוי שיוביל ללמידה היעילה ביותר, במינימום זמן. המספר המחושב יכול לשמש כשאתה מחליט למה להגדיר את השמירה הרצויה שלך. ייתכן שתרצה לבחור שמירה רצויה גבוהה יותר, שזה אומר להפסיד יותר זמן לימוד עבור שיעור חזרות גבוה יותר. הגדרת השמירה הרצויה נמוכה מהמינימום לא מומלצת, מכיוון שזה יוביל לעומס עבודה גבוה יותר, בגלל שיעור השכחה הגבוה.
 deck-config-please-save-your-changes-first = אנא שמור את השינויים שלך תחילה.
 deck-config-workload-factor-change =
     עומס משוער: { $factor }x
@@ -466,6 +462,7 @@ deck-config-desired-retention-below-optimal = השמירה הרצויה שלך �
 # cards that can be recalled or retrieved on a specific date.
 deck-config-fsrs-simulator-experimental = סימולטור FSRS (ניסיוני)
 deck-config-fsrs-simulate-desired-retention-experimental = סימולטור שימור רצוי של FSRS (ניסיוני)
+deck-config-fsrs-simulate-save-preset = לאחר האופטימיזציה, אנא שמור את קבוצת ההגדרות של החפיסה שלך לפני הפעלת הסימולטור.
 deck-config-fsrs-desired-retention-help-me-decide-experimental = עזור לי להחליט (ניסיוני)
 deck-config-additional-new-cards-to-simulate = כרטיסים חדשים נוספים לסימולטור
 deck-config-simulate = צור סימולציה
@@ -476,7 +473,6 @@ deck-config-smooth-graph = גרף חלק
 deck-config-suspend-leeches = השהה כרטיסי עלוקה
 deck-config-save-options-to-preset = שמור שינויים בקבוצת הגדרות
 deck-config-save-options-to-preset-confirm = להחליף את האפשרויות בהגדרה הנוכחית שלך עם האפשרויות המוגדרות כעת בסימולטור?
-deck-config-plotted-on-x-axis = (מוצג על ציר ה-X)
 # Radio button in the FSRS simulation diagram (Deck options -> FSRS) selecting
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
@@ -503,6 +499,11 @@ deck-config-fsrs-good-fit = FSRS מותאם היטב לזיכרון שלך.
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-unable-to-determine-desired-retention = לא ניתן לקבוע שימור אופטימלי.
+deck-config-predicted-minimum-recommended-retention = שמירה מינימלית מומלצת: { $num }
+deck-config-compute-minimum-recommended-retention = שמירה מינימלית מומלצת
+deck-config-compute-optimal-retention-tooltip4 = כלי זה ינסה למצוא את ערך השמירה הרצוי שיוביל ללמידה היעילה ביותר, במינימום זמן. המספר המחושב יכול לשמש כשאתה מחליט למה להגדיר את השמירה הרצויה שלך. ייתכן שתרצה לבחור שמירה רצויה גבוהה יותר, שזה אומר להפסיד יותר זמן לימוד עבור שיעור חזרות גבוה יותר. הגדרת השמירה הרצויה נמוכה מהמינימום לא מומלצת, מכיוון שזה יוביל לעומס עבודה גבוה יותר, בגלל שיעור השכחה הגבוה.
+deck-config-plotted-on-x-axis = (מוצג על ציר ה-X)
 deck-config-a-100-day-interval =
     { $days ->
         [one] מרווח של 100 ימים יהפוך ל{ $days } יום.

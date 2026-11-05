@@ -48,7 +48,7 @@ scheduling-learn-remaining =
        *[other] { $remaining } 張學習中的卡片將於今天到期。
     }
 scheduling-congratulations-finished = 恭喜！你已學完此牌組當前的內容。
-scheduling-today-review-limit-reached = 已經達到今天的複習上限，但還有卡片尚待複習。為達到理想記憶效果，你可以在選項中增加每日上限。
+scheduling-today-review-limit-reached = 已經達到今天的複習上限，但還有卡片尚待複習。若要保持最佳記憶效果，請在選項中增加每日上限。
 scheduling-today-new-limit-reached = 還有尚未學習的新卡片，但今日學習數量已達上限。你可以在選項中增加每日上限，但請注意，學習更多新卡片將增加近期複習量。
 scheduling-buried-cards-found = 有卡片被推遲到明天顯示。如果你想要立即學習這些卡片，可以{ $unburyThem }。
 # used in scheduling-buried-cards-found
@@ -93,11 +93,11 @@ scheduling-learning = 學習中
 scheduling-leech-action = 低效卡動作
 scheduling-leech-threshold = 低效卡臨界值
 scheduling-maximum-interval = 最長間隔
-scheduling-maximum-reviewsday = 每日複習卡上限
+scheduling-maximum-reviewsday = 每日複習上限
 scheduling-minimum-interval = 最短間隔
 scheduling-mix-new-cards-and-reviews = 新卡片與複習卡混合
 scheduling-new-cards = 新卡片
-scheduling-new-cardsday = 每日新卡片數量
+scheduling-new-cardsday = 每日新卡片張數
 scheduling-new-interval = 新間隔
 scheduling-new-options-group-name = 新選項群組名稱：
 scheduling-options-group = 選項群組：
@@ -110,7 +110,7 @@ scheduling-reviews = 複習次數
 scheduling-seconds = 秒
 scheduling-set-all-decks-below-to = 要將「{ $val }」下的所有牌組都設為此選項群組嗎？
 scheduling-set-for-all-subdecks = 設定所有子牌組
-scheduling-show-answer-timer = 顯示回答計時器
+scheduling-show-answer-timer = 顯示計時器
 scheduling-show-new-cards-after-reviews = 先顯示複習卡，後顯示新卡片
 scheduling-show-new-cards-before-reviews = 先顯示新卡片，後顯示複習卡
 scheduling-show-new-cards-in-order-added = 依建立順序學習新卡片

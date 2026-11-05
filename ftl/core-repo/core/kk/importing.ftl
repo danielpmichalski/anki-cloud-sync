@@ -50,16 +50,23 @@ importing-notes-found-in-file = Файла табылған жазбалар: { 
 importing-notes-skipped-as-theyre-already-in = Жазбалар өткізілді, себебі жаңа көшірмелері онсыз да жинағыңызда бар: { $val }
 importing-notes-skipped-update-due-to-notetype = Жазбалар жаңартылмады, себебі жазба түрі олар алғаш импортталғаннан кейін өзгертілген: { $val }
 importing-notes-updated-as-file-had-newer = Жазбалар жаңартылды, себебі файлдың жаңа нұсқасы болды: { $val }
-importing-include-reviews = Шолымдарды қамту
-importing-also-import-progress = Кез келген оқу барысын импорттау
+importing-include-reviews = Қайталауларды қамту
+importing-also-import-progress = Кез келген үйрену прогрессін импорттау
 importing-with-deck-configs = Кез келген колода баптауларын импорттау
 importing-updates = Жаңартулар
+importing-include-reviews-help =
+    Егер қосылса, колоданы бөліскен пайдаланушы қосқан барлық қайталаулары да
+    импортталады. Әйтпесе, барлық карта жаңа карта ретінде импортталып, барлық
+    "жабысқақ" және "белгіленген" тамғалары жойылады.
 importing-with-deck-configs-help =
     Егер қосылса, колоданы бөліскен пайдаланушы қосқан барлық баптаулары де импортталады.
     Әйтпесе, барлық колодалар әдепкі баптаумен тағайындалады.
 importing-packaged-anki-deckcollection-apkg-colpkg-zip = Дестеленген Anki Колодасы/Жинағы (*.apkg *.colpkg *.zip)
 # the '|' character
 importing-pipe = Тік сызық
+# Warning displayed when the csv import preview table is clipped (some columns were hidden)
+# $count is intended to be a large number (1000 and above)
+importing-preview-truncated = Алғашқы { $count } баған ғана көрсетіледі. Дұрыс болмаса өріс бөлгішін түзеп көріңіз.
 importing-rows-had-num1d-fields-expected-num2d = '{ $row }' жолында { $found } өріс табылды, ал { $expected } болуы керек еді
 importing-selected-file-was-not-in-utf8 = Таңдалған файл UTF-8 пішімінде емес. Нұсқаулықтың импорттау бөліміне жүгініңіз.
 importing-semicolon = Нүктелі үтір
@@ -69,8 +76,9 @@ importing-tag-modified-notes = Өңделген жазба тамғалары:
 importing-text-separated-by-tabs-or-semicolons = Мәтін шегіністермен немесе үтірлі нүктелермен бөлінген (*)
 importing-the-first-field-of-the-note = Жазба түрінің бірінші өрісі сәйкестендірілуі қажет.
 importing-the-provided-file-is-not-a = Берілген файл жарамды .apkg файлы емес.
+importing-this-file-does-not-appear-to = Бұл файл жарамды .apkg файлы емес сияқты. Осы қате AnkiWeb-тен жүктеп алынған файлдан шықса, жүктеу дұрыс өтпесе керек. Қайтадан байқап көріңіз. Мәселе шешілмесе, басқа браузерден қайталап көріңіз.
 importing-this-will-delete-your-existing-collection = Бұл сіздің бар жинағыңызды өшіріп, оны импортталып жатқан файлдағы деректермен алмастырады. Сіз сенімдісіз бе?
-importing-unable-to-import-from-a-readonly = Тек оқу үшін ашылған файлдан импорттау мүмкін емес.
+importing-unable-to-import-from-a-readonly = Тек оқу файлынан импорттау мүмкін емес.
 importing-unknown-file-format = Белгесіз файл пішімдеуі.
 importing-update-existing-notes-when-first-field = Бірінші өрісі сәйкес келген жазбаларды жаңарту
 importing-updated = Жаңартылды
@@ -78,7 +86,15 @@ importing-update-if-newer = Жаңалау болса
 importing-update-always = Әрқашан
 importing-update-never = Ешқашан
 importing-update-notes = Жазбаларды жаңарту
+importing-update-notes-help =
+    Колодада бар жазбаны жаңарту ережесі. Әдетте бұл сәйкес келетін
+    импортталған жазба таяуда өзгертілген кезде ғана атқарылады.
 importing-update-notetypes = Жазба түрлерін жаңарту
+importing-update-notetypes-help =
+    Колодада бар жазбаны жаңарту ережесі. Әдетте бұл сәйкес келетін импортталған
+    жазба таяуда өзгертілген кезде ғана атқарылады. Қалып мәтіні және безендіру
+    өзгерістерді әрқашан иморттауға болады, бірақ сұлба өзгерістері (мыс. өрістер
+    санын не ретін өзгерту)  үшін '{ importing-merge-notetypes }' баптауын қосу керек.
 importing-note-added = { $count } жазба қосылды
 importing-note-imported = { $count } жазба импортталды.
 importing-note-unchanged = { $count } жазба өзгертілмеді
@@ -127,7 +143,35 @@ importing-note-updated-as-file-had-newer = Жаңа нұсқасы болған�
 importing-note-skipped-due-to-missing-notetype = Жазба түрі болмағандықтан жазба өткізілді
 importing-note-skipped-due-to-missing-deck = Колода болмағандықтан жазба өткізілді
 importing-note-skipped-due-to-empty-first-field = Бірінші өріс бос болғандықтан жазба өткізілді
+importing-field-separator-help =
+    Мәтін файлындағы өрістерді бөлетін таңба. Өрістердің дұрыс бөлінгенін алдын
+    ала қарау арқылы тексере аласыз.
+    
+    Бұл таңбаның өзі өрісте кездессе, өріс CSV стандартына сай жақшалануы керек.
+    LibreOffice тәрізді кесте бағдарламары мұны автоматты түрде істейді.
+    
+    Мәтін файлы бет басы арқылы бөлгішті белгілегенде, оны өзгертуге болмайды.
+    Бет басы болмағанда, Anki бөлгішті жорамалдауға тырысады.
+importing-allow-html-in-fields-help =
+    Файлда HTML пішімдеу бар болса мұны қосыңыз. Мыс. файлда '&lt;br&gt;' жолы
+    болса, ол картаңызда сызық жік ретінде көрінеді. Керісінше, бұл өшірілгенде,
+    '&lt;br&gt;' таңбалары тура көрсетіледі.
+importing-notetype-help =
+    Жаңадан әкелінген жазбалар бұл түрге жатқызылады, және бұл жазба түрінің
+    бұрыннан бар жазбалары ғана жаңартылады.
+    
+    Сәйкестендіру құралы арқылы файлдың қай өрістері қай жазба түрі өрсітерімен
+    сәйкесетінін таңдай аласыз.
 importing-deck-help = Импортталған карта осы колодаға қойылады.
+importing-existing-notes-help =
+    Импортталған жазба бар жазбамен сәйкес келгенде:
+    
+    - `{ importing-update }`:  Бар жазбаны жаңарту.
+    - `{ importing-preserve }`: Ештеңе істемеу.
+    - `{ importing-duplicate }`: Жаңа жазба жасау.
+importing-match-scope-help =
+    Көшірмелер тек бар және түрі бірдей жазбалардан ізделеді. Оған қоса,
+    тексерісті карталары бір колодада жатқан жазбаларға шектеуге болады.
 importing-tag-all-notes-help = Бұл тамғалар жаңадан импортталған және жаңартылған жазбаларға қосылады.
 importing-tag-updated-notes-help = Осы тамғалар барлық жаңартылған жазбаға қосылады
 importing-overview = Шолу

@@ -10,7 +10,7 @@ browsing-average-ease = Средняя лёгкость
 browsing-average-interval = Средний интервал
 browsing-browser-appearance = Вид в списке карточек
 browsing-browser-options = Параметры списка карточек
-browsing-buried = Отложенные
+browsing-buried = Отложена
 browsing-card = Карточка
 browsing-cards = Карточки
 browsing-card-list = Список карточек
@@ -35,13 +35,29 @@ browsing-change-note-type = Сменить тип записи
 browsing-change-note-type2 = Сменить тип записи...
 browsing-change-notetype = Сменить тип записи
 browsing-clear-unused-tags = Удалить неиспользуемые метки
-browsing-confirm-saved-search-overwrite = Сохраненный поиск под именем { $name } уже существует. Хотите изменить?
+browsing-confirm-saved-search-overwrite = Уже есть сохранённый запрос { $name }. Заменить его?
 browsing-created = Создана
 browsing-current-deck = Текущая колода
 browsing-current-note-type = Текущий тип записи:
 browsing-delete-notes = Удалить записи
 browsing-duplicate = повтор
 browsing-ease = Лёгкость
+# Button that clears the browse search
+browsing-empty-clear-search = Очистить поиск
+# Title when the collection has no cards
+# $notes-mode is "yes" when browsing notes instead of cards
+browsing-empty-collection-title =
+    { $notes-mode ->
+        [yes] Ещё нет записей
+       *[other] Ещё нет карточек
+    }
+# Title when a valid search matches nothing
+# $notes-mode is "yes" when browsing notes instead of cards
+browsing-empty-no-match-title =
+    { $notes-mode ->
+        [yes] Нет записей, удовлетворяющих запросу
+       *[other] Нет карточек, удовлетворяющих запросу
+    }
 browsing-enter-tags-to-add = Введите метки для добавления:
 browsing-enter-tags-to-delete = Введите метки для удаления:
 browsing-filtered = (фильтрованные)
@@ -59,7 +75,7 @@ browsing-interval = Интервал
 browsing-last-card = Последняя карточка
 browsing-learning = (изучаемые)
 browsing-line-size = <b>Высота строки</b>:
-browsing-manage-note-types = Править типы записей…
+browsing-manage-note-types = Управление типами записей
 browsing-move-cards = Переместить карточки
 browsing-move-cards-to-deck = Переместить карточки в колоду:
 browsing-new = (новые)
@@ -71,7 +87,7 @@ browsing-notes = Записи
 browsing-optional-filter = Дополнительный фильтр:
 browsing-override-back-template = Подменить шаблон оборотной стороны:
 browsing-override-font = Подменить шрифт:
-browsing-override-front-template = Подменить шаблон лицевой стороны:
+browsing-override-front-template = Подменить шаблон лица:
 browsing-please-give-your-filter-a-name = Задайте имя фильтра:
 browsing-preview-selected-card = Просмотреть выбранную карточку ({ $val })
 browsing-question = Вопрос
@@ -84,7 +100,17 @@ browsing-reposition = Переместить...
 browsing-reposition-new-cards = Переместить новые карточки
 browsing-reschedule = Позже
 browsing-search-bar-hint = Поиск карточек и записей (введите запрос и нажмите Enter)
+browsing-search-facet-starters = Отфильтровать по
 browsing-search-in = Искать в:
+browsing-search-quick = Быстрые фильтры
+browsing-search-quick-flagged = С флажком
+browsing-search-quick-leeches = Приставучие
+browsing-search-recent = Недавние
+# Shown above browse results when the current search is invalid
+browsing-search-results-unchanged = Результаты остаются неизменными до тех пор, пока запрос не будет признан действительным
+browsing-search-suggestions = Предложения
+browsing-search-syntax-mode = Режим синтаксиса
+browsing-search-text-match = Искать «{ $query }»
 browsing-search-within-formatting-slow = Поиск по форматированию (медленно)
 browsing-select-deck = Выбрать колоду
 browsing-selected-notes-only = Только выбранные записи
@@ -93,18 +119,18 @@ browsing-sidebar = Боковая панель
 browsing-sidebar-filter = Фильтр боковой панели
 # The field that is used for sorting (sort is an adjective here, not a verb)
 browsing-sort-field = Поле сортировки
-browsing-sorting-on-this-column-is-not = Невозможно сортировать данную колонку. Выберите другую.
+browsing-sorting-on-this-column-is-not = Невозможно сортировать данный столбец. Выберите другой.
 browsing-start-position = Начальная позиция:
 browsing-step = Шаг:
-browsing-suspended = Исключённые
+browsing-suspended = Исключена
 browsing-tag-duplicates = Пометить повторы
 browsing-tag-rename-warning-empty = Невозможно переименовать метку без записей.
 browsing-target-field = Главное поле:
-browsing-toggle-bury = Отложить — вернуть
+browsing-toggle-bury = Отложить – вернуть
 browsing-toggle-showing-cards-notes = Карточки или записи
-browsing-toggle-mark = Отметить — снять
-browsing-toggle-suspend = Исключить — включить
-browsing-treat-input-as-regular-expression = Ввод — регулярное выражение
+browsing-toggle-mark = Отметить – снять
+browsing-toggle-suspend = Исключить – включить
+browsing-treat-input-as-regular-expression = Регулярное выражение
 browsing-update-saved-search = Обновить поиск
 browsing-whole-collection = Вся коллекция
 browsing-window-title-notes = Список карточек (выбрано { $selected } из { $total } записей)
@@ -137,7 +163,7 @@ browsing-cards-updated =
         [many] { $count } карточек обновлено.
        *[other] { $count } карточек обновлено.
     }
-browsing-window-title = Список карточек (выбрано { $selected } из { $total } записей)
+browsing-window-title = Список карточек (выбрано { $selected } из { $total } карточек)
 browsing-sidebar-expand = Развернуть
 browsing-sidebar-collapse = Свернуть
 browsing-sidebar-expand-children = Развернуть группу
@@ -163,10 +189,26 @@ browsing-again-today = Снова
 browsing-edited-today = Правлено
 browsing-sidebar-first-review = Первое повторение
 browsing-sidebar-rescheduled = Перенесено
-browsing-sidebar-due-today = К просмотру
+browsing-sidebar-due-today = К повторению
 browsing-sidebar-untagged = Без метки
 browsing-sidebar-overdue = Просрочено
 browsing-row-deleted = (удаленные)
+# Compact due text in browse card rows when a card is overdue or due today
+browsing-due-now = Сейчас
+# Status chip label in browse card rows
+browsing-leech = Приставучая
+browsing-more-tags =
+    { $count ->
+        [one] ещё 1 метка
+        [few] ещё несколько метки
+       *[many] ещё { $count } меток
+    }
+browsing-leech-lapses =
+    { $count ->
+        [one] Приставучая, забыта { $count } раз
+        [few] Приставучая, забыта { $count } раза
+       *[many] Приставучая, забыта { $count } раз
+    }
 browsing-removed-unused-tags-count =
     { $count ->
         [one] Удалена { $count } неиспользуемая метка.

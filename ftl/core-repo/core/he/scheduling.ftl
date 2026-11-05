@@ -101,7 +101,7 @@ scheduling-unbury-them = להוציא אותם מ"הטמנה"
 scheduling-how-to-custom-study = אם אתה רוצה ללמוד מחוץ לתוכנית הרגילה, תוכל להשתמש באפשרות { $customStudy }.
 # used in scheduling-how-to-custom-study
 # "... you can use the custom study feature."
-scheduling-custom-study = לימוד מותאם
+scheduling-custom-study = לימוד מותאם אישית
 
 ## Scheduler upgrade
 
@@ -154,7 +154,7 @@ scheduling-reviews = חזרות
 scheduling-seconds = שניות
 scheduling-set-all-decks-below-to = להגדיר את כל החפיסות מתחת { $val } לקבוצת האפשרויות הזו?
 scheduling-set-for-all-subdecks = החל עבור כל תתי-החפיסות
-scheduling-show-answer-timer = הצג טיימר
+scheduling-show-answer-timer = הצג טיימר על המסך
 scheduling-show-new-cards-after-reviews = הצג כרטיסים חדשים לאחר החזרות
 scheduling-show-new-cards-before-reviews = הצג כרטיסים חדשים לפני כרטיסים לחזרה
 scheduling-show-new-cards-in-order-added = הצג כרטיסים חדשים לפי סדר הוספתם

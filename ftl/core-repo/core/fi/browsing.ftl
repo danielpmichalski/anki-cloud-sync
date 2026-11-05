@@ -28,6 +28,7 @@ browsing-cards-deleted-with-deckname =
 browsing-change-deck = Vaihda pakkaa
 browsing-change-deck2 = Vaihda pakkaa...
 browsing-change-note-type = Vaihda muistiinpanotyyppiä
+# Action in a context menu (right mouse-click on a card type)
 browsing-change-note-type2 = Vaihda muistiinpanotyyppiä...
 browsing-change-notetype = Vaihda muistiinpanotyyppiä
 browsing-clear-unused-tags = Poista käyttämättömät tunnisteet
@@ -38,6 +39,22 @@ browsing-current-note-type = Nykyinen muistiinpanotyyppi:
 browsing-delete-notes = Poista muistiinpanot
 browsing-duplicate = kaksoiskappale
 browsing-ease = Helppous
+# Button that clears the browse search
+browsing-empty-clear-search = Tyhjennä haku
+# Title when the collection has no cards
+# $notes-mode is "yes" when browsing notes instead of cards
+browsing-empty-collection-title =
+    { $notes-mode ->
+        [yes] Ei muistiinpanoja vielä
+       *[other] Ei kortteja vielä
+    }
+# Title when a valid search matches nothing
+# $notes-mode is "yes" when browsing notes instead of cards
+browsing-empty-no-match-title =
+    { $notes-mode ->
+        [yes] Yksikään muistiinpano ei vastannut hakua
+       *[other] Yksikään kortti ei vastannut hakua
+    }
 browsing-enter-tags-to-add = Lisättävät tunnisteet:
 browsing-enter-tags-to-delete = Poistettavat tunnisteet:
 browsing-filtered = (suodatettu)
@@ -80,7 +97,17 @@ browsing-reposition = Uuden sijainnin määrittäminen...
 browsing-reposition-new-cards = Määritä uusi sijainti pakassa uusille korteille
 browsing-reschedule = Ajasta uudelleen
 browsing-search-bar-hint = Etsi kortteja/muistiinpanoja (kirjoita tekstiä ja paina Enter-näppäintä)
+browsing-search-facet-starters = Suodata...
 browsing-search-in = Etsi paikasta:
+browsing-search-quick = Pikasuodattimet
+browsing-search-quick-flagged = Liputetut
+browsing-search-quick-leeches = Resurssisyöpöt
+browsing-search-recent = Viimeaikaiset
+# Shown above browse results when the current search is invalid
+browsing-search-results-unchanged = Tulokset eivät muutu ennen kuin haku on kelvollinen
+browsing-search-suggestions = Ehdotukset
+browsing-search-syntax-mode = Syntaksin tila
+browsing-search-text-match = Etsi: "{ $query }"
 browsing-search-within-formatting-slow = Etsi muotoiluista (hidas)
 browsing-select-deck = Valitse pakka
 browsing-selected-notes-only = Vain valitut muistiinpanot
@@ -155,6 +182,20 @@ browsing-sidebar-due-today = Erääntyvät
 browsing-sidebar-untagged = Tunnisteettomat
 browsing-sidebar-overdue = Rästissä
 browsing-row-deleted = (poistettu)
+# Compact due text in browse card rows when a card is overdue or due today
+browsing-due-now = Nyt
+# Status chip label in browse card rows
+browsing-leech = Resurssisyöppö
+browsing-more-tags =
+    { $count ->
+        [one] 1 muu tunniste
+       *[other] { $count } muuta tunnistetta
+    }
+browsing-leech-lapses =
+    { $count ->
+        [one] Resurssisyöppö, { $count } virhe
+       *[other] Resurssisyöppö, { $count } virhettä
+    }
 browsing-removed-unused-tags-count =
     { $count ->
         [one] Poistettiin { $count } käyttämätön tunniste.

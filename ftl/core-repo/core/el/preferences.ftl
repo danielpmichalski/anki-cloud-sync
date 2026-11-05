@@ -5,6 +5,7 @@ preferences-changes-will-take-effect-when-you = Οι αλλαγές θα εφα�
 preferences-hours-past-midnight = ώρες μετά τα μεσάνυχτα
 preferences-language = Γλώσσα
 preferences-interrupt-current-audio-when-answering = Διακοπή ήχου κατά τη διάρκεια απάντησης
+preferences-learn-ahead-limit = Όριο της εκμάθησης εκ των προτέρων
 preferences-mins = λεπτά
 preferences-network = Δίκτυο
 preferences-next-day-starts-at = Η επόμενη μέρα αρχίζει στις
@@ -39,7 +40,9 @@ preferences-theme-follow-system = Σύστημα
 preferences-theme-light = Λευκό
 preferences-theme-dark = Σκούρο
 preferences-v3-scheduler = Προγραμματιστής V3
+preferences-updates = Ενημερώσεις
 preferences-check-for-updates = Έλεγχος για ενημερώσεις προγράμματος
+preferences-check-for-addon-updates = Ελέγξτε για ενημερώσεις προσθηκών
 preferences-ignore-accents-in-search = Παράλειψη τονισμού στην αναζήτηση (πιο αργό)
 preferences-backup-explanation = Το Anki δημιουργεί περιοδικά αντίγραφα ασφαλείας της συλλογής σας. Όταν τα αντίγραφα είναι παλαιότερα των 2 ημερών, το Anki αρχίζει να αφαιρεί ορισμένα από αυτά για την απελευθέρωση χώρου στο δίσκο.
 preferences-daily-backups = Διατήρηση καθημερινών αντιγράφων ασφαλείας:
@@ -79,6 +82,7 @@ preferences-ankihub-not-logged-in = Δεν είστε συνδεδεμένοι �
 preferences-ankiweb-intro = Το AnkiWeb είναι μια δωρεάν υπηρεσία που σας επιτρέπει να διατηρείτε τα δεδομένα των καρτών σας σε συγχρονισμό σε όλες τις συσκευές σας και παρέχει έναν τρόπο ανάκτησης των δεδομένων σε περίπτωση που η συσκευή σας δυσλειτουργεί ή χαθεί.
 preferences-ankihub-intro = Το AnkiHub παρέχει συλλογική επεξεργασία τραπουλών και πρόσθετα εργαλεία μελέτης. Για την πρόσβαση σε ορισμένες λειτουργίες απαιτείται συνδρομή επί πληρωμή.
 preferences-third-party-description = Οι υπηρεσίες τρίτων δεν συνδέονται και δεν προωθούνται από το Anki. Η χρήση αυτών των υπηρεσιών μπορεί να απαιτεί πληρωμή.
+preferences-experimental-features-tab = Πειράματα
 
 ## URL scheme related
 

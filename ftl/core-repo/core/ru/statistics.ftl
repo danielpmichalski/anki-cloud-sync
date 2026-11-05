@@ -1,7 +1,7 @@
 # The date a card will be ready to review
-statistics-due-date = К просмотру
+statistics-due-date = К повторению
 # The count of cards waiting to be reviewed
-statistics-due-count = К просмотру
+statistics-due-count = К повторению
 # Shown in the Due column of the Browse screen when the card is a new card
 statistics-due-for-new-card = Новая № { $number }
 
@@ -113,14 +113,14 @@ statistics-reviews =
 # This fragment of the tooltip in the FSRS simulation
 # diagram (Deck options -> FSRS) shows the total number of
 # cards that can be recalled or retrieved on a specific date.
-statistics-memorized = { $memorized } выучено
+statistics-memorized = { $memorized } карточек запомнено
 statistics-today-title = Сегодня
-statistics-today-again-count = Возвратов:
+statistics-today-again-count = Количество «Снова»:
 statistics-today-type-counts = Изучаемых: { $learnCount }, повторяемых: { $reviewCount }, переучиваемых: { $relearnCount }, фильтрованных: { $filteredCount }
 statistics-today-no-cards = Ни одна карточка не была повторена сегодня.
-statistics-today-no-mature-cards = Ни одна закреплённая не была повторена сегодня
+statistics-today-no-mature-cards = Ни одна закреплённая не была повторена сегодня.
 statistics-today-correct-mature = Верных ответов в закреплённых: { $correct }/{ $total } ({ $percent }%)
-statistics-counts-total-cards = Всего карточек
+statistics-counts-total-cards = Итого
 statistics-counts-new-cards = Новые
 statistics-counts-young-cards = Свежие
 statistics-counts-mature-cards = Закреплённые
@@ -145,14 +145,14 @@ statistics-counts-separate-suspended-buried-cards = Исключённые и о
 ## N.B. Stats cards may be very small on mobile devices and when the Stats
 ##      window is certain sizes.
 
-statistics-true-retention-title = Настоящее усвоение
+statistics-true-retention-title = Усвоение
 statistics-true-retention-subtitle = Процент правильных карточек с интервалом больше 1 дня.
 statistics-true-retention-tooltip = При использовании FSRS фактический показатель усвоения, скорее всего, будет близок к желаемому показателю усвоения. Данные за один день могут колебаться, поэтому полезнее рассматривать период не менее одного месяца.
 statistics-true-retention-range = Диапазон
 statistics-true-retention-pass = Вспомнено
 statistics-true-retention-fail = Забыто
 # This will usually be the same as statistics-counts-total-cards
-statistics-true-retention-total = Всего карточек
+statistics-true-retention-total = Итого
 statistics-true-retention-count = Кол-во
 statistics-true-retention-retention = Усвоение
 # This will usually be the same as statistics-counts-young-cards
@@ -173,19 +173,19 @@ statistics-true-retention-not-applicable = N/A
 ##
 
 statistics-range-all-time = всё время
-statistics-range-1-year-history = за 12 месяцев
-statistics-range-all-history = вся история
-statistics-range-deck = пакет
-statistics-range-collection = коллекция
+statistics-range-1-year-history = За 12 месяцев
+statistics-range-all-history = Вся история
+statistics-range-deck = Колода
+statistics-range-collection = Коллекция
 statistics-range-search = Поиск
-statistics-card-ease-title = Лёгкость карточек
+statistics-card-ease-title = Лёгкость карточки
 statistics-card-difficulty-title = Сложность карточки
 statistics-card-stability-title = Стабильность карточки
 statistics-card-stability-subtitle = Время, за которое вспоминаемость падает до 90%.
 statistics-median-stability = Медиана стабильности
 statistics-card-retrievability-title = Вспоминаемость карточки
-statistics-card-ease-subtitle = Чем ниже легкость, тем чаще будет появляться карточка.
-statistics-card-difficulty-subtitle2 = Чем выше сложность, тем медленнее растё стабильность.
+statistics-card-ease-subtitle = Чем ниже лёгкость, тем чаще будет появляться карточка.
+statistics-card-difficulty-subtitle2 = Чем выше сложность, тем медленнее растёт стабильность.
 statistics-retrievability-subtitle = Вероятность вспомнить карточку сегодня.
 # eg "3 cards with 150-170% ease"
 statistics-card-ease-tooltip =
@@ -208,7 +208,7 @@ statistics-retrievability-tooltip =
         [many] { $cards } карточек с { $percent } вспоминаемости
        *[other] { $cards } карточек с { $percent } вспоминаемости
     }
-statistics-future-due-title = Прогноз
+statistics-future-due-title = Прогноз повторений
 statistics-future-due-subtitle = Число повторяемых в последующие дни.
 statistics-added-title = Добавленные
 statistics-added-subtitle = Количество новых карточек.
@@ -220,7 +220,7 @@ statistics-answer-buttons-button-number = Кнопка
 # eg Times pressed: 123
 statistics-answer-buttons-button-pressed = Раз нажато
 statistics-answer-buttons-subtitle = Сколько раз вы нажали каждую кнопку.
-statistics-reviews-title = Повторение
+statistics-reviews-title = Повторения
 statistics-reviews-time-checkbox = Время
 statistics-in-days-single =
     { $days ->
@@ -244,13 +244,13 @@ statistics-days-ago-range = { $daysStart }-{ $daysEnd } дней назад
 statistics-running-total = Промежуточная сумма
 statistics-cards-due =
     { $cards ->
-        [one] { $cards } к просмотру
-        [few] { $cards } к просмотру
-        [many] { $cards } к просмотру
-       *[other] { $cards } к просмотру
+        [one] { $cards } к повторению
+        [few] { $cards } к повторению
+        [many] { $cards } к повторению
+       *[other] { $cards } к повторению
     }
 statistics-backlog-checkbox = Отставание
-statistics-intervals-title = Интервалы
+statistics-intervals-title = Интервалы повторений
 statistics-intervals-subtitle = Время до следующего показа повторяемых.
 statistics-intervals-day-range =
     { $cards ->
@@ -281,7 +281,7 @@ statistics-stability-day-single =
 # hour range, eg "From 14:00-15:00"
 statistics-hours-range = С { $hourStart }:00 до { $hourEnd }:00
 statistics-hours-correct = { $correct }/{ $total } верных ({ $percent }%)
-statistics-hours-correct-info = → (не 'Снова')
+statistics-hours-correct-info = → (не «Снова»)
 # the emoji depicts the graph displaying this number
 statistics-hours-reviews = { $reviews } повторений
 # the emoji depicts the graph displaying this number
@@ -351,7 +351,7 @@ statistics-median-ease = Медиана легкости
 statistics-median-difficulty = Средний уровень сложности
 statistics-average-retrievability = Средняя вспоминаемость
 statistics-estimated-total-knowledge = Оценочный общий объём знаний
-statistics-save-pdf = Сохранить как PDF
+statistics-save-pdf = Сохранить в формате PDF
 statistics-saved = Сохранено.
 statistics-stats = статистика
 statistics-title = Статистика

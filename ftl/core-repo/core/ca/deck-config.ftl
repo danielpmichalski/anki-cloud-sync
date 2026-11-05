@@ -37,7 +37,7 @@ deck-config-tab-description =
     - `Prefixada`: Totes les baralles que facin servir aquesta configuració compartiran un mateix límit.
     - `Aquesta baralla`: El límit serà exclusiu d’aquesta baralla.
     - `Només avui`: Modifica temporalment el límit d’aquesta baralla.
-deck-config-new-cards-ignore-review-limit = Les noves targetes no tindran en compte el límit de repassos
+deck-config-new-cards-ignore-review-limit = Les targetes noves no s’inclouran en el límit de repassos
 deck-config-new-cards-ignore-review-limit-tooltip =
     Per defecte, el límit de repassos també s’aplica a les targetes noves, i no es mostrarà
     cap targeta nova quan assoliu aquest límit. Si activeu aquesta opció, les targetes noves
@@ -326,7 +326,6 @@ deck-config-revert-button-tooltip = Restaura aquest paràmetre al seu valor per 
 ## These strings are shown via the Description button at the bottom of the
 ## overview screen.
 
-deck-config-description-new-handling = Gestió d’Anki 2.1.41+
 deck-config-description-new-handling-hint =
     Tracta l'entrada com a Markdown i neteja l'entrada HTML. Quan aquesta opció
     està activada, la descripció també es mostrarà en la pantalla de felicitacions.
@@ -360,7 +359,6 @@ deck-config-which-deck = Quina baralla voleu?
 deck-config-updating-cards = S’estan actualitzant les targetes: { $current_cards_count } de { $total_cards_count }…
 deck-config-invalid-parameters = Els paràmetres de l’FSRS que heu proporcionat no són vàlids. Deixeu aquest camp en blanc per a utilitzar els paràmetres per defecte.
 deck-config-not-enough-history = La quantitat de repassos és insuficient per a executar aquesta operació.
-deck-config-unable-to-determine-desired-retention = No s’ha pogut determinar un nivell de retenció òptim.
 deck-config-must-have-400-reviews =
     { $count ->
         [one] Només s’ha trobat un repàs. Per a dur a terme aquesta acció, heu de tenir almenys 400 repassos.
@@ -369,7 +367,6 @@ deck-config-must-have-400-reviews =
 # Numbers that control how aggressively the FSRS algorithm schedules cards
 deck-config-weights = Paràmetres de l’FSRS
 deck-config-compute-optimal-weights = Optimitza els paràmetres de l’FSRS
-deck-config-compute-minimum-recommended-retention = Retenció recomanada mínima
 deck-config-optimize-button = Optimitza
 # Indicates that a given function or label, provided via the "text" variable, operates slowly.
 deck-config-slow-suffix = { $text } (lent)
@@ -380,9 +377,8 @@ deck-config-evaluate-button = Avalua
 deck-config-desired-retention = Retenció desitjada
 deck-config-historical-retention = Retenció històrica
 deck-config-smaller-is-better = Uns nombres més baixos indiquen un millor ajustament al vostre historial de repàs.
-deck-config-steps-too-large-for-fsrs = Quan el FSRS està activat, no és recomanable que feu servir passos d’aprenentatge de més d’un dia.
+deck-config-steps-too-large-for-fsrs = Quan l’FSRS està activat, no és recomanable fer servir passos d’aprenentatge de més d’un dia.
 deck-config-get-params = Obtén els paràmetres
-deck-config-predicted-minimum-recommended-retention = Retenció recomanada mínima: { $num }
 deck-config-complete = { $num } % completat.
 deck-config-iterations = Iteració: { $count }…
 deck-config-reschedule-cards-on-change = Replanifica les targetes en cas de canvi
@@ -395,18 +391,18 @@ deck-config-fsrs-tooltip =
 deck-config-desired-retention-tooltip = Amb el valor per defecte, 0,9, teniu un 90 % de probabilitat de recordar les targetes quan les repasseu. Si l’augmenteu, Anki us les mostrarà més sovint perquè sigui més probable que les recordeu. Si el reduïu, apareixeran menys sovint i n’oblidareu més. Aneu amb compte: un valor alt augmentarà molt la càrrega d’estudi i un valor baix pot fer que oblideu més contingut i perdeu la motivació.
 deck-config-desired-retention-tooltip2 = Els valors de càrrega d’estudi proporcionats són aproximats. Per a una major precisió, feu servir el simulador.
 deck-config-historical-retention-tooltip =
-    Si l’historial de repàs està incomplet, el FSRS ha d’omplir els buits. Per defecte, suposarà que, en aquests repassos, recordàveu el 90 % del contigut. Si la retenció era molt diferent, ajusteu aquest valor perquè el càlcul sigui més precís.
+    Si l’historial de repàs està incomplet, l’FSRS ha d’omplir els buits. Per defecte, suposarà que, en aquests repassos, recordàveu el 90 % del contigut. Si la retenció era molt diferent, ajusteu aquest valor perquè el càlcul sigui més precís.
     
     L’historial pot estar incomplet perquè:
     1. feu servir l’opció «Ignora les targetes repassades abans del».
     2. heu esborrat registres de repàs per a alliberar espai o heu importat material d’un altre programa SRS.
     
-    El segon cas és poc habitual, així que, treu que feu servir l’opció «Ignora les targetes repassades abans del», no cal que toqueu res.
+    El segon cas és poc habitual, així que, tret que feu servir l’opció «Ignora les targetes repassades abans del», no cal que toqueu res.
 deck-config-weights-tooltip2 = Els paràmetres de l’FSRS determinen la planificació de les targetes. Anki comença amb uns paràmetres per defecte, però podeu utilitzar aquesta opció per a optimitzar-los segons el vostre rendiment en les baralles que utilitzen aquesta configuració.
 deck-config-reschedule-cards-on-change-tooltip =
     Aquesta opció afecta tota la col·lecció i no es guarda.
     
-    Permet decidir si les dates de repàs de les targetes canviaran en activar el FSRS o optimitzar els paràmetres. Per defecte, les targetes no es replanificaran: els propers repassos seguiran la nova planificació, però la càrrega d’estudi no canviarà immediatament. Si activeu aquesta opció, les dates de repàs es modificaran.
+    Permet decidir si les dates de repàs de les targetes canviaran en activar l’FSRS o optimitzar els paràmetres. Per defecte, les targetes no es replanificaran: els propers repassos seguiran la nova planificació, però la càrrega d’estudi no canviarà immediatament. Si activeu aquesta opció, les dates de repàs es modificaran.
 deck-config-reschedule-cards-warning =
     Segons la retenció desitjada, és possible que moltes targetes queden pendents, per la qual cosa no es recomana en el primer canvi des de l’SM-2.
     
@@ -418,10 +414,6 @@ deck-config-compute-optimal-weights-tooltip2 =
     Quan premeu «Optimitza», l’FSRS analitzarà l’historial de repàs i generarà paràmetres òptims segons la vostra memòria i el contingut que estudieu. Si les baralles tenen una dificultat subjectiva molt diferent, es recomana assignar-los configuracions diferents, ja que els paràmetres per a baralles fàcils i difícils variaran. No cal optimitzar els paràmetres sovint: una vegada cada pocs mesos és suficient.
     
     Per defecte, els paràmetres es calcularan segons l’historial de repàs de totes les baralles que utilitzen aquesta configuració. Opcionalment, podeu ajustar la cerca abans de calcular-los si voleu canviar quines targetes s’utilitzaran per a l’optimització.
-deck-config-compute-optimal-retention-tooltip4 =
-    Aquesta opció intentarà trobar el valor de retenció desitjada perquè aprengueu més contingut en menys temps. Aquesta xifra pot servir-vos de referència per a decidir la retenció desitjada.
-    
-    És possible que preferiu un valor de retenció desitjada més alt si esteu disposats a dedicar-hi més temps. No es recomana fixar la retenció per sota del mínim, ja que oblidareu més contingut i augmentarà la càrrega d’estudi.
 deck-config-please-save-your-changes-first = Guardeu els canvis primer.
 deck-config-workload-factor-change =
     Càrrega d’estudi aproximada: { $factor }x
@@ -438,8 +430,9 @@ deck-config-percent-input = { $pct } %
 # This message appears during FSRS parameter optimization.
 deck-config-checking-for-improvement = S’està optimitzant en funció de les millores…
 deck-config-optimizing-preset = S’esta optimitzant la configuració de baralla { $current_count }/{ $total_count }…
-deck-config-fsrs-must-be-enabled = Primer heu d’activar el FSRS.
+deck-config-fsrs-must-be-enabled = Primer, activeu l’FSRS.
 deck-config-fsrs-params-optimal = Els paràmetres de l’FSRS són òptims.
+deck-config-fsrs-confirm-save-and-optimize = Es desaran els canvis que heu realitzat. Voleu continuar?
 deck-config-fsrs-params-no-reviews = No s’ha trobat cap repàs. Assegureu-vos que aquesta configuració està assignada a totes les baralles (també a les secundàries) que vulgueu optimitzar i torneu-ho a intentar.
 deck-config-wait-for-audio = Espera el so
 deck-config-show-reminder = Mostra un recordatori
@@ -451,8 +444,9 @@ deck-config-desired-retention-below-optimal = La retenció desitjada no és òpt
 # Description of the y axis in the FSRS simulation
 # diagram (Deck options -> FSRS) showing the total number of
 # cards that can be recalled or retrieved on a specific date.
-deck-config-fsrs-simulator-experimental = Simulador del FSRS (experimental)
+deck-config-fsrs-simulator-experimental = Simulador de l’FSRS (experimental)
 deck-config-fsrs-simulate-desired-retention-experimental = Simulador de retenció desitjada de l’FSRS (experimental)
+deck-config-fsrs-simulate-save-preset = Després de l’optimització, guardeu la configuració de baralla abans de fer servir el simulador.
 deck-config-fsrs-desired-retention-help-me-decide-experimental = Ajuda’m a decidir! (Experimental)
 deck-config-additional-new-cards-to-simulate = Targetes addicionals que se simularan
 deck-config-simulate = Simula
@@ -467,9 +461,6 @@ deck-config-save-options-to-preset-confirm = Voleu substituir les opcions d’aq
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
 deck-config-fsrs-simulator-radio-memorized = Memoritzades
-deck-config-fsrs-simulator-radio-ratio = Relació entre temps i targetes memoritzades
-# $time here is pre-formatted e.g. "10 Seconds" 
-deck-config-fsrs-simulator-ratio-tooltip = { $time } per targeta memoritzada
 
 ## Messages related to the FSRS scheduler’s health check. The health check determines whether the correlation between FSRS predictions and your memory is good or bad. It can be optionally triggered as part of the "Optimize" function.
 
@@ -487,10 +478,21 @@ deck-config-fsrs-bad-fit-warning =
 # Message box showing the result of the health check
 deck-config-fsrs-good-fit =
     Comprovació de l’estat:
-    el FSRS s’adapta bé a la vostra memòria.
+    l’FSRS s’adapta bé a la vostra memòria.
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-description-new-handling = Gestió d’Anki 2.1.41+
+deck-config-fsrs-simulator-radio-ratio = Relació entre temps i targetes memoritzades
+# $time here is pre-formatted e.g. "10 Seconds" 
+deck-config-fsrs-simulator-ratio-tooltip = { $time } per targeta memoritzada
+deck-config-unable-to-determine-desired-retention = No s’ha pogut determinar un nivell de retenció òptim.
+deck-config-predicted-minimum-recommended-retention = Retenció recomanada mínima: { $num }
+deck-config-compute-minimum-recommended-retention = Retenció recomanada mínima
+deck-config-compute-optimal-retention-tooltip4 =
+    Aquesta opció intentarà trobar el valor de retenció desitjada perquè aprengueu més contingut en menys temps. Aquesta xifra pot servir-vos de referència per a decidir la retenció desitjada.
+    
+    És possible que preferiu un valor de retenció desitjada més alt si esteu disposats a dedicar-hi més temps. No es recomana fixar la retenció per sota del mínim, ja que oblidareu més contingut i augmentarà la càrrega d’estudi.
 deck-config-a-100-day-interval =
     { $days ->
         [one] Un interval de 100 dies esdevindrà un dia.
@@ -514,8 +516,8 @@ deck-config-answer-action-tooltip = Acció que s'aplicarà a la targeta actual a
 deck-config-wait-for-audio-tooltip = Espera que l’àudio acabi abans de mostrar la resposta o la pregunta següent
 deck-config-compute-optimal-retention = Calcula la retenció òptima
 deck-config-predicted-optimal-retention = Retenció òptima prevista: { $num }
-deck-config-weights-tooltip = Els paràmetres del FSRS afecten la programació de les targetes. Anki començarà amb els paràmetres per defecte. Una vegada hàgiu acumulat més de 1000 repassos, podeu utilitzar aquesta opció per a optimitzar els paràmetres i ajustar millor el vostre rendiment en les baralles que utilitzen aquesta configuració prefixada.
+deck-config-weights-tooltip = Els paràmetres de l’FSRS afecten la programació de les targetes. Anki començarà amb els paràmetres per defecte. Una vegada hàgiu acumulat més de 1000 repassos, podeu utilitzar aquesta opció per a optimitzar els paràmetres i ajustar-los millor al vostre rendiment en les baralles que fan servir aquesta configuració de baralla.
 deck-config-seconds-to-show-question-tooltip-2 = Nombre de segons abans que es mostri la resposta quan l’avançament automàtic està activat. Escriviu 0 per a desactivar aquesta opció.
 deck-config-invalid-weights = Deixeu els paràmetres en blanc per a utilitzar els valors per defecte o introduïu 17 nombres separats per comes.
-deck-config-fsrs-on-all-clients = Feu servir Anki(Mobile) 23.10+ o AnkiDroid 2.17+ en tots els vostres dispositius. El FSRS no funcionarà correctament si algun dels clients és més antic.
+deck-config-fsrs-on-all-clients = Heu de fer servir Anki(Mobile) 23.10+ o AnkiDroid 2.17+ en tots els vostres dispositius. L’FSRS no funcionarà correctament si algun client és més antic.
 deck-config-optimize-all-tip = Podeu optimitzar totes les configuracions de baralla prement el botó superior.

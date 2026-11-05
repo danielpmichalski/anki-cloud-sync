@@ -21,12 +21,16 @@ editing-double-click-to-collapse = διπλό κλικ για σύμπτυξη
 editing-edit-current = Επεξεργασία τρέχοντος
 editing-edit-html = Επεξεργασία HTML
 editing-fields = Πεδία
+editing-float-left = Μετακίνηση προς τα αριστερά
+editing-float-right = Μετακίνηση προς τα δεξιά
 editing-indent = Αύξηση εσοχής
 editing-italic-text = Πλάγιο κείμενο
 editing-jump-to-tags-with-ctrlandshiftandt = Μεταπήδηση σε ετικέτες με Ctrl+Shift+T
+editing-justify = Ευθυγράμμιση
 editing-latex = Latex
 editing-latex-equation = Εξίσωση LaTeX
 editing-latex-math-env = LaTeX math env.
+editing-mathjax-block = Μπλοκ MathJax
 editing-mathjax-chemistry = MathJax χημεία
 editing-mathjax-placeholder = Πατήστε { $accept } για αποδοχή, { $newline } για νέα γραμμή.
 editing-media = Πολυμέσα
@@ -43,6 +47,11 @@ editing-show-duplicates = Προβολή διπλότυπων
 editing-subscript = Δείκτης
 editing-superscript = Εκθέτης
 editing-tags = Ετικέτες
+editing-tag-count =
+    { $count ->
+        [one] { $count } Ετικέτα
+       *[other] { $count } ετικέτες
+    }
 editing-tags-add = Προσθήκη ετικέτας
 editing-tags-copy = Αντιγραφή ετικετών
 editing-tags-remove = Αφαίρεση ετικετών
@@ -74,6 +83,7 @@ editing-image-occlusion-toggle-translucent = Ενεργοποίηση διαφά
 editing-image-occlusion-delete = Διαγραφή
 editing-image-occlusion-duplicate = Διπλασιασμός
 editing-image-occlusion-group = Ομαδική επιλογή
+editing-image-occlusion-ungroup = Ακύρωση ομαδοποίησης επιλογής
 editing-image-occlusion-select-all = Επιλογή όλων
 editing-image-occlusion-alignment = Στοίχιση
 editing-image-occlusion-align-left = Στοίχιση αριστερά

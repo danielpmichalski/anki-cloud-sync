@@ -92,7 +92,7 @@ statistics-counts-mature-cards = Mogna
 statistics-counts-suspended-cards = Låst
 statistics-counts-buried-cards = Dolda
 statistics-counts-filtered-cards = Filtrerad
-statistics-counts-learning-cards = Nya
+statistics-counts-learning-cards = Inlärning
 statistics-counts-relearning-cards = Lär om
 statistics-counts-title = Antal kort
 statistics-counts-separate-suspended-buried-cards = Separera låsta/dolda kort
@@ -203,7 +203,7 @@ statistics-cards-due =
         [one] { $cards } kort förfallet
        *[other] { $cards } kort förfallna
     }
-statistics-backlog-checkbox = Eftersläpning
+statistics-backlog-checkbox = Eftersläpande kort
 statistics-intervals-title = Intervaller
 statistics-intervals-subtitle = Tid tills ett kort repeteras igen.
 statistics-intervals-day-range =

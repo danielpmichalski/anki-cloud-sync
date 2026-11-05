@@ -1,14 +1,19 @@
 #!/usr/bin/env zsh
 # Usage:
-#   ./scripts/fork-anki-sync-server.zsh           # forks/upgrades to default tag (25.09)
-#   ./scripts/fork-anki-sync-server.zsh 25.12     # forks/upgrades to a specific tag
+#   ./scripts/fork-anki-sync-server.zsh           # forks/upgrades to default tag (26.09.4)
+#   ./scripts/fork-anki-sync-server.zsh 26.10     # forks/upgrades to a specific tag
 #
-# Copies rslib/ and Cargo.lock from ankitects/anki at the given tag into root dir.
-# Safe to re-run for upgrades — only rslib/ and Cargo.lock are replaced;
-# Cargo.toml and README.md in root dir are left untouched.
+# Copies rslib/, ftl/, proto/, .version and Cargo.lock from ankitects/anki at the
+# given tag into the repo root. Safe to re-run for upgrades — Cargo.toml, README.md
+# and our custom crates are left untouched.
+#
+# WARNING: rslib/ is deleted and replaced wholesale, which wipes our rslib delta
+# (see README "rslib delta"). Before running, save it, e.g.:
+#   diff -ruN <pristine-old-tag>/rslib rslib > rslib-delta.patch
+# and re-apply afterwards with `patch -p1`. See docs/upgrades/ for past upgrade logs.
 set -euo pipefail
 
-ANKI_TAG=${1:-25.09}
+ANKI_TAG=${1:-26.09.4}
 REPO_ROOT=$(git rev-parse --show-toplevel)
 TARGET_DIR="$REPO_ROOT"
 TMP_DIR=$(mktemp -d)
@@ -44,7 +49,11 @@ cp "$TMP_DIR/anki/Cargo.lock" "$TARGET_DIR/Cargo.lock"
 echo ""
 echo "Done. ankitects/anki@$ANKI_TAG rslib/ is now at rslib/"
 echo ""
-echo "Next steps:"
-echo "  source ~/.cargo/env   # if cargo isn't on PATH yet"
-echo "  cd anki-sync-server"
-echo "  cargo build --bin anki-sync-server"
+echo "Next steps (from the repo root):"
+echo "  1. Re-apply our rslib delta:  patch -p1 < rslib-delta.patch   (see README 'rslib delta')"
+echo "  2. Update root Cargo.toml workspace deps to match upstream's Cargo.toml"
+echo "     and rust-toolchain.toml / Dockerfile rust image to upstream's channel"
+echo "  3. cargo build --bin anki-sync-server"
+echo "  4. cargo test -p sync-platform-api -p sync-storage-backends -p sync-storage-server"
+echo "  5. cargo test -p anki --lib sync::collection::tests"
+echo "  6. docker build -t anki-cloud-sync:local ."

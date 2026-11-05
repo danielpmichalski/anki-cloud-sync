@@ -1,5 +1,5 @@
 # The date a card will be ready to review
-statistics-due-date = Oczekuje
+statistics-due-date = Następna powtórka
 # The count of cards waiting to be reviewed
 statistics-due-count = Oczekujące
 # Shown in the Due column of the Browse screen when the card is a new card
@@ -114,9 +114,9 @@ statistics-counts-relearning-cards = Uczone ponownie
 statistics-counts-title = Liczby kart
 statistics-counts-separate-suspended-buried-cards = Oddziel zawieszone/zakopane karty
 
-## True Retention represents your actual retention rate from past reviews, in
-## comparison to the "desired retention" parameter of FSRS, which forecasts
-## future retention. True Retention is the percentage of all reviewed cards
+## Retention represents your actual retention from past reviews, in
+## comparison to the "desired retention" setting of FSRS, which forecasts
+## future retention. Retention is the percentage of all reviewed cards
 ## that were marked as "Hard," "Good," or "Easy" within a specific time period.
 ##
 ## Most of these strings are used as column / row headings in a table.
@@ -225,7 +225,7 @@ statistics-days-ago-range = { $daysStart }-{ $daysEnd } dni temu
 statistics-running-total = Razem
 statistics-cards-due =
     { $cards ->
-        [one] 1 karta oczekuje
+        [one] { $cards } karta oczekuje
         [few] { $cards } karty oczekują
         [many] { $cards } kart oczekuje
        *[other] { $cards } kart oczekuje
@@ -262,7 +262,7 @@ statistics-stability-day-single =
 # hour range, eg "From 14:00-15:00"
 statistics-hours-range = Od { $hourStart }: 00~{ $hourEnd }: 00
 statistics-hours-correct = { $correct }/{ $total } poprawnych ({ $percent }%)
-statistics-hours-correct-info = → (nie ‘Jeszcze raz’)
+statistics-hours-correct-info = → (nie ‘Powtórz’)
 # the emoji depicts the graph displaying this number
 statistics-hours-reviews = 📊 { $reviews } powtórek
 # the emoji depicts the graph displaying this number

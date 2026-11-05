@@ -40,7 +40,9 @@ preferences-theme-follow-system = Wie Systemeinstellung
 preferences-theme-light = Hell
 preferences-theme-dark = Dunkel
 preferences-v3-scheduler = V3-Zeitplaner
+preferences-updates = Programmaktualisierungen
 preferences-check-for-updates = Nach Programmaktualisierungen suchen
+preferences-check-for-addon-updates = Nach Aktualisierungen für Erweiterungen suchen
 preferences-ignore-accents-in-search = Akzente in der Suche ignorieren (langsamer)
 preferences-backup-explanation = Anki erstellt regelmäßig Sicherungskopien Ihrer Sammlung, wenn es beendet wird. Sicherungskopien, die älter als 2 Tage sind, werden ggf. gelöscht, um nicht zu viel Speicherplatz zu belegen.
 preferences-daily-backups = Beizubehaltende tägliche Sicherungskopien:
@@ -80,6 +82,7 @@ preferences-ankihub-not-logged-in = Derzeit nicht bei AnkiHub angemeldet.
 preferences-ankiweb-intro = AnkiWeb ist ein kostenloser Dienst, der es Ihnen ermöglicht, Ihre Karten auf all Ihren Geräten synchron zu halten und sie wiederherzustellen, falls Ihr Gerät defekt ist oder verloren geht.
 preferences-ankihub-intro = AnkiHub ermöglicht gemeinsames Bearbeiten von Stapeln und bietet zusätzliche Lernwerkzeuge. Einige Funktionen erfordern ein kostenpflichtiges Abonnement.
 preferences-third-party-description = Dienste von Drittanbieter stehen in keiner Verbindung zu Anki. Die Nutzung dieser Dienste kann kostenpflichtig sein.
+preferences-experimental-features-tab = Experimentelle Funktionen
 
 ## URL scheme related
 

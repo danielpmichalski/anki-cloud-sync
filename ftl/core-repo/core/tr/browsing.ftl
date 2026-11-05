@@ -5,12 +5,12 @@ browsing-remove-from-selected-notes = Seçilen Notlardan Kaldır
 browsing-addon = Eklenti
 browsing-all-fields = Tüm Alanlar
 browsing-answer = Cevap
-browsing-any-flag = Herhangi Bir Bayrak
+browsing-any-flag = Herhangi bir Bayrak
 browsing-average-ease = Ort. Kolaylık
 browsing-average-interval = Ort. Aralık
 browsing-browser-appearance = Tarayıcı Görünümü
 browsing-browser-options = Tarayıcı Seçenekleri
-browsing-buried = Gizlenenler
+browsing-buried = Gömülenler
 browsing-card = Kart
 browsing-cards = Kartlar
 browsing-card-list = Kart Listesi
@@ -28,33 +28,34 @@ browsing-cards-deleted-with-deckname =
 browsing-change-deck = Desteyi Değiştir
 browsing-change-deck2 = Desteyi Değiştir...
 browsing-change-note-type = Not Türünü Değiştir
+# Action in a context menu (right mouse-click on a card type)
 browsing-change-note-type2 = Not Türünü Değiştir...
 browsing-change-notetype = Not Türünü Değiştir
 browsing-clear-unused-tags = Kullanılmayan Etiketleri Sil
-browsing-confirm-saved-search-overwrite = Zaten { $name } adında kaydedilmiş bir arama var. Üzerine yazmak istiyor musunuz?
+browsing-confirm-saved-search-overwrite = { $name } adında kaydedilmiş bir arama zaten var. Değiştirmek istiyor musunuz?
 browsing-created = Oluşturuldu
 browsing-current-deck = Geçerli Deste
 browsing-current-note-type = Geçerli not türü:
-browsing-delete-notes = Notu Sil
-browsing-duplicate = yinelenen
+browsing-delete-notes = Notları Sil
+browsing-duplicate = tekrarlanan
 browsing-ease = Kolaylık
 browsing-enter-tags-to-add = Eklenecek etiketleri girin:
-browsing-enter-tags-to-delete = Silinen etiketleri girin :
+browsing-enter-tags-to-delete = Silinecek etiketleri girin :
 browsing-filtered = (filtrelenmiş)
 browsing-find = <b>Bul</b>:
 browsing-find-and-replace = Bul ve Değiştir
-browsing-find-duplicates = Yinelenenleri Bul
+browsing-find-duplicates = Tekrarlananları Bul
 browsing-first-card = İlk Kart
 browsing-flag = Bayrak
 browsing-font = <b>Yazı Tipi</b>:
-browsing-font-size = Yazı Tipi Boyutu
+browsing-font-size = Yazı Boyutu
 browsing-found-as-across-bs = { $whole } içinde { $part } bulundu.
 browsing-ignore-case = Yok sayma durumu
-browsing-in = <b>İçeride</b>:
+browsing-in = <b>İçinde</b>:
 browsing-interval = Aralık
 browsing-last-card = Son Kart
-browsing-learning = (öğreniyor)
-browsing-line-size = <b>Çizgi Tipi</b>:
+browsing-learning = (öğrenme)
+browsing-line-size = <b>Satır Boyutu</b>:
 browsing-manage-note-types = Not Türlerini Yönet...
 browsing-move-cards = Kartları Taşı
 browsing-move-cards-to-deck = Kartları desteye taşı:
@@ -65,46 +66,54 @@ browsing-no-selection = Hiçbir kart veya not seçilmedi.
 browsing-note = Not
 browsing-notes = Notlar
 browsing-optional-filter = İsteğe bağlı filtre:
-browsing-override-back-template = Arka şablonu geçersiz kıl:
-browsing-override-font = Yazı tipini geçersiz kıl:
-browsing-override-front-template = Ön şablonu geçersiz kıl:
-browsing-please-give-your-filter-a-name = Lütfen filtrenize bir ad verin.
+browsing-override-back-template = Arka şablonu değiştir:
+browsing-override-font = Yazı tipini değiştir:
+browsing-override-front-template = Ön şablonu değiştir:
+browsing-please-give-your-filter-a-name = Lütfen filtrenize bir ad verin:
 browsing-preview-selected-card = Seçilen Kartı Önizle ({ $val })
 browsing-question = Soru
 browsing-queue-bottom = Aşağı sırala: { $val }
 browsing-queue-top = Yukarı sırala: { $val }
-browsing-randomize-order = Karışık Sıra
+browsing-randomize-order = Karışık sırala
 browsing-remove-tags = Etiketleri Kaldır...
-browsing-replace-with = <b>...İle Değiştir</b>
+browsing-replace-with = <b>...İle Değiştir</b>:
 browsing-reposition = Yeniden konumlandır...
 browsing-reposition-new-cards = Yeni Kartları Yeniden Konumlandır
-browsing-reschedule = Yeniden Planlama
-browsing-search-bar-hint = Kartları/notları aramak için, metin yazın sonra Enter tuşuna basın
-browsing-search-in = İçinde ara:
-browsing-search-within-formatting-slow = Biçimlemeyi içererek ara (yavaş)
+browsing-reschedule = Yeniden Planla
+browsing-search-bar-hint = Kartlarda/notlarda arayın (metin yazıp Enter tuşuna basın)
+browsing-search-facet-starters = Şuna göre filtrele
+browsing-search-in = Şurada ara:
+browsing-search-quick = Hızlı filtreler
+browsing-search-quick-flagged = Bayrak Eklendi
+browsing-search-quick-leeches = İllet Kartlar
+browsing-search-recent = Son Kullanılanlar
+browsing-search-suggestions = Öneriler
+browsing-search-syntax-mode = Söz Dizimi modu
+browsing-search-text-match = "{ $query }" ifadesini ara
+browsing-search-within-formatting-slow = Biçimlendirmenin içinde ara (yavaş)
 browsing-select-deck = Desteyi Seç
-browsing-selected-notes-only = Sadece seçilen notlar
+browsing-selected-notes-only = Yalnızca seçilen notlar
 browsing-shift-position-of-existing-cards = Mevcut kartların konumunu kaydır
 browsing-sidebar = Kenar Çubuğu
 browsing-sidebar-filter = Kenar Çubuğu filtresi
 # The field that is used for sorting (sort is an adjective here, not a verb)
 browsing-sort-field = Sıralama Alanı
 browsing-sorting-on-this-column-is-not = Bu sütunda sıralama desteklenmiyor. Lütfen başka birini seçin.
-browsing-start-position = Başlangıç konumu
+browsing-start-position = Başlangıç konumu:
 browsing-step = Adım:
 browsing-suspended = Askıya Alınanlar
-browsing-tag-duplicates = Yinelenenleri Etiketle
+browsing-tag-duplicates = Tekrarlananları Etiketle
 browsing-tag-rename-warning-empty = Notu olmayan bir etiketi yeniden adlandıramazsınız.
 browsing-target-field = Hedef alan:
 browsing-toggle-bury = Gömmeyi Aç/Kapat
 browsing-toggle-showing-cards-notes = Kartları/Notları Aç/Kapat
 browsing-toggle-mark = İşareti Aç/Kapat
-browsing-toggle-suspend = Askıya Alındı Aç/Kapat
-browsing-treat-input-as-regular-expression = Girdiye düzenli ifade gibi davran
-browsing-update-saved-search = Geçerli Aramayla güncelle
-browsing-whole-collection = Bütün Koleksiyon
-browsing-window-title-notes = Göz At (toplam { $total } arasından { $selected } not seçilmiş)
-browsing-you-must-have-at-least-one = En az bir sütun olmalıdır.
+browsing-toggle-suspend = Askıya Alınmayı Aç/Kapat
+browsing-treat-input-as-regular-expression = Girilen değere düzenli ifade gibi davran
+browsing-update-saved-search = Geçerli Aramayla Güncelle
+browsing-whole-collection = Tüm Koleksiyon
+browsing-window-title-notes = Göz At ({ $total } not içinden { $selected } not seçilmiş)
+browsing-you-must-have-at-least-one = En az bir sütununuz olmalıdır.
 browsing-group =
     { $count ->
         [one] { $count } grup
@@ -125,7 +134,7 @@ browsing-cards-updated =
         [one] { $count } kart güncellendi.
        *[other] { $count } kart güncellendi.
     }
-browsing-window-title = Göz At (toplam { $total } arasından { $selected } kart seçilmiş)
+browsing-window-title = Göz At ({ $total } kart içinden { $selected } kart seçilmiş)
 browsing-sidebar-expand = Genişlet
 browsing-sidebar-collapse = Daralt
 browsing-sidebar-expand-children = Altlarını Genişlet
@@ -138,23 +147,37 @@ browsing-sidebar-save-current-search = Geçerli Aramayı Kaydet
 browsing-sidebar-card-state = Kart Durumu
 browsing-sidebar-flags = Bayraklar
 browsing-today = Bugün
-browsing-tooltip-card-modified = Gözden geçirmeler, bayraklar ve deste değiştirmeler dâhil, kartın en son değiştiği zaman.
-browsing-tooltip-note-modified = Notun en son değiştiği zaman, genellikle alan içeriğiyle veya etiket düzenlemeleriyle.
+browsing-tooltip-card-modified = Gözden geçirmeler, bayraklar ve deste değiştirmeler dahil kartın en son değiştirildiği zaman
+browsing-tooltip-note-modified = Genellikle alan içeriği ve etiket değişimleri olmak üzere notun en son değiştiği zaman
 browsing-tooltip-card = Bir kartın kart şablonunun adı
 browsing-tooltip-cards = Bir notun içinde bulunan kart sayısı
 browsing-tooltip-notetype = Bir notun not türünün adı
-browsing-tooltip-question = Kart şablonu düzenleyicisinde özelleştirilebilen kartın ön yüzü
-browsing-tooltip-answer = Kart şablonu düzenleyicisinde özelleştirilebilen kartın arka yüzü
+browsing-tooltip-question = Kart şablonu düzenleyicisinde özelleştirilebilen, kartın ön yüzü
+browsing-tooltip-answer = Kart şablonu düzenleyicisinde özelleştirilebilen, kartın arka yüzü
 browsing-studied-today = Çalışılanlar
 browsing-added-today = Eklenenler
 browsing-again-today = Tekrar edilenler
 browsing-edited-today = Düzenlenenler
-browsing-sidebar-first-review = İlk Gözden Geçirenler
+browsing-sidebar-first-review = İlk Gözden Geçirme
 browsing-sidebar-rescheduled = Yeniden Planlananlar
 browsing-sidebar-due-today = Vade
 browsing-sidebar-untagged = Etiketlenmemiş
 browsing-sidebar-overdue = Gecikmiş
 browsing-row-deleted = (silinmiş)
+# Compact due text in browse card rows when a card is overdue or due today
+browsing-due-now = Şimdi
+# Status chip label in browse card rows
+browsing-leech = İllet Kart
+browsing-more-tags =
+    { $count ->
+        [one] { $count } adet daha etiket
+       *[other] { $count } adet daha etiket
+    }
+browsing-leech-lapses =
+    { $count ->
+        [one] İllet Kart, { $count } kez unutuldu
+       *[other] İllet Kart, { $count } kez unutuldu
+    }
 browsing-removed-unused-tags-count =
     { $count ->
         [one] { $count } kullanılmayan etiket silindi.

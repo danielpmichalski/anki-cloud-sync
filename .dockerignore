@@ -1,0 +1,7 @@
+target/
+out/
+.git/
+.github/
+.idea/
+.claude/
+tmp.md

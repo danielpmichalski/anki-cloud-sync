@@ -20,28 +20,44 @@ sync-media-log-title = Rexistro de sincronización de multimedia
 ## Error messages / dialogs
 
 sync-wrong-pass = O ID de AnkiWeb ou o contrasinal son incorrectos; téntao de novo.
+sync-must-wait-for-end = O Anki estase sincronizando neste momento. Espera a que sincronización remate e téntao de novo.
+sync-confirm-empty-download = A colección local non ten tarxetas. Queres descargalas dende o AnkiWeb?
+sync-confirm-empty-upload = A colección do AnkiWeb non ten tarxetas. Queres substituílas pola colección local?
 sync-conflict-explanation =
     As súas barallas aquí e en AnkiWeb difiren ata tal punto que non poden ser fundidas, así que é preciso sobreescribir as barallas dun lado coas do outro.
     
     Se escolle descargar, Anki descargará a colección dende AnkiWeb e calquera cambio que fixera no seu ordenador dende a última sincronización perderase.
     
     Se escolle subir, Anki subirá a súa colección a AnkiWeb e calquera cambio que fixera en AnkiWeb ou noutro dispositivo dende a última sincronización co ordenador perderase.
-sync-ankiweb-id-label = ID de AnkiWeb:
+sync-conflict-explanation2 =
+    Hai un conflito entre as barallas deste dispositivo e as do AnkiWeb. Debes escoller que versión manter:
+    
+    - Selecciona **{ sync-download-from-ankiweb }** para substituír as barallas deste dispositivo pola versión do AnkiWeb. Perderás calquera cambio que fixeses neste dispositivo dende a última sincronización.
+    - Seleccionar **{ sync-upload-to-ankiweb }** para sobrescribir as versións do AnkiWeb coas barallas deste dispositivo e elimina calquera cambio no AnkiWeb.
+    
+    Unha vez resolto o conflito, a sincronización funcionará coma de costume.
+sync-ankiweb-id-label = Correo electrónico:
 sync-password-label = Constrasinal:
 sync-account-required =
     <h1>Requírese unha conta</h1>
     Requírese unha conta gratuíta para manter a súa colección sincronizada. <a href="{ $link }">Rexístrese</a> e introduza os seus datos embaixo.
+sync-sign-in = Iniciar sesión
+sync-ankihub-dialog-heading = Iniciar sesión no AnkiHub
+sync-ankihub-username-label = Usuario ou correo electrónico:
+sync-ankihub-login-failed = Non se puido iniciar sesión no AnkiHub coas credencias fornecidas.
 
 ## Buttons
 
-sync-download-from-ankiweb = Descargar desde AnkiWeb
-sync-upload-to-ankiweb = Enviar a AnkiWeb
+sync-media-log-button = Rexistro dos ficheiros multimedia
+sync-abort-button = Cancelar
+sync-download-from-ankiweb = Descargar dende o AnkiWeb
+sync-upload-to-ankiweb = Enviar ao AnkiWeb
 sync-cancel-button = Cancelar
 
 ## Normal sync progress
 
-sync-downloading-from-ankiweb = Descargando desde AnkiWeb...
-sync-uploading-to-ankiweb = Enviando a AnkiWeb...
+sync-downloading-from-ankiweb = Descargando do AnkiWeb...
+sync-uploading-to-ankiweb = Enviando ao AnkiWeb...
 sync-syncing = Sincronizando...
 sync-checking = Comprobando...
 sync-connecting = Conectando...

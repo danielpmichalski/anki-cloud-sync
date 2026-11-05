@@ -1,9 +1,14 @@
-database-check-corrupt = Toʻplam fayli buzilgan. Avtomatik zaxiradan qayta tiklang.
+database-check-corrupt = Kolleksiya fayli buzilgan. Avtomatik zaxiradan qayta tiklang.
 database-check-rebuilt = Maʼlumotlar bazasi qayta qurildi va optimallashtirildi.
 database-check-card-properties =
     { $count ->
         [one] { $count } ta yaroqsiz karta xususiyatlari tuzatildi.
        *[other] { $count } ta yaroqsiz karta xususiyatlari tuzatildi.
+    }
+database-check-card-last-review-time-empty =
+    { $count ->
+        [one] { $count } ta kartaga oxirgi takrorlash vaqti  qoʻshildi.
+       *[other] { $count } ta kartaga oxirgi takrorlash vaqti  qoʻshildi.
     }
 database-check-missing-templates =
     { $count ->
@@ -55,7 +60,7 @@ database-check-notetypes-recovered = Bir yoki bir nechta qayd turlari yoʻq. Ula
 
 ## Progress info
 
-database-check-checking-integrity = Toʻplam tekshirilmoqda...
+database-check-checking-integrity = Kolleksiya tekshirilmoqda...
 database-check-rebuilding = Qayta qurilmoqda...
 database-check-checking-cards = Kartalar tekshirilmoqda...
 database-check-checking-notes = Qaydlar tekshirilmoqda...

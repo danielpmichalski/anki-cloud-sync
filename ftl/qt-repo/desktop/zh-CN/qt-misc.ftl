@@ -7,7 +7,7 @@ qt-misc-automatic-syncing-and-backups-have-been = 自动同步和备份在还原
 qt-misc-back-side-only = 仅背面
 qt-misc-backing-up = 正在备份…
 qt-misc-browse = 浏览
-qt-misc-change-note-type-ctrlandn = 改变笔记模板(Ctrl+N)
+qt-misc-change-note-type-ctrlandn = 改变笔记模板 (Ctrl+N)
 qt-misc-check-the-files-in-the-media = 检查媒体文件夹中的文件
 qt-misc-choose-deck = 选择牌组
 qt-misc-choose-note-type = 选择笔记模板
@@ -47,7 +47,7 @@ qt-misc-shortcut-key-right-arrow-or-enter = 快捷键：右方向键或Enter键
 qt-misc-stats = 统计
 qt-misc-study-deck = 选择牌组学习…
 qt-misc-sync = 同步
-qt-misc-target-deck-ctrlandd = 目标牌组(Ctrl+D)
+qt-misc-target-deck-ctrlandd = 目标牌组 (Ctrl+D)
 qt-misc-the-following-character-can-not-be = 以下字符不可使用: { $val }
 qt-misc-the-requested-change-will-require-a = 更改后，下次同步时需将集合完整上传至数据库，这将导致在其他设备未同步的复习和其他改变丢失，是否继续?
 qt-misc-there-must-be-at-least-one = 请至少保留一个账户。
@@ -55,6 +55,7 @@ qt-misc-this-file-exists-are-you-sure = 文件已存在。是否覆盖?
 qt-misc-unable-to-access-anki-media-folder = 无法访问 Anki 媒体文件夹。系统临时文件夹权限可能不正确。
 qt-misc-unexpected-response-code = 未知响应代码：{ $val }
 qt-misc-would-you-like-to-download-it = 是否立即下载？
+qt-misc-downloading-update = 正在下载更新：{ $count }MB/{ $total }MB
 qt-misc-your-collection-file-appears-to-be = 集合文件可能已经损坏。在 Anki 运行时复制、移动集合或将集合存储在网络或云盘时可能发生上述情况。如果在重启电脑后仍未解决，请在账户界面打开一个自动备份。
 qt-misc-your-computers-storage-may-be-full = 您电脑的存储空间可能已满。请删除不需要的文件，然后重试。
 qt-misc-your-firewall-or-antivirus-program-is = 防火墙或杀毒软件阻止了 Anki 创建连接，请将 Anki 添加到白名单中。
@@ -71,7 +72,6 @@ qt-misc-second =
 qt-misc-layout-auto-enabled = 已启用响应布局
 qt-misc-layout-vertical-enabled = 已启用垂直布局
 qt-misc-layout-horizontal-enabled = 已启用水平布局
-qt-misc-open-anki-launcher = 更改为其他 Anki 版本？
 
 ## deprecated- these strings will be removed in the future, and do not need
 ## to be translated

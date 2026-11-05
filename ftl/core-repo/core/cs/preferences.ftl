@@ -40,7 +40,9 @@ preferences-theme-follow-system = Podle systému
 preferences-theme-light = Světlý
 preferences-theme-dark = Tmavý
 preferences-v3-scheduler = V3 plánovač
+preferences-updates = Aktualizace
 preferences-check-for-updates = Kontrolovat aktualizace programu
+preferences-check-for-addon-updates = Kontrolovat aktualizace doplňků
 preferences-ignore-accents-in-search = Ignorovat diakritiku ve vyhledávání (pomalejší)
 preferences-backup-explanation =
     Anki pravidelně zálohuje Vaši kolekci. Jestliže jsou zálohy více než 2 dny staré,
@@ -64,6 +66,7 @@ preferences-review = Opakování
 preferences-answer-keys = Klávesy odpovědí
 preferences-distractions = Rozptylování
 preferences-minimalist-mode = Minimalistický režim
+preferences-minimalist-mode-tooltip = Rozhraní bude kompaktnější/jednodušší
 preferences-editing = Editování
 preferences-browsing = Prohlížení
 preferences-default-deck = Výchozí balíček
@@ -79,6 +82,7 @@ preferences-shortcut-placeholder = Vypnete zadáním nepoužívané klávesy neb
 preferences-third-party-services = Služby třetích stran
 preferences-ankihub-not-logged-in = V současné době nejste přihlášen k AnkiHub.
 preferences-ankiweb-intro = AnkiWeb je bezplatná služba, která vám umožní synchronizovat vaše data kartiček ve všech vašich zařízeních a poskytuje způsob, jak data obnovit, pokud se vaše zařízení rozbije nebo ztratí.
+preferences-experimental-features-tab = Experimenty
 
 ## URL scheme related
 

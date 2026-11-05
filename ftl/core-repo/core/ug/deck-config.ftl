@@ -252,7 +252,7 @@ deck-config-revert-button-tooltip = بۇ تەڭشەكنى كۆڭۈلدىكى ق�
 ## These strings are shown via the Description button at the bottom of the
 ## overview screen.
 
-deck-config-description-new-handling = Anki 2.1.41+ بىر تەرەپ قىلىش ئۇسۇلى
+deck-config-description-new-handling2 = Markdown پىچىمىدا تەھلىل قىلىدۇ
 deck-config-description-new-handling-hint = markdown سۈپىتىدە كىرگۈزۈلىدۇ، كىرگۈزۈلگەن HTML تازىلىنىدۇ. قوزغىتىلغاندىن كېيىن، چۈشەندۈرۈشى مۇبارەكلەش ئېكرانىدا كۆرۈنىدۇ. Anki 2.1.40 ۋە ئۇنىڭدىن تۆۋەن نەشرىدە Markdown ساپ تېكىست شەكلىدە كۆرۈنىدۇ.
 
 ## Warnings shown to the user
@@ -282,8 +282,11 @@ deck-config-which-deck = قايسى دەستەنىڭ تاللانمىسىنى ك
 
 deck-config-updating-cards = كارتىنى يېڭىلاۋاتىدۇ: { $current_cards_count }/{ $total_cards_count }…
 deck-config-invalid-parameters = تەمىنلەنگەن FSRS پارامېتىرى ئىناۋەتسىز. كۆڭۈلدىكى پارامېتىرنى ئىشلىتىش ئۈچۈن ئۇلار بوش قالدۇرۇلسا بولىدۇ.
+deck-config-placeholder-parameters =
+    كۆڭۈلدىكى ئۆزگەرگۈچى
+    (FSRS نىڭ خاتىرىڭىزگە تېخىمۇ ياخشى ماسلىشىشى ئۈچۈن قەرەللىك ھالدا «{ deck-config-optimize-button }» بېسىلىدۇ)
+deck-config-manual-parameter-edit-warning = ئۆزگەرگۈچىنى پەقەت ئەلالاشتۇرۇش توپچىسىنى بېسىپ ئۆزگەرتكىلى بولىدۇ. ئۇلارنى قولدا ئۆزگەرتىش قەتئىي تەۋسىيە قىلىنمايدۇ.
 deck-config-not-enough-history = تەكرارلاش تارىخ خاتىرىسى بەك ئاز، بۇ مەشغۇلاتنى ئىجرا قىلالمايدۇ.
-deck-config-unable-to-determine-desired-retention = تەۋسىيە قىلىنغان ئەڭ ئاز ئەستە ساقلاش نىسبىتىنى ھېسابلىيالمايدۇ
 deck-config-must-have-400-reviews =
     { $count ->
         [one] پەقەت { $count } تەكرارلاش خاتىرىسىنى تاپتى. بۇ مەشغۇلاتنى ئىجرا قىلىش ئۈچۈن كەم دېگەندە 400 تەكرارلاش خاتىرىڭىز بولۇشى كېرەك.
@@ -292,7 +295,6 @@ deck-config-must-have-400-reviews =
 # Numbers that control how aggressively the FSRS algorithm schedules cards
 deck-config-weights = FSRS پارامېتىر
 deck-config-compute-optimal-weights = FSRS پارامېتىرنى ئەلالاشتۇرۇش
-deck-config-compute-minimum-recommended-retention = تەۋسىيە قىلىنغان ئەڭ تۆۋەن ئەستە ساقلاش نىسبىتى
 deck-config-optimize-button = ئەلالاشتۇر
 # Indicates that a given function or label, provided via the "text" variable, operates slowly.
 deck-config-slow-suffix = { $text } (ئاستا)
@@ -305,7 +307,6 @@ deck-config-historical-retention = تارىختىكى ئەستە ساقلاش ن
 deck-config-smaller-is-better = قىممىتى قانچە كىچىك بولسا سىزنىڭ تەكرارلاش تارىخ خاتىرىڭىزگە شۇنچە ماس كېلىدىغانلىقىنى ئىپادىلەيدۇ.
 deck-config-steps-too-large-for-fsrs = FSRS قوزغىتىلغاندا، 1 كۈندىن ئارتۇق ئۆگىنىش باسقۇچى ئارىلىقىنى تەڭشەش تەۋسىيە قىلىنمايدۇ.
 deck-config-get-params = پارامېتىرغا ئېرىشىش
-deck-config-predicted-minimum-recommended-retention = تەۋسىيە قىلىنغان ئەڭ تۆۋەن ئەستە ساقلاش نىسبىتى: { $num }
 deck-config-complete = { $num }% تامام.
 deck-config-iterations = تەكرارلىنىشى: { $count }…
 deck-config-reschedule-cards-on-change = ئۆزگەرگەندە كارتىنى قايتا كۈنتەرتىپكە تىزىدۇ
@@ -339,7 +340,6 @@ deck-config-compute-optimal-weights-tooltip2 =
     «ئەلالاشتۇر» توپچە چېكىلگەندە، FSRS تەكرارلاش خاتىرىڭىزنى تەھلىل قىلىپ، سىزگە ئەڭ ماس كېلىدىغان ئەستە تۇتۇش ۋە ئۆگىنىۋاتقان مەزمۇننىڭ پارامېتىرىنى ھاسىل قىلىدۇ. ئەگەر ئوبيېكتىپ جەھەتتە قىيىنلىق دەرىجىسى زور دەرىجىدە پەرقلىنىدىغان دەستىڭىز بولسا، ئۇلارغا ئوخشاش بولمىغان ئالدىن تەڭشەك ئىشلىتىشىڭىزنى تەۋسىيە قىلىمىز. چۈنكى ئاددى دەستە بىلەن مۇرەككەپ دەستەنىڭ پارامېتىرى پەرقلىق. دائىم پارامېتىرنى ئەلالاشتۇرۇشىڭىز ھاجەتسىز، بىر قانچە ئايدا بىر قېتىم ئەلالاشتۇرسىڭىزلا يېتەرلىك.
     
     كۆڭۈلدىكى ئەھۋالدا، مەزكۇر ئالدىن تەڭشەكنى ئىشلىتىدىغان دەستەنىڭ تەكرارلاش خاتىرىسىگە ئاساسەن پارامېتىر ھېسابلىنىدۇ. ئەگەر قايسى پارامېتىرنىڭ ئەلالاشتۇرۇلغان كارتىغا ئىشلىتىدىغانلىقىنى ئۆزگەرتمەكچى بولسىڭىز، پارامېتىرنى ھېسابلاشتىن ئىلگىرى ئىزدەش مەزمۇنىنى تەڭشەشنى تاللىسىڭىز بولىدۇ.
-deck-config-compute-optimal-retention-tooltip4 = بۇ قورال ئەڭ قىسقا ۋاقىتتا ئەڭ كۆپ ماتېرىيال ئۆگىنەلەيدىغانلىقىنى ھېسابلاپ ئارزۇدىكى ئەستە ساقلاش نىسبىتىنى تېپىپ چىقىدۇ، ئەستە ساقلاش نىسبىتىنى قانچە قىلىپ تەڭشەشنى قارار قىلغاندا، بۇ ھېسابلانغان سانلىق قىممەتتىن پايلانغىلى بولىدۇ. ئەگەر تېخىمۇ كۆپ ۋاقىتتا تېخىمۇ يۇقىرى ئەستە ساقلاش نىسبىتىگە ئېرىشمەكچى بولسىڭىز، تېخىمۇ يۇقىرى ئەستە ساقلاش نىسبىتىنى تاللاڭ. ئەستە ساقلاش نىسبىتىنى ئەڭ تۆۋەن قىممەتتىنمۇ تۆۋەن تەڭشەش تەشەببۇس قىلىنمايدۇ، چۈنكى يۇقىرى ئۇنتۇش نىسبىتى خىزمەت ۋاقتىنى ئاشۇرۇۋېتىدۇ.
 deck-config-please-save-your-changes-first = ئاۋۋال ئۆزگەرتىشىڭىزنى ساقلاڭ.
 deck-config-workload-factor-change =
     مۆلچەردىكى خىزمەت مىقدارى: { $factor }x
@@ -358,6 +358,7 @@ deck-config-checking-for-improvement = ياخشىلىنىشنى تەكشۈرۈۋ
 deck-config-optimizing-preset = ئالدىن تەڭشەكنى ئەلالاشتۇرۇۋاتىدۇ { $current_count }/{ $total_count }…
 deck-config-fsrs-must-be-enabled = ئالدى بىلەن FSRS نى قوزغىتىش كېرەك.
 deck-config-fsrs-params-optimal = نۆۋەتتە FSRS نىڭ پارامېتىرلىرى ئەلالاشتۇرۇلغان.
+deck-config-fsrs-confirm-save-and-optimize = بۇ باشقا ھەر قانداق ئۆزگىرىشنى ساقلايدۇ. راستتىنلا شۇنداق قىلامسىز؟
 deck-config-fsrs-params-no-reviews = تەكرارلاش خاتىرىسىنى تاپالمىدى. بارلىق ئەلالاشتۇرۇشقا تېگىشلىك دەستە (تارماق دەستىمۇ ئىچىدە) نىڭ ھەممىسى نۆۋەتتىكى ئالدىن تەڭشەكنى ئىشلىتىۋاتقانلىقىنى تەكشۈرۈپ ئاندىن قايتا سىناڭ.
 deck-config-wait-for-audio = ئۈن قويۇلۇشىنى كۈتىدۇ
 deck-config-show-reminder = ئەسكەرتىشنى كۆرسەت
@@ -371,6 +372,7 @@ deck-config-desired-retention-below-optimal = ئارزۇيىڭىزدىكى ئە�
 # cards that can be recalled or retrieved on a specific date.
 deck-config-fsrs-simulator-experimental = FSRS تەقلىدلىگۈچ (تەجرىبە)
 deck-config-fsrs-simulate-desired-retention-experimental = FSRS ئۈمىد قىلغان ئەستە ساقلاش نىسبىتىنى تەقلىدلىگۈچ (تەجرىبە)
+deck-config-fsrs-simulate-save-preset = ئەلالاشتۇرۇلغاندىن كېيىن، تەقلىدلىگۈچنى ئىجرا قىلىشتىن ئىلگىرى دەستىڭىزنىڭ ئالدىن تەڭشىكىنى ساقلاڭ.
 deck-config-fsrs-desired-retention-help-me-decide-experimental = ماڭا ياردەملىشىپ قارار قىلىدۇ (تەجرىبە)
 deck-config-additional-new-cards-to-simulate = تەقلىدلەيدىغان قوشۇمچە يېڭى كارتا سانى
 deck-config-simulate = تەقلىد
@@ -381,14 +383,12 @@ deck-config-smooth-graph = سىلىق گىرافىك
 deck-config-suspend-leeches = ئۈنۈمسىز كارتىنى ۋاقىتلىق توختىتىدۇ
 deck-config-save-options-to-preset = ئۆزگىرىشنى ئالدىن تەڭشەككە ساقلايدۇ
 deck-config-save-options-to-preset-confirm = تەقلىدلىگۈچتىكى نۆۋەتتىكى تەڭشەكنىڭ تاللانمىسىنى ھازىرقى ئالدىن تەڭشەكتىكى تاللانما بىلەن قاپلىۋېتەمدۇ يوق؟
-deck-config-plotted-on-x-axis = (X ئوقىدا سىزىدۇ)
 # Radio button in the FSRS simulation diagram (Deck options -> FSRS) selecting
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
 deck-config-fsrs-simulator-radio-memorized = ئەستە تۇتقان
-deck-config-fsrs-simulator-radio-ratio = ۋاقىت/ئەستە ساقلاش نىسبىتى
-# $time here is pre-formatted e.g. "10 Seconds" 
-deck-config-fsrs-simulator-ratio-tooltip = { $time } ھەر كارتىنى ئەستە ساقلاش
+deck-config-fsrs-simulator-radio-efficiency = ئۈنۈم
+deck-config-fsrs-simulator-ratio-tooltip2 = سائىتىگە { $time } كارتا ئەستە تۇتتى
 
 ## Messages related to the FSRS scheduler’s health check. The health check determines whether the correlation between FSRS predictions and your memory is good or bad. It can be optionally triggered as part of the "Optimize" function.
 
@@ -408,6 +408,15 @@ deck-config-fsrs-good-fit = FSRS ئەستە ساقلاش ھالىتىڭىزگە 
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-description-new-handling = Anki 2.1.41+ بىر تەرەپ قىلىش ئۇسۇلى
+deck-config-fsrs-simulator-radio-ratio = ۋاقىت/ئەستە ساقلاش نىسبىتى
+# $time here is pre-formatted e.g. "10 Seconds" 
+deck-config-fsrs-simulator-ratio-tooltip = { $time } ھەر كارتىنى ئەستە ساقلاش
+deck-config-unable-to-determine-desired-retention = تەۋسىيە قىلىنغان ئەڭ ئاز ئەستە ساقلاش نىسبىتىنى ھېسابلىيالمايدۇ
+deck-config-predicted-minimum-recommended-retention = تەۋسىيە قىلىنغان ئەڭ تۆۋەن ئەستە ساقلاش نىسبىتى: { $num }
+deck-config-compute-minimum-recommended-retention = تەۋسىيە قىلىنغان ئەڭ تۆۋەن ئەستە ساقلاش نىسبىتى
+deck-config-compute-optimal-retention-tooltip4 = بۇ قورال ئەڭ قىسقا ۋاقىتتا ئەڭ كۆپ ماتېرىيال ئۆگىنەلەيدىغانلىقىنى ھېسابلاپ ئارزۇدىكى ئەستە ساقلاش نىسبىتىنى تېپىپ چىقىدۇ، ئەستە ساقلاش نىسبىتىنى قانچە قىلىپ تەڭشەشنى قارار قىلغاندا، بۇ ھېسابلانغان سانلىق قىممەتتىن پايلانغىلى بولىدۇ. ئەگەر تېخىمۇ كۆپ ۋاقىتتا تېخىمۇ يۇقىرى ئەستە ساقلاش نىسبىتىگە ئېرىشمەكچى بولسىڭىز، تېخىمۇ يۇقىرى ئەستە ساقلاش نىسبىتىنى تاللاڭ. ئەستە ساقلاش نىسبىتىنى ئەڭ تۆۋەن قىممەتتىنمۇ تۆۋەن تەڭشەش تەشەببۇس قىلىنمايدۇ، چۈنكى يۇقىرى ئۇنتۇش نىسبىتى خىزمەت ۋاقتىنى ئاشۇرۇۋېتىدۇ.
+deck-config-plotted-on-x-axis = (X ئوقىدا سىزىدۇ)
 deck-config-a-100-day-interval =
     { $days ->
         [one] ئەسلىدىكى 100 كۈنلۈك مەزگىل { $days } كۈنگە ئۆزگىرىدۇ.

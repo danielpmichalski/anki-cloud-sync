@@ -7,7 +7,7 @@ preferences-language = Til
 preferences-interrupt-current-audio-when-answering = Javob berayotganda joriy audioni toʻxtatish
 preferences-learn-ahead-limit = Oldindan oʻrganish limiti
 preferences-mins = daqiqa
-preferences-network = Sinxronlashmoqda
+preferences-network = Sinxronizatsiya
 preferences-next-day-starts-at = Keyingi kunning boshlanishini
 preferences-media-is-not-backed-up = Media fayllar zaxiralanmagan. Xavfsiz boʻlish uchun Anki jildingizning vaqti-vaqti bilan zaxiralang.
 preferences-on-next-sync-force-changes-in = Keyingi sinxronlashda, oʻzgarishlarni bir tomonlama majburiy sinxronlash
@@ -35,15 +35,15 @@ preferences-you-can-restore-backups-via-fileswitch = Zaxira nusxalarini Fayl > P
 preferences-legacy-timezone-handling = Eski vaqt mintaqasini boshqarish funksiyasi (xatoliklar boʻlishi mumkin, ammo AnkiDroid { "<=" } 2.14 uchun zarur)
 preferences-default-search-text = Birlamchi qidiruv matni
 preferences-default-search-text-example = masalan 'deck:current '
-preferences-theme = Mavzu
+preferences-theme = Tema
 preferences-theme-follow-system = Tizimga rioya qilish
 preferences-theme-light = Yorugʻ
-preferences-theme-dark = Tungi
+preferences-theme-dark = Qorongʻu
 preferences-v3-scheduler = V3 rejalashtiruvchi
 preferences-check-for-updates = Dastur yangilanishlarini tekshirish
-preferences-ignore-accents-in-search = Qidiruvda diakritik belgilarni inobatga olmaslik (sekinroq)
+preferences-ignore-accents-in-search = Qidiruvda diakritik belgilarni inobatga olmaslik (sekin ishlaydi)
 preferences-backup-explanation =
-    Anki vaqti-vaqti bilan toʻplamingizni zaxiralab turadi. Zaxira nusxalari 2 kundan ortiq turgandan keyin,
+    Anki vaqti-vaqti bilan kolleksiyangizni zaxiralab turadi. Zaxira nusxalari 2 kundan ortiq turgandan keyin,
     Anki diskda boʻsh joy yaratish uchun ularni baʼzilarini oʻchirib tashlaydi.
 preferences-daily-backups = Saqlash uchun kunlik zaxira nusxalar soni:
 preferences-weekly-backups = Saqlash uchun haftalik zaxira nusxalar soni:
@@ -56,7 +56,7 @@ preferences-custom-sync-url-disclaimer = Ilgʻor foydalanuvchilar uchun - qoʻll
 preferences-hide-top-bar-during-review = Takrorlash paytida yuqoridagi panelni yashirish
 preferences-hide-bottom-bar-during-review = Takrorlash paytida pastdagi panelni yashirish
 preferences-always = Har doim
-preferences-full-screen-only = Faqat butun ekranda
+preferences-full-screen-only = Faqat butun ekran rejimida
 preferences-appearance = Koʻrinish
 preferences-general = Umumiy
 preferences-style = Stil
@@ -68,7 +68,7 @@ preferences-minimalist-mode-tooltip = Interfeysni yanada ixchamroq/soddaroq qili
 preferences-editing = Tahrirlash
 preferences-browsing = Karta brauzeri
 preferences-default-deck = Birlamchi dasta
-preferences-account = AnkiWeb hisobi
+preferences-account = AnkiWeb akkaunti
 preferences-note = Qayd
 preferences-scheduler = Rejalashtiruvchi
 preferences-user-interface = Foydalanuvchi interfeysi
