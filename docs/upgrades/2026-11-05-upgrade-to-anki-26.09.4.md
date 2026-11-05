@@ -63,6 +63,8 @@ Not run: sidecar API / REST / MCP checks against the new collection schema (belo
 - **Manual protocol testing with curl:** requests need an `anki-sync` header (`{"v":11,"k":"","c":"x","s":""}`) **and a zstd-compressed body**, otherwise the server answers 400 (`InvalidBoundary` / `Unknown frame descriptor`). That is test-request error, not a server fault.
 - **Release automation:** it's `auto-tag.yml` (reads `.version`), *not* release-please. The commit type decides whether a release is cut; `chore:`/`docs:`/`refactor:` don't trigger one.
 
+- **Auto Tag failed after merge (2026-11-05, run 42087618798):** `actions/checkout` died with `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. Cause: the `GH_PAT` repo secret (created 2026-04-23, last good Auto Tag 2026-04-26) had expired/was revoked: git got a 401 on the token and fell back to a credential prompt. Nothing was tagged or published. Fix: new PAT (fine-grained: Contents RW + Checks R; used by both `auto-tag.yml` and `release.yml`), `gh secret set GH_PAT`, then `gh run rerun <id> --failed`. Consider a GitHub App token or `GITHUB_TOKEN` + `workflow_call` so releases don't depend on an expiring PAT.
+
 ## 5. Follow-ups
 
 - [ ] Commit (conventional, `feat:` so `auto-tag` cuts `v26.09.4-r1`) and merge to `main`. Don't include untracked `tmp.md`.
