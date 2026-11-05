@@ -22,12 +22,13 @@ browsing-cards-deleted =
     }
 browsing-cards-deleted-with-deckname =
     { $count ->
-        [one] carte supprimée de
-       *[other] cartes supprimées de
+        [one] { $count } carte supprimée de { $deck_name }.
+       *[other] { $count }  cartes supprimées de { $deck_name }.
     }
 browsing-change-deck = Changer de paquet
 browsing-change-deck2 = Changer de paquet...
 browsing-change-note-type = Modifier le type de note
+# Action in a context menu (right mouse-click on a card type)
 browsing-change-note-type2 = Modifier le type de la note...
 browsing-change-notetype = Modifier le type de note
 browsing-clear-unused-tags = Supprimer les étiquettes inutilisées
@@ -88,8 +89,8 @@ browsing-shift-position-of-existing-cards = Changer la position de cartes exista
 browsing-sidebar = Barre latérale
 browsing-sidebar-filter = Filtre de la barre latérale
 # The field that is used for sorting (sort is an adjective here, not a verb)
-browsing-sort-field = Trier selon le champ
-browsing-sorting-on-this-column-is-not = Le tri sur cette colonne n’est pas permis. Choisissez-en une autre.
+browsing-sort-field = Champ de tri
+browsing-sorting-on-this-column-is-not = Il n'est pas possible de trier selon cette colonne. Merci d'en choisir une autre.
 browsing-start-position = Position de départ :
 browsing-step = Pas :
 browsing-suspended = Suspendues

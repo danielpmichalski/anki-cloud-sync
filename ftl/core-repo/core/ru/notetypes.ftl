@@ -1,4 +1,6 @@
 notetypes-notetype = Тип записи
+notetypes-choose-note-type = Выбрать тип записи
+notetypes-change-note-type-ctrlandn = Сменить тип записи (Ctrl+N)
 
 ## Default field names in newly created note types
 
@@ -43,7 +45,7 @@ notetypes-occlusion = Скрытие
 notetypes-occlusion-mask = Маска
 notetypes-occlusion-note = Запись
 notetypes-comments-field = Комментарии
-notetypes-toggle-masks = Включить маски
+notetypes-toggle-masks = Переключить маски
 notetypes-image-occlusion-name = Скрытие части изображений
 notetypes-hide-all-guess-one = Спрятать всё, проверять одно
 notetypes-hide-one-guess-one = Спрятать одно, проверять одно

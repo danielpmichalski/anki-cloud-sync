@@ -4,7 +4,7 @@
 ## Media synchronization
 
 sync-media-added-count = Afegits: { $up }↑ { $down }↓
-sync-media-removed-count = Eliminades: { $up }↑ { $down }↓
+sync-media-removed-count = Eliminats: { $up }↑ { $down }↓
 sync-media-checked-count = Comprovats: { $count }
 sync-media-starting = Iniciant la sincronizació dels fitxers multimèdia…
 sync-media-complete = Sincronitació dels fitxers multimèdia completada.
@@ -24,21 +24,22 @@ sync-server-error = AnkiWeb ha trobat un problema. Espereu uns minuts i torneu-h
 sync-client-too-old = La vostra versió d'Anki és massa antiga. Actualitzeu a l'última versió per a continuar amb la sincronització.
 sync-wrong-pass = El vostre identificador d'AnkiWeb o la contrasenya són incorrectes; torneu-ho a intentar.
 sync-resync-required = Torneu a sincronitzar les dades. Si l'error persisteix, publiqueu un missatge al lloc de suport.
-sync-must-wait-for-end = Anki s'està sincronitzant ara mateix. Espereu que es completi la sincronització i torneu-ho a intentar.
+sync-must-wait-for-end = S’està sincronitzant Anki. Espereu que acabi la sincronització i torneu-ho a intentar.
 sync-confirm-empty-download = La col·lecció local no conté cap targeta. Voleu descarregar-ne des d’AnkiWeb?
 sync-confirm-empty-upload = La col·lecció d’AnkiWeb està buida. Voleu substituir-la per la col·lecció local?
 sync-conflict-explanation =
     Les baralles d’aquest dispositiu i les d’AnkiWeb són diferents i no es poden combinar. Cal substituir les baralles d’una ubicació per les de l’altra.
     
-    Si premeu «Descarrega», Anki baixarà la col·lecció d’AnkiWeb i perdreu tots els canvis fets en aquest dispositiu des de l’última sincronització.
+    Si premeu «Baixa d’AnkiWeb», Anki baixarà la col·lecció d’AnkiWeb i perdreu tots els canvis fets en aquest dispositiu des de l’última sincronització.
     
-    Si premeu «Carrega», Anki pujarà la col·lecció a AnkiWeb i perdreu tots els canvis fets en AnkiWeb o en altres dispositiu des de l’última sincronització.
+    Si premeu «Puja a AnkiWeb», Anki pujarà la col·lecció a AnkiWeb i perdreu tots els canvis fets en AnkiWeb o en altres dispositiu des de l’última sincronització.
     
     Quan tots els dispositius estiguin sincronitzats, els repassos futurs i les targetes noves es combinaran automàticament.
 sync-conflict-explanation2 =
     S’ha produït un conflicte entre les baralles d’aquest dispositiu i les d’AnkiWeb. Trieu quines voleu conservar:
-    – **{ sync-download-from-ankiweb }:** substitueix les baralles d’aquest dispositiu amb les d’AnkiWeb (perdreu els canvis fets en aquest dispositiu des de l’última sincronització).
-    – **{ sync-upload-to-ankiweb }:** substitueix les baralles d’AnkiWeb amb les baralles d’aquest dispositiu i elimina qualsevol canvi en AnkiWeb.
+    
+    - **{ sync-download-from-ankiweb }:** substitueix les baralles d’aquest dispositiu amb les d’AnkiWeb (perdreu els canvis fets en aquest dispositiu des de l’última sincronització).
+    - **{ sync-upload-to-ankiweb }:** substitueix les baralles d’AnkiWeb amb les baralles d’aquest dispositiu i elimina qualsevol canvi en AnkiWeb.
     
     Quan s’hagi resolt el conflicte, la sincronització funcionarà amb normalitat.
 sync-ankiweb-id-label = Identificador d'AnkiWeb:
@@ -68,7 +69,7 @@ sync-cancel-button = Anul·la
 
 sync-downloading-from-ankiweb = S'està baixant des d'AnkiWeb…
 sync-uploading-to-ankiweb = S’està pujant a AnkiWeb…
-sync-syncing = S'està sincronitzant…
+sync-syncing = S’està sincronitzant…
 sync-checking = S’està comprovant…
 sync-connecting = S'està connectant…
 sync-added-updated-count = Afegides o modificades: { $up }↑ { $down }↓

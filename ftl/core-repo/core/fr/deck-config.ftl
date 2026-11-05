@@ -257,7 +257,7 @@ deck-config-minimum-interval-tooltip = L'intervalle minimum donné à une carte 
 deck-config-custom-scheduling = Planification personnalisée
 deck-config-custom-scheduling-tooltip = Cela affecte la totalité de la collection. À utiliser à vos risques et périls !
 
-# Easy Days section
+## Easy Days section.
 
 deck-config-easy-days-title = Jours faciles
 deck-config-easy-days-monday = Lundi
@@ -329,7 +329,6 @@ deck-config-which-deck = Pour quel paquet souhaitez-vous afficher les options ?
 deck-config-updating-cards = Mise à jour des cartes : { $current_cards_count }/{ $total_cards_count }...
 deck-config-invalid-parameters = Les paramètres FSRS fournis sont invalides. Laissez les vides pour utiliser les paramètres par défaut.
 deck-config-not-enough-history = L'historique des révisions est insuffisant pour effectuer cette opération.
-deck-config-unable-to-determine-desired-retention = Impossible de déterminer la rétention optimale.
 deck-config-must-have-400-reviews =
     { $count ->
         [one] Seulement { $count } révision a été trouvée. Vous devez avoir au moins 400 révisions pour cette opération.
@@ -338,8 +337,9 @@ deck-config-must-have-400-reviews =
 # Numbers that control how aggressively the FSRS algorithm schedules cards
 deck-config-weights = Paramètres du FSRS
 deck-config-compute-optimal-weights = Optimiser les paramètres du FSRS
-deck-config-compute-minimum-recommended-retention = Rétention minimum recommandée
-deck-config-optimize-button = Optimiser
+deck-config-optimize-button = Optimiser le préréglage actuel
+# Indicates that a given function or label, provided via the "text" variable, operates slowly.
+deck-config-slow-suffix = { $text } (lent)
 deck-config-compute-button = Calculer
 deck-config-ignore-before = Ignorer les révisions avant
 deck-config-time-to-optimize = Ça fait longtemps - utiliser le bouton "Optimiser tous les préréglages" est recommandé.
@@ -349,7 +349,6 @@ deck-config-historical-retention = Rétention historique
 deck-config-smaller-is-better = Les petits nombres indiquent de meilleures estimations de la mémoire.
 deck-config-steps-too-large-for-fsrs = Lorsque le FSRS est activé, les étapes d'1 jour ou plus ne sont pas recommandées.
 deck-config-get-params = Obtenir les paramètres
-deck-config-predicted-minimum-recommended-retention = Rétention minimum recommandée: { $num }
 deck-config-complete = { $num }% complété.
 deck-config-iterations = Itération : { $count }...
 deck-config-reschedule-cards-on-change = Replanifier les cartes lors d'un changement
@@ -365,6 +364,7 @@ deck-config-desired-retention-tooltip =
     La valeur par défaut de 0,9 planifie les cartes de manière à ce que vous ayez 90 % de chances de vous en souvenir lorsqu'elles apparaîtront de nouveau.
     Si vous augmentez cette valeur, Anki affichera les cartes plus fréquemment afin d'augmenter les chances que vous vous en souveniez. Si vous diminuez cette valeur, Anki montrera les cartes moins fréquemment, et vous en oublierez davantage. 
     Soyez prudent lors de l'ajustement de cette valeur - des valeurs plus élevées augmenteront considérablement votre charge de travail, et des valeurs plus faibles peuvent être démoralisantes en vous faisant oublier une grande partie du contenu appris.
+deck-config-desired-retention-tooltip2 = Les valeurs de charge de travail fournies par la boîte d'information sont une approximation grossière. Pour plus de précision, utilisez le simulateur.
 deck-config-historical-retention-tooltip =
     Lorsqu'une partie de votre historique de révision est manquante, le FSRS doit combler ce manque. Par défaut, il suppose que lorsque vous avez effectué ces anciennes révisions, vous vous souveniez de 90 % du contenu. Si votre ancienne rétention était en réalité sensiblement supérieure ou inférieure à 90 %, le réglage de cette option permettra au FSRS d'obtenir une meilleure approximation des révisions manquantes.
     
@@ -396,25 +396,21 @@ deck-config-compute-optimal-weights-tooltip2 =
     Par défaut, les paramètres seront calculés à partir de l’historique de révision de toutes les platines utilisant le préréglage actuel. Vous pouvez
     ajustez éventuellement la recherche avant de calculer les paramètres, si vous souhaitez modifier les cartes utilisées pour
     optimiser les paramètres.
-deck-config-compute-optimal-retention-tooltip4 =
-    Cet outil tentera de trouver la valeur de rétention souhaitée 
-    
-    qui mènera à l’apprentissage du plus grand nombre de matières, en un minimum de temps. Le nombre calculé peut servir de référence
-    lorsque vous décidez sur quoi définir la rétention souhaitée. Vous souhaiterez peut-être choisir une rétention souhaitée plus élevée, si vous êtes 
-    prêt(e) à échanger plus de temps d’étude contre un taux de rappel plus élevé. Définir la rétention souhaitée inférieure au minimum
-    Il n'est pas conseillé, car cela entraînerait une charge de travail plus élevée, en raison du taux d’oubli élevé.
 deck-config-please-save-your-changes-first = Veuillez sauvegarder vos changements d'abord.
-deck-config-a-100-day-interval =
-    { $days ->
-        [one] Un intervalle de 100 jours deviendra un intervalle de { $days } jour.
-       *[other] Un intervalle de 100 jours deviendra un intervalle de { $days } jours.
-    }
+deck-config-workload-factor-change =
+    Charge de travail approximative : { $factor }x
+    (comparé à { $previousDR }% de rétention souhaitée)
+deck-config-workload-factor-unchanged = Plus cette valeur est élevée, plus les cartes vous seront présentées fréquemment.
+deck-config-desired-retention-too-low = Votre rétention souhaitée est très faible, ce qui peut entraîner des intervalles très longs.
+deck-config-desired-retention-too-high = Votre rétention souhaitée est très élevée, ce qui peut entraîner des intervalles très courtes.
 deck-config-percent-of-reviews =
     { $reviews ->
         [one] { $pct }% de { $reviews } révision
        *[other] { $pct }% de { $reviews } révisions
     }
 deck-config-percent-input = { $pct }%
+# This message appears during FSRS parameter optimization.
+deck-config-checking-for-improvement = Vérification des améliorations...
 deck-config-optimizing-preset = Optimisation des préréglages { $current_count }/{ $total_count }...
 deck-config-fsrs-must-be-enabled = Le FSRS doit être préalablement activé.
 deck-config-fsrs-params-optimal = Les paramètres du FSRS semblent actuellement être optimaux.
@@ -430,6 +426,9 @@ deck-config-desired-retention-below-optimal = Votre taux de rétention souhaité
 # diagram (Deck options -> FSRS) showing the total number of
 # cards that can be recalled or retrieved on a specific date.
 deck-config-fsrs-simulator-experimental = Simulateur FSRS (expérimental)
+deck-config-fsrs-simulate-desired-retention-experimental = Simulateur de rétention souhaitée FSRS (Expérimental)
+deck-config-fsrs-simulate-save-preset = Après l'optimisation, veuillez sauvegarder votre préréglage de paquet avant de lancer le simulateur.
+deck-config-fsrs-desired-retention-help-me-decide-experimental = Aidez-moi à décider (Expérimental)
 deck-config-additional-new-cards-to-simulate = Cartes supplémentaires à simuler
 deck-config-simulate = Simuler
 deck-config-clear-last-simulate = Supprimer la dernière simulation
@@ -438,13 +437,49 @@ deck-config-advanced-settings = Paramètres avancés
 deck-config-smooth-graph = Lisser le graphique
 deck-config-suspend-leeches = Suspendre les cartes pénibles (cartes « sangsue »)
 deck-config-save-options-to-preset = Sauvegarder les Changements au Prérèglage
+deck-config-save-options-to-preset-confirm = Écraser les options de votre préréglage actuel avec les options actuellement définies dans le simulateur ?
 # Radio button in the FSRS simulation diagram (Deck options -> FSRS) selecting
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
 deck-config-fsrs-simulator-radio-memorized = Mémorisées
+deck-config-fsrs-simulator-radio-ratio = Ratio Temps / Cartes mémorisées
+# $time here is pre-formatted e.g. "10 Seconds" 
+deck-config-fsrs-simulator-ratio-tooltip = { $time } par carte mémorisée
+
+## Messages related to the FSRS scheduler’s health check. The health check determines whether the correlation between FSRS predictions and your memory is good or bad. It can be optionally triggered as part of the "Optimize" function.
+
+# Checkbox
+deck-config-health-check = Vérifier la santé lors de l'optimisation
+# Message box showing the result of the health check
+deck-config-fsrs-bad-fit-warning =
+    Bilan de santé:
+    Votre mémoire est difficile à prévoir pour FSRS. Recommandations :
+    - Suspendez ou reformulez les cartes que vous oubliez constamment.
+    - Utilisez les boutons de réponse de manière cohérente. Gardez à l'esprit que "Difficile" est une note passable, pas une note d'échec.
+    - Comprenez avant de mémoriser.
+    Si vous suivez ces suggestions, les performances s'amélioreront généralement dans les prochains mois.
+# Message box showing the result of the health check
+deck-config-fsrs-good-fit =
+    Bilan de santé : 
+    FSRS peut bien s'adapter à votre mémoire.
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-unable-to-determine-desired-retention = Impossible de déterminer la rétention optimale.
+deck-config-predicted-minimum-recommended-retention = Rétention minimum recommandée: { $num }
+deck-config-compute-minimum-recommended-retention = Rétention minimum recommandée
+deck-config-compute-optimal-retention-tooltip4 =
+    Cet outil tentera de trouver la valeur de rétention souhaitée 
+    
+    qui mènera à l’apprentissage du plus grand nombre de matières, en un minimum de temps. Le nombre calculé peut servir de référence
+    lorsque vous décidez sur quoi définir la rétention souhaitée. Vous souhaiterez peut-être choisir une rétention souhaitée plus élevée, si vous êtes 
+    prêt(e) à échanger plus de temps d’étude contre un taux de rappel plus élevé. Définir la rétention souhaitée inférieure au minimum
+    Il n'est pas conseillé, car cela entraînerait une charge de travail plus élevée, en raison du taux d’oubli élevé.
+deck-config-a-100-day-interval =
+    { $days ->
+        [one] Un intervalle de 100 jours deviendra un intervalle de { $days } jour.
+       *[other] Un intervalle de 100 jours deviendra un intervalle de { $days } jours.
+    }
 deck-config-bury-siblings = Enfouir les cartes sœurs
 deck-config-do-not-bury = Ne pas enfouir les cartes sœurs
 deck-config-bury-if-new = Enfouir si nouveau

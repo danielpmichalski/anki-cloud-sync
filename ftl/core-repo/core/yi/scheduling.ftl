@@ -22,8 +22,8 @@ scheduling-time-span-seconds =
     }
 scheduling-time-span-minutes =
     { $amount ->
-        [one] { $amount } מינוט
-       *[other] { $amount } מינוט
+        [one] { $amount } מינוטן
+       *[other] { $amount } מינוטן
     }
 scheduling-time-span-hours =
     { $amount ->
@@ -73,20 +73,20 @@ scheduling-learn-remaining =
        *[other] ס׳בלײַבן { $remaining } לערנענדיקע-קאַרטלעך וואָס קומען טערמיניק שפּעטער הײַנט.
     }
 scheduling-congratulations-finished = יישר-כּוח! האָסט פֿאַרענדיקט דעם טעשל לעת-עתּה.
-scheduling-today-review-limit-reached = האָסט שוין דערגרייכן דעם הײַנטיקן איבער׳חזר-גרענעץ, כאָטש עס בלײַבן נאָך קאַרלעך אויף איבערצו׳חזר׳ן. כּדי צו אָפּטימיזירן דאָס אויסשטודירן, איז אפֿשר כּדאי צו פֿאַרגרעסערן דעם טעגליכן גרענעץ אין די ״ברירות״.
-scheduling-today-new-limit-reached = ס׳בלײַבן נאָך נײַע קאַרטלעך, כאָטש דו האָסט שוין דערגרייכן דעם טעגלעכן גרענעץ. קענסט פֿאַרגרעסערן דעם גרענעץ אין די ברירות, נאָר היט זיך אַז, וואָס מערער נײַע קאַרטלעך ווערן אײַנגעפֿירט, אַלץ גרעסער וועט ווערן די קורץ-משכדיק אָנלאָדונג.
+scheduling-today-review-limit-reached = האָסט שוין דערגרייכט דעם הײַנטיקן אײַנ׳חזר-גרענעץ, כאָטש עס בלײַבן נאָך קאַרלעך אויף וואָס זיך אײַנצו׳חזר׳ן. כּדי צו אָפּטימיזירן דאָס אויסשטודירן, איז אפֿשר כּדאי צו פֿאַרגרעסערן דעם טעגליכן גרענעץ אין די „ברירות״.
+scheduling-today-new-limit-reached = ס׳בלײַבן נאָך נײַע קאַרטלעך, כאָטש דו האָסט שוין דערגרייכט דעם טעגלעכן גרענעץ. קענסט פֿאַרגרעסערן דעם גרענעץ אין די ברירות, נאָר היט זיך אַז, וואָס מערער נײַע קאַרטלעך ווערן אײַנגעפֿירט, אַלץ גרעסער וועט ווערן די קורץ-משכדיק אָנלאָדונג.
 scheduling-buried-cards-found = עס זענען דאָ קאַרטלעך וואָס זענען אָפּגעהאַלטן געוואָרן, און וועט מאָרגן ווערן אַרויסגעוויזן. קענסט { $unburyThem } ווען דו ווילסט זיי זען תּיכף-ומיד.
 # used in scheduling-buried-cards-found
 # "... you can unbury them if you wish to see..."
-scheduling-unbury-them = צוריקנעמען זיי
-scheduling-how-to-custom-study = ווען דו ווילסט זיך לערנען אויסן דעם געווייטלעכן פּלאַן, קענסט ניצן { $customStudy }.
+scheduling-unbury-them = זיי צוריקנעמען
+scheduling-how-to-custom-study = ווען דו ווילסט זיך לערנען אויסן דעם געווייטלעכן פּלאַן, קענסט { $customStudy }.
 # used in scheduling-how-to-custom-study
 # "... you can use the custom study feature."
 scheduling-custom-study = אײַנ׳חזר׳ן צוגעפּאַסט
 
 ## Scheduler upgrade
 
-scheduling-update-soon = Anki 2.1 האַלט אַ נײַ פּלאַנירער, וואָס פֿאַרריכט עטלעכע ענינים פון פּריערדיקע ווערסיעס. ס׳איז כּדאי אַזוי צו דערהײַנטיקן דערצו.
+scheduling-update-soon = „אַנקי״ 2.1 האַלט אַ נײַ פּלאַנירער, וואָס פֿאַרריכט עטלעכע ענינים פון פּריערדיקע ווערסיעס. ס׳איז כּדאי אַזוי צו דערהײַנטיקן דערצו.
 scheduling-update-done = פּלאַנירער איז דערהײַנטיקט געוואָרן.
 scheduling-update-button = דערהײַנטיקן
 scheduling-update-later-button = שפּעטער
@@ -112,26 +112,26 @@ scheduling-graduating-interval = גראַדויִרן-צווישנצײַט
 scheduling-hard-interval = שווער-צווישנצײַט
 scheduling-ignore-answer-times-longer-than = פֿאַרקוקן ענטפֿער-צײַטן לענגער פון
 scheduling-interval-modifier = צווישנצײַט מאָדיפֿיצירער
-scheduling-lapses = פֿאַרטונקלונגען
-scheduling-lapses2 = פֿאַרטונקלונגען
-scheduling-learning = לערנענדיק
+scheduling-lapses = לאַפּסוסן
+scheduling-lapses2 = לאַפּסוסן
+scheduling-learning = לערנענדיקע
 scheduling-leech-action = שנאָרער-טוּונג
 scheduling-leech-threshold = שנאָרער-שוועל
 scheduling-maximum-interval = מאַקסימאַל צווישנצײַט
-scheduling-maximum-reviewsday = מאַקסימאַל איבער׳חזר׳ונגען לויט טאָג
+scheduling-maximum-reviewsday = מאַקסימאַלער צאָל אײַנצו׳חזר׳ן אין איין מעת-לעת
 scheduling-minimum-interval = מינימאַל צווישנצײַט
-scheduling-mix-new-cards-and-reviews = צעמישן נײַע און חזר-קאַרטלעך
+scheduling-mix-new-cards-and-reviews = צעמישן נײַע קאַרטלעך און חזר-קאַרטלעך
 scheduling-new-cards = נײַע קאַרטלעך
-scheduling-new-cardsday = נײַע קאַרטלעך פּער טאָג
+scheduling-new-cardsday = נײַע קאַרטלעך לויט טאָג
 scheduling-new-interval = נײַע צווישנצײַט
 scheduling-new-options-group-name = נײַע ברירות-גרופּע נאָמען:
 scheduling-options-group = ברירות-גרופּע:
 scheduling-order = סדר
 scheduling-parent-limit = (אָפּשטאם גרענעץ: { $val })
-scheduling-reset-counts = אײַנשטעלן חשבונות פון איבער׳חזר׳ונגען און פֿאַרטונקלונג אויף ס׳נײַ
+scheduling-reset-counts = אײַנשטעלן חשבונות פֿון איבער׳חזר׳ן און פֿאַרטונקלען אויף ס׳נײַ
 scheduling-restore-position = אויפֿריכטן ערשטיקע אָרט וואו ס׳איז מעגלעך
-scheduling-review = איבער׳חזר׳ן
-scheduling-reviews = איבער׳חזר׳ונגען
+scheduling-review = אײַנ׳חזר׳ן
+scheduling-reviews = אײַנ׳חזר׳ונגען
 scheduling-seconds = סעקונדעס
 scheduling-set-all-decks-below-to = באַשטימען אַלע טעשלעך קלענער ווי { $val } אין אָט דער ברירה-גרופּע?
 scheduling-set-for-all-subdecks = באַשטימען אויף אַלע סובטעשלעך
@@ -153,13 +153,13 @@ scheduling-deck-updated =
     }
 scheduling-set-due-date-prompt =
     { $cards ->
-        [one] אויסווײַזן קאַרטלעך נאָך וויפֿל טעג?
+        [one] אויסווײַזן קאַרטל נאָך וויפֿל טעג?
        *[other] אויסווײַזן קאַרטלעך נאָך וויפֿל טעג?
     }
 scheduling-set-due-date-prompt-hint =
     0 = הײַנט
-    1! = מאָרגן + צופּאַסן צווישנצײַט אין 1
-    3-7 = אויסבלײַבן פון 3 ביז -7 טעג אויף טראַף
+    1! = מאָרגן + טוישן צווישנצײַט אין 1
+    3-7 = פון 3 ביז -7 טעג, אויסגעקליבן אויף טראַף
 scheduling-set-due-date-done =
     { $cards ->
         [one] באַשטימען טערמין פון { $cards } קאַרטל.

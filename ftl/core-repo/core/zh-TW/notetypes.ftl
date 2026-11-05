@@ -1,4 +1,6 @@
 notetypes-notetype = 筆記類型
+notetypes-choose-note-type = 選擇筆記類型
+notetypes-change-note-type-ctrlandn = 更改筆記類型 (Ctrl+N)
 
 ## Default field names in newly created note types
 
@@ -29,8 +31,8 @@ notetypes-create-scalable-images-with-dvisvgm = 使用 dvisvgm 建立可縮放�
 notetypes-delete-this-note-type-and-all = 要刪除此筆記類型及其所有卡片嗎？
 notetypes-delete-this-unused-note-type = 要刪除此未被使用的筆記類型嗎？
 notetypes-fields = 欄位
-notetypes-footer = 頁尾 (footer)
-notetypes-header = 頁頭 (header)
+notetypes-footer = 頁尾
+notetypes-header = 頁首
 notetypes-note-types = 筆記類型
 notetypes-options = 選項
 notetypes-please-add-another-note-type-first = 請先新增另一個筆記類型。

@@ -1,4 +1,5 @@
 qt-accel-about = &O Anki...
+qt-accel-about-mac = O Anki...
 qt-accel-cards = &Karty
 qt-accel-check-database = &Zkontrolovat databázi
 qt-accel-check-media = Zkontrolovat &multimédia...
@@ -40,7 +41,9 @@ qt-accel-layout-horizontal = &Horizontální
 qt-accel-zoom-in = &Přiblížit
 qt-accel-zoom-out = &Oddálit
 qt-accel-reset-zoom = &Resetovat přiblížení
+qt-accel-toggle-sidebar = Přepnout postranní panel
 qt-accel-zoom-editor-in = &Přiblížit editor
 qt-accel-zoom-editor-out = &Oddálit editor
 qt-accel-create-backup = &Vytvořit zálohu
 qt-accel-load-backup = &Obnovit ze zálohy
+qt-accel-upgrade-downgrade = Upgradovat/Downgradovat

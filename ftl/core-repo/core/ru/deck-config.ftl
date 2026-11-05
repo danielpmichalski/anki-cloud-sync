@@ -28,7 +28,7 @@ deck-config-limit-deck-v3 =
 deck-config-limit-new-bound-by-reviews = Лимит просмотров влияет на лимит новых. Например, если лимит равен 200 и в очереди 190 повторяемых, то в очередь будет добавлено не более 10 новых. Если лимит повторяемых достигнут, то новые не будут показаны.
 deck-config-limit-interday-bound-by-reviews = Лимит повторений влияет на карточки, перенесённые на другой день. Когда применяется лимит, перенесённые отбираются первыми, затем повторяемые и, наконец, новые.
 deck-config-tab-description =
-    - `Предустановка`: Лимит действует на все колоды с этой установкой.
+    - `Конфигурация`: Лимит действует на все колоды с этой конфигурацией.
     - `Эта колода`: Лимит только для этой колоды.
     - `Только сегодня`: Временный лимит для этой колоды.
 deck-config-new-cards-ignore-review-limit = Лимит повторений не влияет на новые
@@ -42,7 +42,7 @@ deck-config-affects-entire-collection = Действует для всей ко�
 ## Daily limit tabs: please try to keep these as short as the English version,
 ## as longer text will not fit on small screens.
 
-deck-config-shared-preset = Предустановка
+deck-config-shared-preset = Конфигурация
 deck-config-deck-only = Эта колода
 deck-config-today-only = Только сегодня
 
@@ -123,7 +123,7 @@ deck-config-interday-step-priority-tooltip =
     Лимит повторяемых сначала применяется к перенесённым изучаемым, после — к повторяемым. Этот параметр управляет порядком показа, но отбираются перенесённые изучаемые всегда первыми.
 deck-config-review-sort-order = Порядок повторяемых
 deck-config-review-sort-order-tooltip = По умолчанию первыми идут старые карточки. Если у вас накопилось много карточек, то первыми будут те, что в очереди дольше всего. Если просмотр накопившихся займёт несколько дней или вы хотите повторять карточки в порядке подколод, то другой порядок может подойти лучше.
-deck-config-display-order-will-use-current-deck = Anki будет использовать порядок показа из колоды, которую вы выбрали для учёбы, а не из её подколод.
+deck-config-display-order-will-use-current-deck = Anki будет использовать порядок показа из колоды, которую вы выбрали для изучения, а не из её подколод.
 
 ## Gather order and sort order of cards – Combobox entries
 
@@ -132,9 +132,9 @@ deck-config-new-gather-priority-deck = По колоде
 # Gather new cards ordered by deck, then ordered by random notes, ensuring all cards of the same note are grouped together.
 deck-config-new-gather-priority-deck-then-random-notes = По колоде, потом случайный
 # Gather new cards ordered by position number, ascending (lowest to highest).
-deck-config-new-gather-priority-position-lowest-first = По возрастанию номеров
+deck-config-new-gather-priority-position-lowest-first = По возрастанию № позиции
 # Gather new cards ordered by position number, descending (highest to lowest).
-deck-config-new-gather-priority-position-highest-first = По убыванию номеров
+deck-config-new-gather-priority-position-highest-first = По убыванию № позиции
 # Gather the cards ordered by random notes, ensuring all cards of the same note are grouped together.
 deck-config-new-gather-priority-random-notes = Случайные записи
 # Gather new cards randomly.
@@ -166,9 +166,9 @@ deck-config-sort-order-ascending-intervals = По возрастанию инт�
 # Sort the cards by the interval, in descending order (longest to shortest).
 deck-config-sort-order-descending-intervals = По убыванию интервалов
 # Sort the cards by ease, in ascending order (lowest to highest ease).
-deck-config-sort-order-ascending-ease = По увеличению лёгкости
+deck-config-sort-order-ascending-ease = По возрастанию лёгкости
 # Sort the cards by ease, in descending order (highest to lowest ease).
-deck-config-sort-order-descending-ease = По уменьшению лёгкости
+deck-config-sort-order-descending-ease = По убыванию лёгкости
 # Sort the cards by difficulty, in ascending order (easiest to hardest).
 deck-config-sort-order-ascending-difficulty = По возрастанию сложности
 # Sort the cards by difficulty, in descending order (hardest to easiest).
@@ -183,7 +183,7 @@ deck-config-sort-order-retrievability-descending = По убыванию всп�
 deck-config-timer-title = Таймер
 deck-config-maximum-answer-secs = Максимум секунд для ответа
 deck-config-maximum-answer-secs-tooltip = Максимум секунд для одного ответа. Если время ответа больше этого значения (например, если вы отошли от компьютера), то записанным временем будет заданный максимум.
-deck-config-show-answer-timer-tooltip = Показывать на экране учёбы секундомер, который засекает, сколько времени уходит у вас на ответ.
+deck-config-show-answer-timer-tooltip = Показывать при изучении секундомер, который засекает, сколько времени уходит у вас на ответ.
 deck-config-stop-timer-on-answer = Остановить таймер при ответе
 deck-config-stop-timer-on-answer-tooltip =
     Останавливать ли экранный таймер при появлении ответа.
@@ -246,14 +246,14 @@ deck-config-easy-days-change = Существующие повторы не бу
 
 ## Adding/renaming
 
-deck-config-add-group = Добавить предустановку
+deck-config-add-group = Добавить конфигурацию
 deck-config-name-prompt = Название
-deck-config-rename-group = Переименовать предустановку
-deck-config-clone-group = Клонировать предустановку
+deck-config-rename-group = Переименовать конфигурацию
+deck-config-clone-group = Клонировать конфигурацию
 
 ## Removing
 
-deck-config-remove-group = Удалить предустановку
+deck-config-remove-group = Удалить конфигурацию
 deck-config-will-require-full-sync = Запрошенное изменение потребует односторонней синхронизации. Если изменения вы вносили изменения  на другом устройстве и не синхронизировали их с этим, сделайте это перед тем, как продолжать.
 deck-config-confirm-remove-name = Удалить { $name }?
 
@@ -261,13 +261,13 @@ deck-config-confirm-remove-name = Удалить { $name }?
 
 deck-config-save-button = Сохранить
 deck-config-save-to-all-subdecks = Сохранить во все подколоды
-deck-config-save-and-optimize = Оптимизировать все предустановки
+deck-config-save-and-optimize = Оптимизировать все конфигурации
 deck-config-revert-button-tooltip = Сбросить параметр
 
 ## These strings are shown via the Description button at the bottom of the
 ## overview screen.
 
-deck-config-description-new-handling = Обработка, как в Anki 2.1.41+
+deck-config-description-new-handling2 = Интерпретировать как Markdown
 deck-config-description-new-handling-hint =
     Считает ввод разметкой Markdown и очищает HTML-ввод. Если включена, описание также будет показано на экране с поздравлением.
     Markdown будет показан как текст в Anki версий не выше 2.1.40.
@@ -317,6 +317,10 @@ deck-config-which-deck = Какую колоду вы выбираете?
 
 deck-config-updating-cards = Обновление карт: { $current_cards_count }/{ $total_cards_count }...
 deck-config-invalid-parameters = Указанные параметры FSRS недействительны. Оставьте поле для параметров пустым, чтобы использовать параметры по умолчанию.
+deck-config-placeholder-parameters =
+    Параметры по умолчанию
+    (Периодически нажимайте кнопку «{ deck-config-optimize-button }», чтобы FSRS лучше адаптировался к вашей памяти)
+deck-config-manual-parameter-edit-warning = Изменять параметры следует только с помощью кнопки «Оптимизировать». Редактировать их вручную категорически не рекомендуется.
 deck-config-not-enough-history = Недостаточно повторений для выполнения данной операции.
 deck-config-must-have-400-reviews =
     { $count ->
@@ -332,7 +336,7 @@ deck-config-optimize-button = Оптимизировать
 deck-config-slow-suffix = { $text } (медленно)
 deck-config-compute-button = Вычислить
 deck-config-ignore-before = Игнорировать карточки, повторенные до
-deck-config-time-to-optimize = С момента последней оптимизации прошло некоторое время — рекомендуется воспользоваться кнопкой «Оптимизировать все пакетные профили».
+deck-config-time-to-optimize = С момента последней оптимизации прошло некоторое время — рекомендуется воспользоваться кнопкой «Оптимизировать все конфигурации».
 deck-config-evaluate-button = Оценить
 deck-config-desired-retention = Желаемое усвоение
 deck-config-historical-retention = Историческое усвоение
@@ -341,12 +345,12 @@ deck-config-steps-too-large-for-fsrs = Когда включён FSRS, шаги 
 deck-config-get-params = Получить параметры
 deck-config-complete = { $num }% выполнено.
 deck-config-iterations = Итерация { $count }...
-deck-config-reschedule-cards-on-change = Перепланировать карточки при изменениях.
+deck-config-reschedule-cards-on-change = Перепланировать карточки при изменениях
 deck-config-fsrs-tooltip =
     Затрагивает всю коллекцию.
     Free Spaced Repetition Scheduler (FSRS) - это альтернатива предыдущему алгоритму Anki, SuperMemo 2 (SM2).
     FSRS более точно определяет, когда вы забудете карточку и поможет вам запомнить больше материала за то же время. 
-    Эта настройка затрагивает все предустановки.
+    Эта настройка затрагивает все конфигурации.
     Если вы ранее использовали версию FSRS для "особого планирования", пожалуйста, убедитесь, что вы удалили код из "особого планирования" перед включением этой настройки.
 deck-config-desired-retention-tooltip =
     По умолчанию, повторения будут запланированы таким образом, чтобы вероятность вспомнить 
@@ -370,14 +374,14 @@ deck-config-historical-retention-tooltip =
     
     Последнее случается довольно редко, поэтому, если вы не использовали первый вариант, вам, вероятно, 
     не нужно менять значение исторического усвоения.
-deck-config-weights-tooltip2 = Параметры FSRS влияют на то, как планируются карты. Anki начнет работу с параметрами по умолчанию. Вы можете использовать опцию ниже, чтобы оптимизировать параметры для наилучшего соответствия вашим показателям в колодах с использованием этой предустановки.
+deck-config-weights-tooltip2 = Параметры FSRS влияют на то, как планируются карты. Anki начнет работу с параметрами по умолчанию. Вы можете использовать опцию ниже, чтобы оптимизировать параметры для наилучшего соответствия вашим показателям в колодах с использованием этой конфигурации.
 deck-config-reschedule-cards-on-change-tooltip =
     Затрагивает всю коллекцию и не сохраняется.
     
     Эта настройка определяет, будут ли изменены сроки карточек, когда вы включите FSRS или оптимизируете параметры. По умолчанию карточки не будут изменены: будущие повторения будут использовать новое планирование, но это не приведет к немедленному изменению вашей нагрузки. Если перепланирование включено, сроки карточек будут изменены.
 deck-config-reschedule-cards-warning =
     В зависимости от значения желаемого усвоения, это может привести к тому, 
-    что большое количество карточек станет подлежащими просмотру, поэтому 
+    что большое количество карточек будут в списке на повторение, поэтому 
     не рекомендуется использовать эту опцию при переходе с SM2. Используйте эту опцию 
     осторожно, так как она добавит информацию о повторении к каждой из ваших карточек
     и увеличит размер вашей коллекции.
@@ -385,10 +389,10 @@ deck-config-ignore-before-tooltip-2 =
     Если дата выбрана, то карточки, повторенные до указанной даты, не будут использованы для оптимизации параметров FSRS.
     Это может быть полезно, если вы импортировали чужие данные или изменили ваш метод выбора кнопок ответа.
 deck-config-compute-optimal-weights-tooltip2 =
-    Когда вы нажмете кнопку «Оптимизировать», FSRS проанализирует вашу историю повторений и подберёт параметры, оптимальные для вашей памяти и изучаемого материала. Если ваши колоды сильно различаются по сложности, то рекомендуется назначить им отдельные предустановки, так как параметры для легких и трудных колод будут отличаться. 
-    Не нужно часто оптимизировать параметры - достаточно одного раза в несколько месяцев.
+    Когда вы нажмете кнопку «Оптимизировать», FSRS проанализирует вашу историю повторений и подберёт параметры, оптимальные для вашей памяти и изучаемого материала. Если ваши колоды сильно различаются по сложности, то рекомендуется назначить им отдельные конфигурации, так как параметры для легких и трудных колод будут отличаться. 
+    Не нужно часто оптимизировать параметры – достаточно одного раза в несколько месяцев.
     
-    По умолчанию параметры будут оптимизированы на основе истории просмотров всех колод, использующих текущую предустановку. Вы можете дополнительно настроить поиск перед оптимизацией параметров, если вы хотите изменить, какие карты будут использоваться для оптимизации.
+    По умолчанию параметры будут оптимизированы на основе истории просмотров всех колод, использующих текущую конфигурацию. Вы можете дополнительно настроить поиск перед оптимизацией параметров, если вы хотите изменить, какие карты будут использоваться для оптимизации.
 deck-config-please-save-your-changes-first = Пожалуйста, сначала сохраните изменения.
 deck-config-workload-factor-change =
     Примерная рабочая нагрузка: { $factor }x
@@ -405,13 +409,14 @@ deck-config-percent-of-reviews =
 deck-config-percent-input = { $pct }%
 # This message appears during FSRS parameter optimization.
 deck-config-checking-for-improvement = Проверка на предмет улучшения...
-deck-config-optimizing-preset = Оптимизация предустановки { $current_count }/{ $total_count }...
+deck-config-optimizing-preset = Оптимизация конфигурации { $current_count }/{ $total_count }...
 deck-config-fsrs-must-be-enabled = Сначала необходимо включить FSRS.
 deck-config-fsrs-params-optimal = В настоящее время параметры FSRS, вероятно, оптимальны.
+deck-config-fsrs-confirm-save-and-optimize = Это сохранит все остальные внесенные вами изменения. Вы уверены?
 deck-config-fsrs-params-no-reviews = Повторений не обнаружено. Проверьте, что этот пакетный профиль назначен всем колодам и подколодам, которые вы хотите оптимизировать, затем попробуйте еще раз.
 deck-config-wait-for-audio = Ждать аудио
 deck-config-show-reminder = Показать напоминание
-deck-config-answer-again = Ответить «снова»
+deck-config-answer-again = Ответить «Снова»
 deck-config-answer-hard = Ответить «трудно»
 deck-config-answer-good = Ответить «хорошо»
 deck-config-days-to-simulate = Число дней для симуляции
@@ -426,19 +431,18 @@ deck-config-fsrs-desired-retention-help-me-decide-experimental = Помощь в
 deck-config-additional-new-cards-to-simulate = Дополнительные новые карточки для тестирования
 deck-config-simulate = Протестировать
 deck-config-clear-last-simulate = Удалить последнюю симуляцию
-deck-config-fsrs-simulator-radio-count = Повторение
+deck-config-fsrs-simulator-radio-count = Повторения
 deck-config-advanced-settings = Расширенные настройки
 deck-config-smooth-graph = Плавный график
-deck-config-suspend-leeches = Приостановить приставучии
-deck-config-save-options-to-preset = Сохранить изменения в предустановке
-deck-config-save-options-to-preset-confirm = Перезаписать параметры в текущей предустановке параметрами, которые в данный момент установлены в симуляторе?
+deck-config-suspend-leeches = Исключить приставучии
+deck-config-save-options-to-preset = Сохранить изменения в конфигурации
+deck-config-save-options-to-preset-confirm = Перезаписать параметры в текущей конфигурации параметрами, которые в данный момент установлены в симуляторе?
 # Radio button in the FSRS simulation diagram (Deck options -> FSRS) selecting
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
 deck-config-fsrs-simulator-radio-memorized = Выученo
-deck-config-fsrs-simulator-radio-ratio = Соотношение время / запоминание
-# $time here is pre-formatted e.g. "10 Seconds" 
-deck-config-fsrs-simulator-ratio-tooltip = { $time } на запоминание карты
+deck-config-fsrs-simulator-radio-efficiency = Эффективность
+deck-config-fsrs-simulator-ratio-tooltip2 = { $time } количество запомненных карточек в час
 
 ## Messages related to the FSRS scheduler’s health check. The health check determines whether the correlation between FSRS predictions and your memory is good or bad. It can be optionally triggered as part of the "Optimize" function.
 
@@ -458,6 +462,10 @@ deck-config-fsrs-good-fit = FSRS хорошо адаптирован к ваше
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-description-new-handling = Обработка, как в Anki 2.1.41+
+deck-config-fsrs-simulator-radio-ratio = Соотношение время / запоминание
+# $time here is pre-formatted e.g. "10 Seconds" 
+deck-config-fsrs-simulator-ratio-tooltip = { $time } на запоминание карты
 deck-config-unable-to-determine-desired-retention = Не удалось вычислить минимальное рекомендуемое усвоение
 deck-config-predicted-minimum-recommended-retention = Минимальное рекомендуемое усвоение: { $num }
 deck-config-compute-minimum-recommended-retention = Минимальное рекомендуемое усвоение
@@ -495,24 +503,24 @@ deck-config-compute-optimal-retention-tooltip =
     Этот инструмент предполагает, что вы начинаете с 0 карточек, и попытается рассчитать количество материала, которое вы сможете усвоить за данный промежуток времени.
     Расчетное усвоение будет во многом зависеть от ваших данных, и если оно значительно отличается от 0.9, это признак того, что время, которое вы выделяете каждый день, либо слишком мало, либо слишком большое для количества карточек, которые вы пытаетесь выучить. Это число может быть полезным в качестве справочного материала, но не рекомендуется копировать его в желаемое поле усвоения.
 deck-config-health-check-tooltip1 = Если FSRS с трудом адаптируется к вашей памяти, появится предупреждение.
-deck-config-health-check-tooltip2 = Проверка работоспособности выполняется только при использовании функции «Оптимизировать» (текущую предустановку).
+deck-config-health-check-tooltip2 = Проверка работоспособности выполняется только при использовании функции «Оптимизировать» (текущую конфигурацию).
 deck-config-compute-optimal-retention = Вычислить минимальное рекомендуемое усвоение
 deck-config-predicted-optimal-retention = Минимальное рекомендуемое усвоение: { $num }
 deck-config-weights-tooltip =
     Параметры FSRS влияют на то, как планируются карточки. Изначально используются параметры
     по умолчанию. После того, как вы наберете более 1000 повторений, вы можете использовать 
     опцию ниже, чтобы найти параметры, которые наилучшим образом соответствуют 
-    вашей истории повторений в колодах, использующих эту предустановку.
+    вашей истории повторений в колодах, использующих эту конфигурацию.
 deck-config-compute-optimal-weights-tooltip =
     После того как вы сделали более 1000 повторений в Anki, вы можете воспользоваться кнопкой "Оптимизировать",
     чтобы проанализировать историю повторений и автоматически подобрать параметры, оптимальные для вашей
     памяти и изучаемого материала.
     Если у вас есть колоды, сильно различающиеся по сложности, рекомендуется сделать для них отдельные
-    предустановки, так как параметры для легких и трудных колод будут отличаться. Нет необходимости часто
+    конфигурации, так как параметры для легких и трудных колод будут отличаться. Нет необходимости часто
     оптимизировать параметры - достаточно одного раза в несколько месяцев.
     
     По умолчанию параметры будут рассчитываться на основе истории повторений всех колод, использующих
-    текущую предустановку. Вы можете дополнительно настроить поиск перед оптимизацией параметров, 
+    текущую конфигурацию. Вы можете дополнительно настроить поиск перед оптимизацией параметров, 
     если хотите изменить, какие карточки будут использоваться для оптимизации.
 deck-config-compute-optimal-retention-tooltip2 =
     Данный инструмент предполагает, что вы начинаете с 0 выученных карточек и попытается найти значение 
@@ -531,4 +539,4 @@ deck-config-invalid-weights = Поле для параметров должно 
 deck-config-fsrs-on-all-clients =
     Пожалуйста, убедитесь, что вы используете Anki(Mobile) 23.10+ или AnkiDroid 2.17+. 
     FSRS будет работать некорректно, если вы используете более старые версии Anki.
-deck-config-optimize-all-tip = Вы можете оптимизировать все предустановки сразу, воспользовавшись кнопкой из выпадающего списка рядом с "Сохранить".
+deck-config-optimize-all-tip = Вы можете оптимизировать все конфигурации сразу, воспользовавшись кнопкой из выпадающего списка рядом с "Сохранить".

@@ -19,6 +19,11 @@ name = "benchmark"
 harness = false
 required-features = ["bench"]
 
+[[bench]]
+name = "fsrs"
+harness = false
+required-features = ["bench"]
+
 [build-dependencies]
 anki_io.workspace = true
 anki_proto.workspace = true
@@ -77,6 +82,7 @@ num_enum.workspace = true
 once_cell.workspace = true
 pbkdf2.workspace = true
 percent-encoding-iri.workspace = true
+permutation.workspace = true
 phf.workspace = true
 pin-project.workspace = true
 prost.workspace = true
@@ -87,6 +93,7 @@ regex.workspace = true
 reqwest.workspace = true
 rusqlite.workspace = true
 rustls-pemfile.workspace = true
+same-file.workspace = true
 scopeguard.workspace = true
 serde.workspace = true
 serde-aux.workspace = true
@@ -95,6 +102,7 @@ serde_repr.workspace = true
 sync-platform-api.workspace = true
 serde_tuple.workspace = true
 sha1.workspace = true
+sha2.workspace = true
 snafu.workspace = true
 strum.workspace = true
 tempfile.workspace = true

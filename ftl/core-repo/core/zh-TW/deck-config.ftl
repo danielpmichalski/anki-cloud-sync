@@ -22,7 +22,7 @@ deck-config-tab-description =
     - `當前牌組`：當前牌組的上限。
     - `僅限今天`：暫時更改當前牌組的的上限。
 deck-config-new-cards-ignore-review-limit = 新卡片不受複習上限影響
-deck-config-new-cards-ignore-review-limit-tooltip = 根據預設，新卡片也會計入複習上限，因此當複習卡達到上限時，新卡片也不會再顯示。啟用此選項後，新卡片將不再計入複習上限。
+deck-config-new-cards-ignore-review-limit-tooltip = 根據預設，新卡片也會計入複習上限，因此當複習次數達到上限時，新卡片也不會再顯示。啟用此選項後，新卡片將不再計入複習上限。
 deck-config-apply-all-parent-limits = 套用頂層牌組上限
 deck-config-apply-all-parent-limits-tooltip = 根據預設，學習子牌組時不會套用上層牌組的每日上限。啟用此選項後，Anki 會套用頂層牌組的每日上限，這樣可確保你在學習各子牌組時不超過總上限。
 deck-config-affects-entire-collection = 影響整個集合。
@@ -69,10 +69,10 @@ deck-config-bury-new-tooltip = 啟用後，暫停同一則筆記中的其他 `�
 deck-config-bury-review-tooltip = 啟用後，暫停同一則筆記中的其他 `複習卡`，推遲到第二天。
 deck-config-bury-interday-learning-tooltip = 啟用後，暫停同一則筆記中其他 `學習中` 且間隔大於 1 天的卡片，推遲到第二天。
 deck-config-bury-priority-tooltip =
-    Anki 收集卡片的順序為當天學習卡片→跨天學習卡片→複習卡→新卡片。這個順序影響推遲卡片的機制：
+    Anki 收集卡片的順序為當天學習卡片→跨天學習卡片→複習卡→新卡片。這個順序影響推遲卡片的處理方式：
     
-    - 啟用所有推遲選項時，會顯示順序最前的關聯卡片。例如，複習卡會優先於新卡片顯示。
-    - 順序靠後的關聯卡片無法使類型較前的卡片被推遲。例如，停用「推遲關聯的新卡片」時，學習新卡片將不會推遲跨天學習卡片和複習卡，因此關聯的複習卡和新卡片可能會同時出現。
+    - 啟用所有推遲選項時，會顯示關聯卡片中順序最前的卡片。例如，複習卡會優先於新卡片顯示。
+    - 學習關聯卡片中順序較後的卡片後，較前的卡片不會被推遲。舉例來說，停用「推遲關聯的新卡片」時，學習新卡片後，跨天學習卡片和複習卡不會被推遲，因此關聯的複習卡和新卡片可能會在同一次學習時出現。
 
 ## Gather order and sort order of cards
 
@@ -169,8 +169,8 @@ deck-config-timer-title = 計時器
 deck-config-maximum-answer-secs = 最大回答秒數
 deck-config-maximum-answer-secs-tooltip = 記錄單次複習耗時的最大秒數。若回答超過此時間（例如可能你複習中途離開了螢幕一段時間），則耗時將被記錄為你設定的上限。
 deck-config-show-answer-timer-tooltip = 在學習畫面顯示一個計時器，計算每張卡片的學習耗時。
-deck-config-stop-timer-on-answer = 回答後停止螢幕上的計時器
-deck-config-stop-timer-on-answer-tooltip = 顯示答案後是否停止螢幕上的計時器。不影響統計數據。
+deck-config-stop-timer-on-answer = 顯示答案後停止螢幕上的計時器
+deck-config-stop-timer-on-answer-tooltip = 顯示答案後是否停止螢幕上的計時器。不影響統計資料。
 
 ## Auto Advance section
 
@@ -191,7 +191,7 @@ deck-config-wait-for-audio-tooltip-2 = 等待音訊播放結束後再自動套�
 deck-config-audio-title = 音訊
 deck-config-disable-autoplay = 關閉音訊自動播放
 deck-config-disable-autoplay-tooltip = 啟用後，Anki 不會自動播放音訊。你可以按下音訊按鈕或使用「重播」動作來手動播放。
-deck-config-skip-question-when-replaying = 重播答案時跳過問題
+deck-config-skip-question-when-replaying = 重播答案時略過問題
 deck-config-always-include-question-audio-tooltip = 啟用後，在卡片答案面執行「重播音訊」動作時，將不會同時播放問題面上的音訊。
 
 ## Advanced section
@@ -241,7 +241,7 @@ deck-config-confirm-remove-name = 要移除「{ $name }」嗎？
 deck-config-save-button = 儲存
 deck-config-save-to-all-subdecks = 儲存至所有子牌組
 deck-config-save-and-optimize = 最佳化所有預設組
-deck-config-revert-button-tooltip = 回復設定為預設值？
+deck-config-revert-button-tooltip = 將此設定回復為預設值
 
 ## These strings are shown via the Description button at the bottom of the
 ## overview screen.
@@ -274,6 +274,10 @@ deck-config-which-deck = 要顯示哪一個牌組的選項？
 
 deck-config-updating-cards = 正在更新卡片：{ $current_cards_count }/{ $total_cards_count }...
 deck-config-invalid-parameters = 提供的 FSRS 參數無效。留空以使用預設參數。
+deck-config-placeholder-parameters =
+    預設參數
+    （請定期使用「{ deck-config-optimize-button }」按鈕來讓 FSRS 根據你的記憶情況進行調整）
+deck-config-manual-parameter-edit-warning = 請僅使用「最佳化」按鈕來修改這些參數。強烈建議不要手動編輯。
 deck-config-not-enough-history = 複習歷程過少，無法執行此動作。
 deck-config-must-have-400-reviews = 只找到了 { $count } 筆複習記錄。至少需要 400 筆複習記錄才能執行此動作。
 # Numbers that control how aggressively the FSRS algorithm schedules cards
@@ -316,9 +320,9 @@ deck-config-reschedule-cards-on-change-tooltip =
     
     此選項控制是否要在啟用 FSRS 或最佳化參數的同時更改卡片到期日期。預設不會重新排程卡片：未來的複習會使用新的排程設定，但不會立即對你已有的複習作出更動。若啟用了重新排程，則卡片的到期日期將被更改。
 deck-config-reschedule-cards-warning =
-    根據你的期望留存比率，這可能導致大量卡片到期，因此第一次從 FSRS 切換到 SM-2 時不建議使用。
+    根據你的期望留存比率，這可能導致大量卡片到期，因此第一次從 SM-2 切換到 FSRS 時不建議使用。
     
-    使用此選項會對每張卡片都加入一條複習記錄，使集合佔用更多空間，因此請勿過度使用。
+    使用此選項會為每張卡片都新增一條複習記錄，使集合佔用更多空間，因此請勿過度使用。
 deck-config-ignore-before-tooltip-2 = 設定後，最佳化 FSRS 參數時將無視在所選日期前做出複習的卡片。此選項在你匯入了他人的排程資料，或改變了各回答按鈕的用法時，相當實用。
 deck-config-compute-optimal-weights-tooltip2 =
     按下「最佳化」按鈕後，FSRS 將分析你的複習歷程，為你的記憶和學習內容產生最佳參數。如果各牌組難度差距過大，則建議為各牌組單獨設定預設組，因為難度不同的牌組需要使用不同的參數。參數無需頻繁最佳化，幾個月一次即可。
@@ -341,6 +345,7 @@ deck-config-checking-for-improvement = 正在檢查改善情況...
 deck-config-optimizing-preset = 正在最佳化預設組 { $current_count }/{ $total_count }...
 deck-config-fsrs-must-be-enabled = 必須先啟用 FSRS。
 deck-config-fsrs-params-optimal = 當前 FSRS 參數已為最佳。
+deck-config-fsrs-confirm-save-and-optimize = 將儲存你對其他選項所做的任何更動。確定嗎？
 deck-config-fsrs-params-no-reviews = 找不到複習記錄。請確保所有需要最佳化的牌組（含子牌組）都正在使用此預設組，然後再試一次。
 deck-config-wait-for-audio = 等待音訊播放
 deck-config-show-reminder = 顯示提醒
@@ -354,7 +359,7 @@ deck-config-desired-retention-below-optimal = 你的期望留存比率低於最�
 # cards that can be recalled or retrieved on a specific date.
 deck-config-fsrs-simulator-experimental = FSRS 模擬器（實驗性）
 deck-config-fsrs-simulate-desired-retention-experimental = FSRS 期望留存比率模擬器（實驗性）
-deck-config-fsrs-simulate-save-preset = 完成最佳化後，請先儲存設定檔再執行模擬器。
+deck-config-fsrs-simulate-save-preset = 完成最佳化後，請先儲存牌組預設組再執行模擬器。
 deck-config-fsrs-desired-retention-help-me-decide-experimental = 幫我選擇（實驗性）
 deck-config-additional-new-cards-to-simulate = 模擬新增卡片數量
 deck-config-simulate = 模擬
@@ -369,9 +374,8 @@ deck-config-save-options-to-preset-confirm = 要用模擬器中設定的選項�
 # to show the total number of cards that can be recalled or retrieved on a
 # specific date.
 deck-config-fsrs-simulator-radio-memorized = 記憶
-deck-config-fsrs-simulator-radio-ratio = 耗時/記憶比例
-# $time here is pre-formatted e.g. "10 Seconds" 
-deck-config-fsrs-simulator-ratio-tooltip = 已記憶卡片每張耗時 { $time }
+deck-config-fsrs-simulator-radio-efficiency = 效率
+deck-config-fsrs-simulator-ratio-tooltip2 = 每小時記住 { $time } 張卡片
 
 ## Messages related to the FSRS scheduler’s health check. The health check determines whether the correlation between FSRS predictions and your memory is good or bad. It can be optionally triggered as part of the "Optimize" function.
 
@@ -393,6 +397,9 @@ deck-config-fsrs-good-fit =
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 
+deck-config-fsrs-simulator-radio-ratio = 耗時/記憶比例
+# $time here is pre-formatted e.g. "10 Seconds" 
+deck-config-fsrs-simulator-ratio-tooltip = 已記憶卡片每張耗時 { $time }
 deck-config-unable-to-determine-desired-retention = 無法計算出留存比率推薦最小值。
 deck-config-predicted-minimum-recommended-retention = 留存比率推薦最小值：{ $num }
 deck-config-compute-minimum-recommended-retention = 留存比率推薦最小值

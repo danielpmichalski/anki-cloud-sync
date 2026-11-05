@@ -4,7 +4,7 @@ card-stats-latest-review = לעצט איבערגע׳הזר׳ט
 card-stats-interval = צווישנצײַט
 card-stats-ease = גרינגקייט
 card-stats-review-count = איבער׳חזר׳ונגען
-card-stats-lapse-count = פֿאַרטונקלונגען
+card-stats-lapse-count = לאַפּסוסן
 card-stats-average-time = צײַט דורכשניטלעך
 card-stats-total-time = צײַט סך-הכּל
 card-stats-new-card-position = פּאָזיציע
@@ -18,9 +18,9 @@ card-stats-review-log-rating = שאַץ
 card-stats-review-log-type = גרופּע
 card-stats-review-log-date = דאַטע
 card-stats-review-log-time-taken = משך
-card-stats-review-log-type-learn = לערנען
-card-stats-review-log-type-review = איבער׳חזר׳ן
-card-stats-review-log-type-relearn = קריקלערנען
+card-stats-review-log-type-learn = געלערנט
+card-stats-review-log-type-review = אײַנגע׳חזר׳ט
+card-stats-review-log-type-relearn = קריקגעלערנט
 card-stats-review-log-type-filtered = פֿילטרירט
 card-stats-review-log-type-manual = בידים
 card-stats-review-log-type-rescheduled = טערמין אָפּגעלייגט
@@ -39,7 +39,7 @@ card-stats-fsrs-forgetting-curve-desired-retention = געוואונטשענער 
 
 ## Window Titles
 
-card-stats-current-card = איצטיקע קאַרטל ({ $context })
+card-stats-current-card = יעצטיקע קאַרטל ({ $context })
 card-stats-previous-card = פֿריִערדיקע קאַרטל ({ $context })
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.

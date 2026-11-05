@@ -3,11 +3,11 @@
 ## represent the card will be due in 4 days, "3m" for 3 minutes, and
 ## "5mo" for 5 months.
 
-scheduling-answer-button-time-seconds = { $amount } sek
+scheduling-answer-button-time-seconds = { $amount } s
 scheduling-answer-button-time-minutes = { $amount } min
-scheduling-answer-button-time-hours = { $amount } tim.
-scheduling-answer-button-time-days = { $amount } dag
-scheduling-answer-button-time-months = { $amount }mån
+scheduling-answer-button-time-hours = { $amount } tim
+scheduling-answer-button-time-days = { $amount } d
+scheduling-answer-button-time-months = { $amount } mån
 scheduling-answer-button-time-years = { $amount } år
 
 ## A span of time, such as the delay until a card is shown again, the
@@ -86,7 +86,7 @@ scheduling-buried-cards-found = Ett eller flera kort doldes och kommer visas imo
 # used in scheduling-buried-cards-found
 # "... you can unbury them if you wish to see..."
 scheduling-unbury-them = visa dem
-scheduling-how-to-custom-study = Vid önskan att studera utanför det regelbundna schemat kan funktionen { $customStudy } användas.
+scheduling-how-to-custom-study = För att studera utöver de schemalagda korten kan funktionen { $customStudy } användas.
 # used in scheduling-how-to-custom-study
 # "... you can use the custom study feature."
 scheduling-custom-study = anpassade studier
@@ -121,7 +121,7 @@ scheduling-ignore-answer-times-longer-than = Ignorera svarstider längre än
 scheduling-interval-modifier = Intervallfaktor
 scheduling-lapses = Bortglömningar
 scheduling-lapses2 = bortglömningar
-scheduling-learning = Nya
+scheduling-learning = Inlärning
 scheduling-leech-action = Åtgärd för energislukare
 scheduling-leech-threshold = Tröskelvärde för energislukare
 scheduling-maximum-interval = Största intervall

@@ -37,7 +37,7 @@ browsing-clear-unused-tags = אָפּרייניקן נישט-געניצטע צע
 browsing-confirm-saved-search-overwrite = אַן אויפֿגעהיטנער זוך בײַם נאָמען { $name } איז שוין פֿאַראַן. ווילסט אים פֿאַרבײַטן?
 browsing-created = געשאַפֿן
 browsing-current-deck = איציקע טעשל
-browsing-current-note-type = איצטיקע נאָטיצגרופּע:
+browsing-current-note-type = יעצטיקע נאָטיצגרופּע:
 browsing-delete-notes = אָפּמעקן נאָטיצן
 browsing-duplicate = דופּליקירן
 browsing-ease = גרינגקייט
@@ -72,7 +72,7 @@ browsing-override-back-template = אַנולירן מוסטער-הינטן:
 browsing-override-font = אַנולירן שריפֿט:
 browsing-override-front-template = אַנולירן מוסטער-פֿאָרנט:
 browsing-please-give-your-filter-a-name = שטעל אויף דײַן פֿילטער אַ נאָמען:
-browsing-preview-selected-card = זען אויסגעקליבענע קאַרטל אין פֿאָרויס ({ $val })
+browsing-preview-selected-card = זען דאָס אויסגעקליבענע קאַרטל אין פֿאָרויס ({ $val })
 browsing-question = פֿראַגע
 browsing-queue-bottom = ריי-אונטן: { $val }
 browsing-queue-top = ריי-אויבן: { $val }
@@ -82,14 +82,14 @@ browsing-replace-with = <b>פֿאַרבײַטן אין</b>:
 browsing-reposition = איבערשטעלן…
 browsing-reposition-new-cards = איבערשטעלן נײַע קאַרטלעך
 browsing-reschedule = אָפּלייגן טערמין
-browsing-search-bar-hint = זוכן קאַרטלעך/נאָטיצן (וואָרטיר אויס טעקסט, נערנאָך קליקט ״Enter״)
+browsing-search-bar-hint = זוכן קאַרטלעך / נאָטיצן (קלאַפּ אײַן טעקסט, נערנאָך דרוק ״Enter״)
 browsing-search-in = זוכן צווישן:
 browsing-search-within-formatting-slow = זוכן צווישן פֿאָרמאַטירונג (פּאַמעלעך)
 browsing-select-deck = אויסקלײַבן טעשל
 browsing-selected-notes-only = נאָר אויסגעקליבענע נאָטיצן
-browsing-shift-position-of-existing-cards = איבעררוקן פּאָזיציע פון איצטיקע קאַרטלעך
-browsing-sidebar = זײַט-קעסטעלע
-browsing-sidebar-filter = זײַט-קעסטעלע פֿילטער
+browsing-shift-position-of-existing-cards = איבעררוקן פּאָזיציע פון יעצטיקע קאַרטלעך
+browsing-sidebar = זײַט-קעסטל
+browsing-sidebar-filter = זײַט-קעסטל פֿילטער
 # The field that is used for sorting (sort is an adjective here, not a verb)
 browsing-sort-field = סאָרטיר-פֿעלד
 browsing-sorting-on-this-column-is-not = סאָרטירן אין דער קאָלאָנקע ווערט נישט מעגלעך. קלײַבט אויס אַן אַנדערע.
@@ -104,7 +104,7 @@ browsing-toggle-showing-cards-notes = איבערשליסלען קאַרטלעך/
 browsing-toggle-mark = פֿאַרצייכענען / נישט
 browsing-toggle-suspend = אָפּשטעלן / נישט
 browsing-treat-input-as-regular-expression = באַהאַנדלען אַרײַנוואַרג ווי סתּם אַן אויסדרוק
-browsing-update-saved-search = דערהײַנטיקן מיט איצטיקן זוך
+browsing-update-saved-search = דערהײַנטיקן מיט יעצטיקן זוך
 browsing-whole-collection = גאַנצע זאַמלונג
 browsing-window-title-notes = בלעטערן ({ $selected } פון { $total } אויסגעקליבענע נאָטיצן
 browsing-you-must-have-at-least-one = ס׳מוז דאָ זײַן כאָטש איין קאָלאָנקע.
@@ -135,7 +135,7 @@ browsing-sidebar-expand-children = צעוויקלען סוב-שטיקלעך
 browsing-sidebar-collapse-children = צונויפֿוויקלען סוב-שטיקלעך
 browsing-sidebar-decks = טעשלעך
 browsing-sidebar-tags = צעטלען
-browsing-sidebar-notetypes = מיני נאָטיץ
+browsing-sidebar-notetypes = נאָטיצגרופּעס
 browsing-sidebar-saved-searches = אויפֿגעהיטנע זוכן
 browsing-sidebar-save-current-search = אויפֿהיטן יעצטיקן זוך
 browsing-sidebar-card-state = קאַרטל-מצבֿ
@@ -155,7 +155,7 @@ browsing-edited-today = געביטן
 browsing-sidebar-first-review = ערשטע איבער׳חזר׳ונג
 browsing-sidebar-rescheduled = טערמין אָפּגעלייגט
 browsing-sidebar-due-today = טערמיניק
-browsing-sidebar-untagged = אָן צעטל
+browsing-sidebar-untagged = אָן קיין צעטל
 browsing-sidebar-overdue = פֿאַרשפּעטיקט
 browsing-row-deleted = (אָפּגעמעקט)
 browsing-removed-unused-tags-count =
@@ -173,7 +173,7 @@ browsing-reparented-decks =
         [one] איבערגעביטן דעם נאָמען פון { $count } טעשל.
        *[other] איבערגעביטן די נעמען פון { $count } טעשלעך.
     }
-browsing-sidebar-card-state-review = אײַנ׳חזר׳ן
+browsing-sidebar-card-state-review = איבערצו׳חזר׳ן
 
 ## NO NEED TO TRANSLATE. This text is no longer used by Anki, and will be removed in the future.
 

@@ -25,15 +25,15 @@ browsing-cards-deleted-with-deckname =
         [one] S’ha suprimit una targeta de la baralla { $deck_name }.
        *[other] S’han suprimit { $count } targetes de la baralla { $deck_name }.
     }
-browsing-change-deck = Canvia de baralla
-browsing-change-deck2 = Canvia de baralla…
+browsing-change-deck = Mou de baralla
+browsing-change-deck2 = Mou de baralla…
 browsing-change-note-type = Canvia el tipus de nota
 # Action in a context menu (right mouse-click on a card type)
 browsing-change-note-type2 = Canvia el tipus de nota…
 browsing-change-notetype = Canvia el tipus de nota
 browsing-clear-unused-tags = Suprimeix les etiquetes no utilitzades
 browsing-confirm-saved-search-overwrite = Ja heu guardat una cerca amb el nom «{ $name }». Voleu substituir-la?
-browsing-created = S'ha afegit
+browsing-created = S’ha afegit
 browsing-current-deck = Baralla actual
 browsing-current-note-type = Tipus de nota actual:
 browsing-delete-notes = Suprimeix les notes
@@ -68,7 +68,7 @@ browsing-notes = Notes
 browsing-optional-filter = Filtre opcional:
 browsing-override-back-template = Substitueix la plantilla del revers:
 browsing-override-font = Substitueix el tipus de lletra:
-browsing-override-front-template = Substitueix la plantilla de l'anvers:
+browsing-override-front-template = Substitueix la plantilla de l’anvers:
 browsing-please-give-your-filter-a-name = Anomeneu el filtre:
 browsing-preview-selected-card = Previsualitza la targeta seleccionada ({ $val })
 browsing-question = Pregunta
@@ -81,7 +81,15 @@ browsing-reposition = Reposiciona…
 browsing-reposition-new-cards = Reposiciona les noves targetes
 browsing-reschedule = Replanifica
 browsing-search-bar-hint = Per a cercar targetes o notes, escriviu un text i premeu la tecla de retorn.
+browsing-search-facet-starters = Filtra per
 browsing-search-in = Cerca en:
+browsing-search-quick = Filtres ràpids
+browsing-search-quick-flagged = Amb senyal
+browsing-search-quick-leeches = Sangoneres
+browsing-search-recent = Recents
+browsing-search-suggestions = Suggeriments
+browsing-search-syntax-mode = Mode sintaxi
+browsing-search-text-match = Cerca «{ $query }»
 browsing-search-within-formatting-slow = Cerca en els elements de format (lent)
 browsing-select-deck = Tria una baralla
 browsing-selected-notes-only = Només les notes seleccionades
@@ -95,17 +103,17 @@ browsing-start-position = Posició inicial:
 browsing-step = Pas:
 browsing-suspended = Suspeses
 browsing-tag-duplicates = Etiqueta els duplicats
-browsing-tag-rename-warning-empty = No podeu canviar el nom d'una etiqueta que no tingui notes.
+browsing-tag-rename-warning-empty = No podeu canviar el nom d’una etiqueta sense notes.
 browsing-target-field = Camp de destinació:
 browsing-toggle-bury = Enterra/desenterra
 browsing-toggle-showing-cards-notes = Alterna entre les targetes i les notes
 browsing-toggle-mark = Marca/desmarca
 browsing-toggle-suspend = Suspèn/reprèn
-browsing-treat-input-as-regular-expression = Tracta l'entrada com una expressió regular
+browsing-treat-input-as-regular-expression = Tracta l’entrada com a expressió regular
 browsing-update-saved-search = Actualitza amb la cerca actual
 browsing-whole-collection = Tota la col·lecció
 browsing-window-title-notes = Navega (n’heu seleccionat { $selected } de { $total })
-browsing-you-must-have-at-least-one = Hi ha d'haver almenys una columna.
+browsing-you-must-have-at-least-one = Cal almenys una columna.
 browsing-group =
     { $count ->
         [one] Un grup
@@ -156,6 +164,15 @@ browsing-sidebar-due-today = Pendents
 browsing-sidebar-untagged = Sense etiqueta
 browsing-sidebar-overdue = En retard
 browsing-row-deleted = (esborrada)
+# Compact due text in browse card rows when a card is overdue or due today
+browsing-due-now = Ara
+# Status chip label in browse card rows
+browsing-leech = Sangonera
+browsing-more-tags =
+    { $count ->
+        [one] Una etiqueta més
+       *[other] { $count } etiquetes més
+    }
 browsing-removed-unused-tags-count =
     { $count ->
         [one] S’ha suprmit una etiqueta no utilizada.

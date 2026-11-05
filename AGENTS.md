@@ -8,7 +8,7 @@
 ## 1. What This Repository Is
 
 A **platform-neutral Anki sync server** — a fork of the Rust sync server built into
-[ankitects/anki](https://github.com/ankitects/anki) at tag `25.09`, plus four custom crates
+[ankitects/anki](https://github.com/ankitects/anki) at tag `26.09.4`, plus four custom crates
 that define the adapter trait boundary and one built-in implementation.
 
 The server exposes a stable trait boundary (`sync-platform-api`) so external platform crates can
@@ -37,9 +37,11 @@ not to Ankitects' product.
 /
 ├── CLAUDE.md                       ← this file
 ├── Cargo.toml                      ← workspace root (only non-upstream file at root)
-├── Cargo.lock                      ← copied from upstream ankitects/anki@25.09
+├── Cargo.lock                      ← copied from upstream ankitects/anki@26.09.4
 ├── Dockerfile                      ← multi-stage build → published Docker image
-├── .version                        ← Anki version this is pinned to (e.g. "25.09")
+├── .dockerignore                   ← keeps target/ etc. out of the Docker build context
+├── rust-toolchain.toml             ← pins the Rust toolchain (match upstream; keep in sync with Dockerfile)
+├── .version                        ← Anki version this is pinned to (e.g. "26.09.4")
 ├── README.md
 │
 ├── sync-platform-api/              ← OUR CRATE: stable public trait boundary
@@ -63,7 +65,7 @@ not to Ankitects' product.
 │       ├── resolver.rs             ← StandaloneBackendResolver (local filesystem)
 │       └── sidecar.rs              ← InternalServer (optional sidecar HTTP API)
 │
-├── rslib/                          ← VERBATIM UPSTREAM (ankitects/anki@25.09 rslib/)
+├── rslib/                          ← UPSTREAM ankitects/anki@26.09.4 rslib/ + small delta (see README "rslib delta")
 │   ├── Cargo.toml
 │   ├── sync/
 │   │   ├── Cargo.toml             ← binary crate: `anki-sync-server`
@@ -82,6 +84,12 @@ Those are verbatim upstream copies. Changes go in the four custom crates only.
 Exception: mechanical import-path updates (`use sync_platform_api::` etc.) when renaming our
 crates — these are unavoidable and do not touch protocol logic.
 To upgrade upstream, run `scripts/fork-anki-sync-server.zsh <new-tag>`.
+
+Note: `rslib/` is not 100% verbatim — we carry a small, documented delta (7 files under `rslib/`:
+the DI wiring in `src/sync/http_server/{mod,user,handlers}.rs`, `sync/main.rs`, the two `Cargo.toml`s
+and the test doubles in `src/sync/collection/tests.rs`). It is listed in the README ("rslib delta") and the
+fork script wipes it, so **save it before upgrading and re-apply it after**. Past upgrade logs live in
+`docs/upgrades/`.
 
 ---
 
@@ -238,7 +246,7 @@ the external platform crate, not this binary.
 
 ### Prerequisites
 
-- Rust ≥ 1.80 (MSRV)
+- Rust 1.97.1 (pinned by `rust-toolchain.toml`; matches upstream — older versions may fail to compile)
 - `protobuf-compiler` (`apt install protobuf-compiler` or `brew install protobuf`)
 - `pkg-config` + `libssl-dev` (Linux) or `openssl` (macOS via Homebrew)
 
@@ -356,10 +364,11 @@ and links in its own `sync-platform-cloud` crate (DB auth + OAuth token exchange
 GitHub Actions workflows:
 
 - **`ci.yml`** — runs on every push/PR: `cargo build`, `cargo test -p sync-platform-api`, `cargo test -p sync-storage-*`, Docker build
-- **`release.yml`** — release-please + conventional commits → auto-bumps version, publishes Docker image to `ghcr.io/danielpmichalski/anki-cloud-sync:<tag>`
+- **`auto-tag.yml`** — on merge to `main` with a `feat:`/`fix:`/`perf:` commit: reads `.version`, increments the `-rX` revision, pushes tag `v<.version>-rX`
+- **`release.yml`** — fires on that tag: publishes Docker image to `ghcr.io/danielpmichalski/anki-cloud-sync:<tag>` and creates a GitHub release
 
 Docker image published to: `ghcr.io/danielpmichalski/anki-cloud-sync`
 
 ---
 
-*Last updated: 2026-04-23.*
+*Last updated: 2026-11-05 (aligned with Anki 26.09.4 — see `docs/upgrades/`).*

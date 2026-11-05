@@ -12,7 +12,7 @@ actions-all-selected = Pilih Semua
 # a submenu. This entry in the submenu creates a search term that matches
 # cards/notes meeting ANY of the selected criteria.
 # https://github.com/ankitects/anki/pull/1044
-actions-any-selected = Pilih tiap-tiap
+actions-any-selected = Apa pun yang dipilih
 actions-cancel = Batal
 actions-choose = Memilih
 actions-close = Tutup
@@ -42,18 +42,18 @@ actions-rename-deck = Rename Dek
 actions-rename-tag = Rename Label
 actions-rename-with-parents = Rename dengan Induk
 actions-remove-tag = Hapus Label
-actions-replay-audio = Replay Audio
-actions-reposition = Reposisi
+actions-replay-audio = Putar Ulang Audio
+actions-reposition = Ubah Posisi
 actions-save = Simpan
 actions-search = Cari
 actions-select = Pilih
 actions-shortcut-key = Tombol Shortcut: { $val }
-actions-suspend-card = Cabut Kartu
+actions-suspend-card = Tangguhkan Kartu
 actions-set-due-date = Atur Batas Waktu
 actions-toggle-load-balancer = Nyala/matikan Penyeimbang
 actions-grade-now = Nilai Sekarang
 actions-answer-card = Kartu Jawaban
-actions-unbury-unsuspend = Batal Pendam/Batal Cabut
+actions-unbury-unsuspend = Bangkitkan kembali/Batal Tangguhan
 actions-add-deck = Tambah Dek
 actions-add-note = Tambah Catatan
 actions-update-tag = Perbarui Label
@@ -62,8 +62,8 @@ actions-update-card = Perbarui Kartu
 actions-update-deck = Perbarui Dek
 actions-forget-card = Lupakan Kartu
 actions-build-filtered-deck = Bangun Dek
-actions-add-notetype = Tambahkan Jeniscatatan
-actions-remove-notetype = Hapus Jeniscatatan
+actions-add-notetype = Tambahkan Jenis catatan
+actions-remove-notetype = Hapus Jenis Catatan
 actions-update-notetype = Perbarui Jeniscatatan
 actions-update-config = Perbarui Konfig
 actions-card-info = Info Kartu
@@ -88,7 +88,7 @@ actions-flag-purple = Ungu
 
 ##
 
-actions-set-flag = Atur Flag
+actions-set-flag = Atur Penanda
 actions-nothing-to-undo = Tidak ada yang dapat diurungkan
 actions-nothing-to-redo = Tidak ada yang dapat diulang
 actions-auto-advance = Maju Otomatis

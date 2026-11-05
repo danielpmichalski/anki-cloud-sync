@@ -3,12 +3,12 @@
 ## represent the card will be due in 4 days, "3m" for 3 minutes, and
 ## "5mo" for 5 months.
 
-scheduling-answer-button-time-seconds = { $amount } sn
-scheduling-answer-button-time-minutes = { $amount } dq
-scheduling-answer-button-time-hours = { $amount } sa
-scheduling-answer-button-time-days = { $amount } k
+scheduling-answer-button-time-seconds = { $amount } s
+scheduling-answer-button-time-minutes = { $amount } min
+scheduling-answer-button-time-hours = { $amount } soat
+scheduling-answer-button-time-days = { $amount } kun
 scheduling-answer-button-time-months = { $amount } oy
-scheduling-answer-button-time-years = { $amount } y
+scheduling-answer-button-time-years = { $amount } yil
 
 ## A span of time, such as the delay until a card is shown again, the
 ## amount of time taken to answer a card, and so on. It is used by itself,
@@ -22,8 +22,8 @@ scheduling-time-span-seconds =
     }
 scheduling-time-span-minutes =
     { $amount ->
-        [one] { $amount } daqiqa
-       *[other] { $amount } daqiqa
+        [one] { $amount } minut
+       *[other] { $amount } minut
     }
 scheduling-time-span-hours =
     { $amount ->
@@ -37,8 +37,8 @@ scheduling-time-span-days =
     }
 scheduling-time-span-months =
     { $amount ->
-        [one] { $amount } kun
-       *[other] { $amount } kun
+        [one] { $amount } oy
+       *[other] { $amount } oy
     }
 scheduling-time-span-years =
     { $amount ->
@@ -92,7 +92,7 @@ scheduling-update-button = Yangilash
 scheduling-update-later-button = Keyinroq
 scheduling-update-more-info-button = Batafsil
 scheduling-update-required =
-    Toʻplamingiz V2 rejalashtiruvchisiga yangilanishi kerak.
+    Kolleksiyangiz V2 rejalashtiruvchisiga yangilanishi kerak.
     Davom etishdan oldin { scheduling-update-more-info-button } ni tanlang.
 
 ## Other scheduling strings
@@ -105,36 +105,36 @@ scheduling-bury-related-reviews-until-the-next = Aloqador takrorlash kartalarini
 scheduling-days = kun
 scheduling-description = Tavsif
 scheduling-easy-bonus = Osonlik bonusi
-scheduling-easy-interval = Oson oraliq
+scheduling-easy-interval = Oson interval
 scheduling-end = (oxiri)
 scheduling-general = Umumiy
-scheduling-graduating-interval = Bitiriuv oraligʻi
-scheduling-hard-interval = Qiyin oraliq
+scheduling-graduating-interval = Bitiriuv intervali
+scheduling-hard-interval = Qiyin interval
 scheduling-ignore-answer-times-longer-than = Shu vaqtdan oshib ketdan javoblar inobatga olinmasin
-scheduling-interval-modifier = Oraliq oʻzgartiruvchisi
+scheduling-interval-modifier = Interval oʻzgartiruvchisi
 scheduling-lapses = Unutilishlar
 scheduling-lapses2 = unutishlar
 scheduling-learning = Oʻrganilmoqda
 scheduling-leech-action = Yopishqoq karta amali
 scheduling-leech-threshold = Yopishqoq karta chegarasi
-scheduling-maximum-interval = Eng uzun oraliq
+scheduling-maximum-interval = Maksimal interval
 scheduling-maximum-reviewsday = Kuniga eng koʻp takrorlashlar
-scheduling-minimum-interval = Eng qisqa oraliq
+scheduling-minimum-interval = Minimal interval
 scheduling-mix-new-cards-and-reviews = Yangi kartalarni takrorlashlanadiganlar bilan aralashtirish
 scheduling-new-cards = Yangi kartalar
 scheduling-new-cardsday = Yangi kartalar/kun
-scheduling-new-interval = Yangi oraliq
+scheduling-new-interval = Yangi interval
 scheduling-new-options-group-name = Yangi parametrlar guruhi nomi:
 scheduling-options-group = Parametrlar guruhi:
 scheduling-order = Tartib
-scheduling-parent-limit = (Ustdasta limiti: { $val })
+scheduling-parent-limit = (Ona dasta limiti: { $val })
 scheduling-reset-counts = Takrorlashlar va unutilishlar sonini tiklash
 scheduling-restore-position = Iloji boʻlsa, original oʻrnini tiklash
 scheduling-review = Takrorlash
 scheduling-reviews = Takrorlashlar
 scheduling-seconds = soniya
 scheduling-set-all-decks-below-to = { $val } ostidagi barcha dastalar shu parametrlar guruhiga sozlansinmi?
-scheduling-set-for-all-subdecks = Barcha ostdastalar uchun sozlash
+scheduling-set-for-all-subdecks = Barcha ichki dastalar uchun sozlash
 scheduling-show-answer-timer = Javob taymerini koʻrsatish
 scheduling-show-new-cards-after-reviews = Yangi kartalarni takrorlashdan keyin koʻrsatish
 scheduling-show-new-cards-before-reviews = Yangi kartalarni takrorlashdan oldin koʻrsatish
@@ -158,7 +158,7 @@ scheduling-set-due-date-prompt =
     }
 scheduling-set-due-date-prompt-hint =
     0 = bugun
-    1! = ertaga + oraliqni 1 oʻzgartirish
+    1! = ertaga + intervalni 1 ga oʻzgartirish
     3-7 = 3-7 kun orasidagi tasodifiy kun
 scheduling-set-due-date-done =
     { $cards ->

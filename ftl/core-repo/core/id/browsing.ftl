@@ -10,11 +10,11 @@ browsing-average-ease = Rata" Ease
 browsing-average-interval = Rata" Interval
 browsing-browser-appearance = Tampilan Browser
 browsing-browser-options = Pengaturan Browser
-browsing-buried = Terpendam
+browsing-buried = Terkubur
 browsing-card = Kartu
 browsing-cards = Kartu-kartu
 browsing-card-list = Daftar Kartu
-browsing-cards-cant-be-manually-moved-into = Kartu tidak dapat dipindah secara manual kedalam dek yang difilter
+browsing-cards-cant-be-manually-moved-into = Kartu tidak dapat dipindah secara manual ke dek yang difilter
 browsing-cards-deleted =
     { $count ->
        *[other] { $count } Kartu dihapus
@@ -34,6 +34,15 @@ browsing-current-note-type = Jenis catatan saat ini:
 browsing-delete-notes = Hapus Catatan
 browsing-duplicate = duplikat
 browsing-ease = Ease
+# Button that clears the browse search
+browsing-empty-clear-search = Hapus Pencarian
+# Title when the collection has no cards
+# $notes-mode is "yes" when browsing notes instead of cards
+browsing-empty-collection-title =
+    { $notes-mode ->
+        [yes] Belum ada catatan
+       *[other] Belum ada kartu
+    }
 browsing-enter-tags-to-add = Masukkan label untuk ditambahkan:
 browsing-enter-tags-to-delete = Masukkan label untuk dihapus:
 browsing-filtered = (terfilter)
@@ -49,7 +58,7 @@ browsing-ignore-case = Abaikan kapitalisasi
 browsing-in = <b>Dalam</b>:
 browsing-interval = Interval
 browsing-last-card = Kartu Terakhir
-browsing-learning = (sedang belajar)
+browsing-learning = (sedang dipelajari)
 browsing-line-size = <b>Ukuran Garis</b>:
 browsing-manage-note-types = Kelola Jenis Catatan
 browsing-move-cards = Pindahkan Kartu
@@ -61,16 +70,16 @@ browsing-no-selection = Tidak ada kartu atau catatan terpilih.
 browsing-note = Catatan
 browsing-notes = Catatan
 browsing-optional-filter = Filter opsional:
-browsing-override-back-template = Timpa template belakang:
+browsing-override-back-template = Timpa templat belakang:
 browsing-override-font = Timpa font:
-browsing-override-front-template = Timpa template depan:
+browsing-override-front-template = Timpa templat depan:
 browsing-please-give-your-filter-a-name = Mohon berikan nama filter:
 browsing-preview-selected-card = Tampilkan Kartu yang dipilih ({ $val })
 browsing-question = Pertanyaan
 browsing-queue-bottom = Antrian Bawah: { $val }
 browsing-queue-top = Antrian Atas: { $val }
 browsing-randomize-order = Acak urutan
-browsing-remove-tags = Hapus Tag...
+browsing-remove-tags = Hapus Label...
 browsing-replace-with = <b>Ganti Dengan</b>:
 browsing-reposition = Reposisi...
 browsing-reposition-new-cards = Reposisi Kartu Baru
@@ -119,7 +128,7 @@ browsing-cards-updated =
     }
 browsing-window-title = Browse ({ $selected } dari { $total } kartu dipilih)
 browsing-sidebar-expand = Perluas
-browsing-sidebar-collapse = Lipat
+browsing-sidebar-collapse = Tutup
 browsing-sidebar-expand-children = Perluas Anakan
 browsing-sidebar-collapse-children = Lipat Anakan
 browsing-sidebar-decks = Dek
@@ -143,9 +152,9 @@ browsing-again-today = Diulangi
 browsing-edited-today = Diedit
 browsing-sidebar-first-review = Ulasan Pertama
 browsing-sidebar-rescheduled = Dijadwal ulang
-browsing-sidebar-due-today = Tenggat
+browsing-sidebar-due-today = Jatuh tempo
 browsing-sidebar-untagged = Belum diberi tag
-browsing-sidebar-overdue = Melebihi Tenggat
+browsing-sidebar-overdue = Melebihi jatuh tempo
 browsing-row-deleted = (dihapus)
 browsing-removed-unused-tags-count =
     { $count ->

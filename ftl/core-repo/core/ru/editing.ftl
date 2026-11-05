@@ -18,7 +18,7 @@ editing-cut = Вырезать
 editing-double-click-image = щёлкните дважды на картинку
 editing-double-click-to-expand = (щёлкните дважды, чтобы увеличить)
 editing-double-click-to-collapse = Щелкните дважды чтобы свернуть
-editing-edit-current = Редактировать
+editing-edit-current = Править
 editing-edit-html = Править HTML
 editing-fields = Поля
 editing-float-left = Слева
@@ -49,6 +49,12 @@ editing-show-duplicates = Показать повторы
 editing-subscript = Подстрочный знак
 editing-superscript = Надстрочный знак
 editing-tags = Метки
+editing-tag-count =
+    { $count ->
+        [one] метка
+        [few] метки
+       *[many] меток
+    }
 editing-tags-add = Добавить метку
 editing-tags-copy = Копировать метку
 editing-tags-remove = Удалить метки

@@ -1,0 +1,4 @@
+[toolchain]
+# Matches upstream ankitects/anki@26.09.4 rust-toolchain.toml.
+# Older versions may fail to compile. Keep in sync with the Dockerfile's rust image tag.
+channel = "1.97.1"
