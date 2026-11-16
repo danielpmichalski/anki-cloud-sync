@@ -55,7 +55,7 @@ impl SyncProtocol for Arc<SimpleServer> {
         &self,
         req: SyncRequest<HostKeyRequest>,
     ) -> HttpResult<SyncResponse<HostKeyResponse>> {
-        self.get_host_key(req.json()?)
+        self.get_host_key(req.json()?).await
     }
 
     async fn meta(&self, req: SyncRequest<MetaRequest>) -> HttpResult<SyncResponse<SyncMeta>> {
