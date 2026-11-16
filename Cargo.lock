@@ -3459,11 +3459,13 @@ dependencies = [
  "envy",
  "hex",
  "pbkdf2",
+ "reqwest",
  "serde",
  "serde_json",
  "snafu 0.8.8",
  "sync-platform-api",
  "sync-storage-backends",
+ "tempfile",
  "tokio",
  "tracing",
 ]

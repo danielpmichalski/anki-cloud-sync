@@ -198,7 +198,34 @@ impl<'a> SidecarUserHandle<'a> {
 }
 
 impl SimpleServer {
+    /// Run `op` for the user identified by `req.sync_key`.
+    ///
+    /// `op` (and the auth lookup) run on tokio's blocking pool, never on an async
+    /// worker: while holding the state lock, `op` may block on storage I/O (see
+    /// `StorageBackend`), which needs the runtime workers free to drive the I/O
+    /// reactor and timers. Blocking a worker here deadlocks the whole server
+    /// (anki-cloud-sync#29).
     pub(in crate::sync) async fn with_authenticated_user<F, I, O>(
+        self: &Arc<Self>,
+        req: SyncRequest<I>,
+        op: F,
+    ) -> HttpResult<O>
+    where
+        F: FnOnce(&mut User, SyncRequest<I>) -> HttpResult<O> + Send + 'static,
+        I: Send + 'static,
+        O: Send + 'static,
+    {
+        let server = Arc::clone(self);
+        let span = Span::current();
+        tokio::task::spawn_blocking(move || {
+            let _entered = span.enter();
+            server.with_authenticated_user_blocking(req, op)
+        })
+        .await
+        .or_internal_err("sync worker task failed")?
+    }
+
+    fn with_authenticated_user_blocking<F, I, O>(
         &self,
         req: SyncRequest<I>,
         op: F,
@@ -225,7 +252,17 @@ impl SimpleServer {
         op(user, req)
     }
 
-    pub(in crate::sync) fn get_host_key(
+    pub(in crate::sync) async fn get_host_key(
+        self: &Arc<Self>,
+        request: HostKeyRequest,
+    ) -> HttpResult<SyncResponse<HostKeyResponse>> {
+        let server = Arc::clone(self);
+        tokio::task::spawn_blocking(move || server.get_host_key_blocking(request))
+            .await
+            .or_internal_err("sync worker task failed")?
+    }
+
+    fn get_host_key_blocking(
         &self,
         request: HostKeyRequest,
     ) -> HttpResult<SyncResponse<HostKeyResponse>> {
@@ -246,7 +283,20 @@ impl SimpleServer {
 
     /// Run `op` with a sidecar (internal API) user handle for `email`.
     /// Returns 409 if a sync is in progress for that user.
-    pub fn with_sidecar_user<F, R>(&self, email: &str, op: F) -> HttpResult<R>
+    /// Runs on the blocking pool for the same reason as `with_authenticated_user`.
+    pub async fn with_sidecar_user<F, R>(self: &Arc<Self>, email: &str, op: F) -> HttpResult<R>
+    where
+        F: FnOnce(&mut SidecarUserHandle<'_>) -> HttpResult<R> + Send + 'static,
+        R: Send + 'static,
+    {
+        let server = Arc::clone(self);
+        let email = email.to_string();
+        tokio::task::spawn_blocking(move || server.with_sidecar_user_blocking(&email, op))
+            .await
+            .or_internal_err("sync worker task failed")?
+    }
+
+    fn with_sidecar_user_blocking<F, R>(&self, email: &str, op: F) -> HttpResult<R>
     where
         F: FnOnce(&mut SidecarUserHandle<'_>) -> HttpResult<R>,
     {

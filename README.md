@@ -58,7 +58,7 @@ Fork of [`ankitects/anki@26.09.4`](https://github.com/ankitects/anki/tree/26.09.
 
 ### rslib delta — what we keep in upstream code
 
-`rslib/` is replaced wholesale by the fork script. After each replacement, **four files** must be
+`rslib/` is replaced wholesale by the fork script. After each replacement, **seven files** must be
 patched to wire in our auth and storage providers. All other rslib files stay verbatim.
 
 **Design:** three traits from `sync-platform-api` are injected at server startup via `SimpleServer::new(base_folder, auth, resolver)`;
@@ -93,12 +93,16 @@ println!("{}", sync_storage_server::run());
 - `SyncServerConfig`: remove `mode: SyncMode` field (SYNC_MODE is read in `sync-storage-server`)
 - `SimpleServer::new()`: takes `auth` + `backend_resolver` instead of `mode`
 - `SimpleServer::make_server()`: takes pre-built `Arc<SimpleServer>` as second argument; no sidecar spawn (that moves to `sync-storage-server`)
-- `with_authenticated_user()`: single code path — calls `self.auth.lookup_by_hkey()`
-- `get_host_key()`: single code path — calls `self.auth.authenticate()`
+- `with_authenticated_user()`: single code path — calls `self.auth.lookup_by_hkey()`. Now `async` with
+  `self: &Arc<Self>`; the whole body (auth lookup, lock, `op`) runs inside `tokio::task::spawn_blocking`
+  (private `with_authenticated_user_blocking` holds the old body) so waiters never park runtime workers (#29)
+- `get_host_key()`: single code path — calls `self.auth.authenticate()`. Now `async`, same `spawn_blocking`
+  wrapper (`get_host_key_blocking`)
 - `ensure_user()`: takes `backend_resolver: Arc<dyn BackendResolver>` instead of `mode`
 - `get_or_create_sidecar_user()`: same — takes `backend_resolver` instead of `mode`
 - Add `SidecarUserHandle<'a>` struct (opaque handle exposing `with_col` / `with_col_and_commit`)
-- Add `SimpleServer::with_sidecar_user()` pub method (used by sidecar handlers in `sync-storage-server`)
+- Add `SimpleServer::with_sidecar_user()` pub method (used by sidecar handlers in `sync-storage-server`).
+  `async`, `self: &Arc<Self>`, closure is `Send + 'static`; runs on `spawn_blocking` (#29)
 - Add `pub fn derive_hkey(s: &str) -> String` (used by `StandaloneAuthProvider`)
 - Add `pub fn base_folder(&self) -> &Path` accessor
 - Remove `SimpleServer::run()` (replaced by `sync_storage_server::run()`)
@@ -114,6 +118,7 @@ println!("{}", sync_storage_server::run());
 
 - `finish()`: replace 20-line duplicated match block with two lines: `resolve_for_user()` + `backend.commit()`
 - `upload()`: same
+- `host_key` route: `self.get_host_key(req.json()?).await` (the method is now async, #29)
 
 #### `rslib/src/sync/collection/tests.rs`
 
