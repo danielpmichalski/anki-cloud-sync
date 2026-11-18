@@ -21,20 +21,20 @@ use serde::Deserialize;
 use serde_json::json;
 use serde_json::Value;
 
-fn user_email(headers: &HeaderMap) -> &str {
+pub(crate) fn user_email(headers: &HeaderMap) -> &str {
     headers
         .get("X-User-Email")
         .and_then(|v| v.to_str().ok())
         .unwrap_or("")
 }
 
-fn err_response(status: StatusCode, msg: impl std::fmt::Display) -> (StatusCode, Json<Value>) {
+pub(crate) fn err_response(status: StatusCode, msg: impl std::fmt::Display) -> (StatusCode, Json<Value>) {
     (status, Json(json!({"error": msg.to_string()})))
 }
 
 /// Lock state, look up/create the user, check no sync is active, then run op.
 /// Returns 409 if a sync is in progress.
-async fn with_user<F, R>(server: &Arc<SimpleServer>, email: &str, op: F) -> HttpResult<R>
+pub(crate) async fn with_user<F, R>(server: &Arc<SimpleServer>, email: &str, op: F) -> HttpResult<R>
 where
     F: FnOnce(&mut SidecarUserHandle<'_>) -> HttpResult<R> + Send + 'static,
     R: Send + 'static,

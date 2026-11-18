@@ -1,6 +1,7 @@
 mod auth;
 mod handlers;
 mod resolver;
+mod review;
 mod sidecar;
 
 use std::sync::Arc;
