@@ -46,15 +46,15 @@ impl Collection {
     }
 }
 
+/// The caller must bump the usn and commit it to storage beforehand (see
+/// `User::commit_open_col`), otherwise the bump is lost on the next reopen.
 pub fn server_download(
     col: &mut Option<Collection>,
     schema_version: SchemaVersion,
 ) -> HttpResult<Vec<u8>> {
     let col_path = {
-        let mut col = col.take().or_internal_err("take col")?;
+        let col = col.take().or_internal_err("take col")?;
         let path = col.col_path.clone();
-        col.transact_no_undo(|col| col.storage.increment_usn())
-            .or_internal_err("incr usn")?;
         col.close(Some(schema_version)).or_internal_err("close")?;
         path
     };
