@@ -16,6 +16,7 @@ use axum::Router;
 use tokio::net::TcpListener;
 
 use crate::handlers;
+use crate::review;
 
 pub struct InternalServer {
     server: Arc<SimpleServer>,
@@ -61,6 +62,9 @@ impl InternalServer {
                 "/internal/v1/note-types/{id}",
                 get(handlers::get_note_type),
             )
+            .route("/internal/v1/review/next", get(review::next_cards))
+            .route("/internal/v1/review/counts", get(review::review_counts))
+            .route("/internal/v1/review/answer", post(review::answer_card))
             .layer(middleware::from_fn(move |req, next| {
                 let token = token.clone();
                 validate_token(req, next, token)

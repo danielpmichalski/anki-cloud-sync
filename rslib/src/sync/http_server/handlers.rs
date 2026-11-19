@@ -201,6 +201,14 @@ impl SyncProtocol for Arc<SimpleServer> {
             let _ = req.json()?;
             user.abort_stateful_sync_if_active();
             user.ensure_col_open()?;
+            // Bump the usn and persist it *before* handing the collection to the
+            // client. The client adopts this usn; if storage kept the old one, later
+            // server-side writes (REST/MCP) would get a usn below the client's and
+            // never be synced again, tripping the sanity check on every sync.
+            let col = user.col.as_mut().or_internal_err("open col")?;
+            col.transact_no_undo(|col| col.storage.increment_usn())
+                .or_internal_err("incr usn")?;
+            user.commit_open_col()?;
             server_download(&mut user.col, schema_version).map(SyncResponse::from_vec)
         })
         .await

@@ -95,11 +95,17 @@ impl User {
         self.abort_stateful_sync_if_active();
         self.ensure_col_open()?;
         let result = op(self.col.as_mut().unwrap())?;
+        self.commit_open_col()?;
+        Ok(result)
+    }
 
+    /// Checkpoint the open collection's WAL and upload it to storage. Every
+    /// reopen re-fetches the stored copy, so anything not committed is lost.
+    pub(in crate::sync) fn commit_open_col(&mut self) -> HttpResult<()> {
         // Flush WAL into main DB file before upload
         self.col
             .as_ref()
-            .unwrap()
+            .or_internal_err("open col")?
             .storage
             .checkpoint()
             .or_internal_err("checkpoint collection")?;
@@ -112,8 +118,7 @@ impl User {
         backend
             .commit(&self.name, &col_path)
             .or_internal_err("commit collection to storage")?;
-
-        Ok(result)
+        Ok(())
     }
 
     fn open_collection(&mut self) -> HttpResult<Collection> {
