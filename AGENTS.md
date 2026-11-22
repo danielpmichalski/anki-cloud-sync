@@ -135,6 +135,10 @@ pub trait StorageBackend: Send + Sync {
 
     /// Upload user's collection from `src` after sync completes.
     fn commit(&self, user: &str, src: &Path) -> Result<()>;
+
+    // Optional media support. Defaults keep media on the server's local disk (upstream behaviour):
+    // supports_media() -> false, media_index_fetch/commit, media_put_many, media_get_many,
+    // media_delete_many. Backends returning true store media + media.db in cloud storage.
 }
 ```
 
@@ -207,8 +211,11 @@ Encryption key: `TOKEN_ENCRYPTION_KEY` env var — 32 bytes as 64 hex chars or 4
 
 `sync-storage-backends/src/backends/google_drive.rs` — key details:
 
-- **Folder**: creates/finds `"AnkiSync"` folder in user's Drive root
-- **File**: `"collection.anki2"` inside that folder
+- **Folder**: creates/finds the user's sync folder in Drive (name from `storage_connections.folder_path`, set in the web UI, default `/AnkiCloudSync`)
+- **File**: `"collection.anki2"` inside that folder; media in `collection.media/<filename>` and the
+  media USN index as `media.db` next to the collection (see `rslib/.../media_bridge.rs`)
+- **Requests**: one shared `reqwest::Client` (timeouts, connection reuse), retries on 403/429/5xx, files
+  <= 5 MB uploaded in a single multipart request, larger ones resumable in 8 MiB chunks, folder ids cached
 - **Download**: exponential backoff on 403/429 (formula: `2^attempt + jitter_ms`, max 6 attempts, cap 32s)
 - **Upload**: resumable upload, 256 KB chunks
 - Uses `tokio::task::block_in_place()` to call async from sync context (upstream rslib is sync)

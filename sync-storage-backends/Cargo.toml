@@ -9,8 +9,9 @@ sync-platform-api = { path = "../sync-platform-api" }
 anyhow = { workspace = true }
 reqwest = { workspace = true, features = ["json", "stream"] }
 serde_json = { workspace = true }
-tokio = { workspace = true, features = ["fs", "rt", "time"] }
+tokio = { workspace = true, features = ["fs", "rt", "time", "io-util"] }
 bytes = { workspace = true }
+futures = { workspace = true }
 rand = { workspace = true }
 
 [dev-dependencies]

@@ -3,6 +3,7 @@
 
 mod handlers;
 mod logging;
+mod media_bridge;
 mod media_manager;
 mod routes;
 mod user;
@@ -122,6 +123,7 @@ impl SimpleServerInner {
         self.users.retain(|_, u| u.name != email);
         let folder = base_folder.join(email);
         create_dir_all(&folder).or_internal_err("create user folder")?;
+        media_bridge::fetch_media_index_if_missing(&backend_resolver, email, &folder)?;
         let media = ServerMediaManager::new(&folder).or_internal_err("open media")?;
         self.users.insert(
             hkey.to_string(),
@@ -158,6 +160,7 @@ impl SimpleServerInner {
         let sidecar_hkey = format!("sidecar:{email}");
         let folder = base_folder.join(email);
         create_dir_all(&folder).or_internal_err("create user folder")?;
+        media_bridge::fetch_media_index_if_missing(&backend_resolver, email, &folder)?;
         let media = ServerMediaManager::new(&folder).or_internal_err("open media")?;
         self.users.insert(
             sidecar_hkey.clone(),
