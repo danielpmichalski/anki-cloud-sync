@@ -3439,6 +3439,7 @@ version = "26.9.4"
 dependencies = [
  "anyhow",
  "bytes",
+ "futures",
  "rand 0.9.4",
  "reqwest",
  "serde_json",

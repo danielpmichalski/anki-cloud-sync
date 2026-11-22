@@ -252,9 +252,9 @@ impl MediaSyncProtocol for Arc<SimpleServer> {
         req: SyncRequest<Vec<u8>>,
     ) -> HttpResult<SyncResponse<JsonResult<MediaUploadResponse>>> {
         self.with_authenticated_user(req, |user, req| {
-            SyncResponse::try_from_obj(JsonResult::ok(
-                user.media.process_uploaded_changes(req.data)?,
-            ))
+            let resp = user.media.process_uploaded_changes(req.data)?;
+            user.push_media_to_storage()?;
+            SyncResponse::try_from_obj(JsonResult::ok(resp))
         })
         .await
     }
@@ -264,9 +264,11 @@ impl MediaSyncProtocol for Arc<SimpleServer> {
         req: SyncRequest<DownloadFilesRequest>,
     ) -> HttpResult<SyncResponse<Vec<u8>>> {
         self.with_authenticated_user(req, |user, req| {
-            Ok(SyncResponse::from_vec(
-                user.media.zip_files_for_download(req.json()?.files)?,
-            ))
+            let files = req.json()?.files;
+            let fetched = user.fetch_media_from_storage(&files)?;
+            let zip = user.media.zip_files_for_download(files);
+            user.evict_media(&fetched);
+            Ok(SyncResponse::from_vec(zip?))
         })
         .await
     }

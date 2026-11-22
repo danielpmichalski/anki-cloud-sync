@@ -59,7 +59,8 @@ Fork of [`ankitects/anki@26.09.4`](https://github.com/ankitects/anki/tree/26.09.
 ### rslib delta — what we keep in upstream code
 
 `rslib/` is replaced wholesale by the fork script. After each replacement, **seven files** must be
-patched to wire in our auth and storage providers. All other rslib files stay verbatim.
+patched to wire in our auth and storage providers, and **one file is added**
+(`http_server/media_bridge.rs`, see below). All other rslib files stay verbatim.
 
 **Design:** three traits from `sync-platform-api` are injected at server startup via `SimpleServer::new(base_folder, auth, resolver)`;
 rslib never imports `sync-storage-config` or `sync-storage-backends` directly.
@@ -107,6 +108,9 @@ println!("{}", sync_storage_server::run());
 - Add `pub fn base_folder(&self) -> &Path` accessor
 - Remove `SimpleServer::run()` (replaced by `sync_storage_server::run()`)
 - Remove `mod internal_handlers` and `mod internal_server` declarations
+- Add `mod media_bridge;`
+- `ensure_user()` and `get_or_create_sidecar_user()`: one line before `ServerMediaManager::new()`:
+  `media_bridge::fetch_media_index_if_missing(&backend_resolver, email, &folder)?;`
 
 #### `rslib/src/sync/http_server/user.rs`
 
@@ -119,6 +123,20 @@ println!("{}", sync_storage_server::run());
 - `finish()`: replace 20-line duplicated match block with two lines: `resolve_for_user()` + `backend.commit()`
 - `upload()`: same
 - `host_key` route: `self.get_host_key(req.json()?).await` (the method is now async, #29)
+- Media hooks (see `media_bridge.rs` below): `upload_changes()` calls `user.push_media_to_storage()?` after
+  `process_uploaded_changes()`; `download_files()` calls `user.fetch_media_from_storage(&files)?` before
+  `zip_files_for_download()` and `user.evict_media(&fetched)` after it
+
+#### `rslib/src/sync/http_server/media_bridge.rs` — new file (not upstream)
+
+Keeps media in the user's cloud storage without touching upstream's `media_manager/*`. Upstream still
+reads and writes the local `media/` folder and `media.db`; the bridge runs around those calls and
+mirrors changes to the storage backend (`StorageBackend::media_*`). It is a no-op for backends that
+return `supports_media() == false` (local/standalone), which keep the upstream disk behaviour.
+A watermark table (`drive_sync`) inside `media.db` records the highest USN already pushed, so a failed
+push is retried by the next call. It contains its own unit tests. When upgrading, copy the file back
+and re-apply the hook lines above; if upstream renames `ServerMediaManager` fields or
+`media_changes_chunk` / `get_entries_for_download`, adjust the file.
 
 #### `rslib/src/sync/collection/tests.rs`
 
