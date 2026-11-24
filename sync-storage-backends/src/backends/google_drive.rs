@@ -425,10 +425,41 @@ impl GoogleDriveBackend {
         Err(anyhow!("upload ended without a completion response"))
     }
 
+    /// Download a SQLite database (the collection or the media index) over `dest`.
+    ///
+    /// SQLite pairs a database with its `-wal`/`-shm`/`-journal` files, and a WAL written for an
+    /// older copy of the database is replayed on top of a newer one without any check, which
+    /// corrupts it ("database disk image is malformed").
+    ///
+    /// Drive is the source of truth and every reopen re-fetches, so leftovers from an earlier
+    /// or killed process hold nothing worth keeping. They are removed first, so a crash never leaves
+    /// a new database next to an old WAL.
+    ///
+    /// `clean_sidecars` is false when a live database may sit at `dest`.
+    async fn download_database(
+        &self,
+        file_id: &str,
+        dest: &Path,
+        clean_sidecars: bool,
+    ) -> Result<()> {
+        if clean_sidecars {
+            for suffix in ["-wal", "-shm", "-journal"] {
+                let mut sidecar = dest.as_os_str().to_owned();
+                sidecar.push(suffix);
+                match fs::remove_file(PathBuf::from(sidecar)).await {
+                    Ok(()) => {}
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+                    Err(e) => return Err(e.into()),
+                }
+            }
+        }
+        self.download_file(file_id, dest).await
+    }
+
     async fn fetch_async(&self, user: &str, dest: &Path) -> Result<()> {
         let folder_id = self.root_folder_id(user).await?;
         if let Some(file_id) = self.find_collection_file(&folder_id).await? {
-            self.download_file(&file_id, dest).await?;
+            self.download_database(&file_id, dest, true).await?;
         }
         Ok(())
     }
@@ -444,7 +475,9 @@ impl GoogleDriveBackend {
         let folder_id = self.root_folder_id(user).await?;
         match self.find_child(&folder_id, MEDIA_INDEX_FILE_NAME).await? {
             Some(file_id) => {
-                self.download_file(&file_id, dest).await?;
+                // The index is only fetched when there is no local copy; never touch a live one.
+                let absent = !dest.exists();
+                self.download_database(&file_id, dest, absent).await?;
                 Ok(true)
             }
             None => Ok(false),
@@ -728,6 +761,69 @@ mod tests {
         assert_eq!(missing, vec!["b.png".to_string()]);
         assert_eq!(std::fs::read(dir.path().join("a.png")).unwrap(), b"PNGDATA");
         assert!(!dir.path().join("a.png.part").exists());
+    }
+
+    #[tokio::test]
+    async fn test_fetch_removes_stale_wal_and_shm_before_replacing_database() {
+        let mock_server = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/drive/v3/files"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(json!({
+                "files": [{"id": "f1", "name": COLLECTION_FILE_NAME}]
+            })))
+            .mount(&mock_server)
+            .await;
+        Mock::given(method("GET"))
+            .and(path("/drive/v3/files/f1"))
+            .and(query_param("alt", "media"))
+            .respond_with(ResponseTemplate::new(200).set_body_bytes(b"NEWDB".to_vec()))
+            .mount(&mock_server)
+            .await;
+
+        let dir = tempfile::tempdir().unwrap();
+        let dest = dir.path().join("collection.anki2");
+        std::fs::write(&dest, b"OLDDB").unwrap();
+        for suffix in ["-wal", "-shm", "-journal"] {
+            std::fs::write(dir.path().join(format!("collection.anki2{suffix}")), b"stale").unwrap();
+        }
+
+        backend(&mock_server)
+            .fetch_async("test-user-wal", &dest)
+            .await
+            .unwrap();
+
+        assert_eq!(std::fs::read(&dest).unwrap(), b"NEWDB");
+        for suffix in ["-wal", "-shm", "-journal"] {
+            assert!(!dir.path().join(format!("collection.anki2{suffix}")).exists());
+        }
+    }
+
+    #[tokio::test]
+    async fn test_fetch_without_remote_collection_keeps_local_files() {
+        let mock_server = MockServer::start().await;
+        Mock::given(method("GET"))
+            .and(path("/drive/v3/files"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "files": [] })))
+            .mount(&mock_server)
+            .await;
+        // An empty Drive makes the backend create the sync folder first.
+        Mock::given(method("POST"))
+            .and(path("/drive/v3/files"))
+            .respond_with(ResponseTemplate::new(200).set_body_json(json!({"id": "new-folder"})))
+            .mount(&mock_server)
+            .await;
+
+        let dir = tempfile::tempdir().unwrap();
+        let dest = dir.path().join("collection.anki2");
+        std::fs::write(dir.path().join("collection.anki2-wal"), b"keep").unwrap();
+
+        // Nothing is downloaded when Drive has no collection, so nothing is replaced either.
+        backend(&mock_server)
+            .fetch_async("test-user-empty", &dest)
+            .await
+            .unwrap();
+
+        assert!(dir.path().join("collection.anki2-wal").exists());
     }
 
     #[tokio::test]
