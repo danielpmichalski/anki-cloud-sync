@@ -227,6 +227,8 @@ impl MediaSyncProtocol for Arc<SimpleServer> {
             if req.client_version.is_empty() {
                 None.or_bad_request("missing client version")?;
             }
+            // Drain any media backlog left by an earlier, budget-limited push.
+            user.push_media_to_storage_best_effort();
             SyncResponse::try_from_obj(JsonResult::ok(SyncBeginResponse {
                 usn: user.media.last_usn()?,
                 host_key: hkey,
@@ -278,7 +280,11 @@ impl MediaSyncProtocol for Arc<SimpleServer> {
         req: SyncRequest<media::sanity::SanityCheckRequest>,
     ) -> HttpResult<SyncResponse<JsonResult<MediaSanityCheckResponse>>> {
         self.with_authenticated_user(req, |user, req| {
-            SyncResponse::try_from_obj(JsonResult::ok(user.media.sanity_check(req.json()?.local)?))
+            let resp = user.media.sanity_check(req.json()?.local)?;
+            // The client's last media call of a sync: use it to flush whatever an earlier,
+            // budget-limited push left on the server, so nothing waits for the next sync.
+            user.push_media_to_storage_best_effort();
+            SyncResponse::try_from_obj(JsonResult::ok(resp))
         })
         .await
     }
