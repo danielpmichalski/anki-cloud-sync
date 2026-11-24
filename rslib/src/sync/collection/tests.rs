@@ -4,6 +4,7 @@
 #![cfg(test)]
 
 use std::future::Future;
+use std::sync::Arc;
 use std::sync::LazyLock;
 
 use anki_proto::sync::sync_status_response;
@@ -126,7 +127,17 @@ where
     F: FnOnce(HttpSyncClient) -> O,
     O: Future<Output = Result<()>>,
 {
-    use std::sync::Arc;
+    with_active_server_using(Arc::new(LocalBackendResolver), op).await
+}
+
+pub(in crate::sync) async fn with_active_server_using<F, O>(
+    resolver: Arc<dyn BackendResolver>,
+    op: F,
+) -> Result<()>
+where
+    F: FnOnce(HttpSyncClient) -> O,
+    O: Future<Output = Result<()>>,
+{
     let _ = set_global_logger(None);
     // start server
     let base_folder = tempdir()?;
@@ -135,7 +146,7 @@ where
         SimpleServer::new(
             base_folder.path(),
             Arc::new(TestAuthProvider),
-            Arc::new(LocalBackendResolver),
+            resolver,
         )
         .unwrap(),
     );
@@ -172,6 +183,70 @@ where
     };
     let client = HttpSyncClient::new(auth, Client::new());
     op(client).await
+}
+
+/// Storage double that behaves like Drive: `fetch` downloads the stored copy over the working
+/// file, `commit` uploads the working file's bytes (the main file only, never a `-wal`).
+struct RemoteCopyResolver {
+    remote: std::path::PathBuf,
+}
+
+impl BackendResolver for RemoteCopyResolver {
+    fn resolve_for_user(&self, _username: &str) -> anyhow::Result<Box<dyn StorageBackend>> {
+        struct Remote(std::path::PathBuf);
+        impl StorageBackend for Remote {
+            fn fetch(&self, _: &str, dest: &std::path::Path) -> anyhow::Result<()> {
+                if self.0.exists() {
+                    std::fs::copy(&self.0, dest)?;
+                }
+                Ok(())
+            }
+            fn commit(&self, _: &str, src: &std::path::Path) -> anyhow::Result<()> {
+                std::fs::copy(src, &self.0)?;
+                Ok(())
+            }
+        }
+        Ok(Box::new(Remote(self.remote.clone())))
+    }
+}
+
+/// An incremental sync that the client saw succeed must be in the stored copy: the changes sit in
+/// the WAL until a checkpoint, and storage only receives the main file.
+#[tokio::test]
+async fn finish_commits_the_synced_changes_to_storage() -> Result<()> {
+    let storage = tempdir()?;
+    let remote = storage.path().join("stored.anki2");
+    with_active_server_using(
+        Arc::new(RemoteCopyResolver {
+            remote: remote.clone(),
+        }),
+        |client| async move {
+            let ctx = SyncTestContext::new(client);
+            let mut col1 = ctx.col1();
+            col1_setup(&mut col1);
+            ctx.full_upload(col1).await;
+
+            // an incremental sync with one more note
+            let mut col1 = ctx.col1();
+            let nt = col1.get_notetype_by_name("Basic")?.unwrap();
+            let mut note = nt.new_note();
+            note.set_field(0, "2")?;
+            col1.add_note(&mut note, DeckId(1))?;
+            ctx.normal_sync(&mut col1).await;
+
+            // open the stored bytes on their own, without any WAL beside them
+            let copy = ctx.folder.path().join("stored-copy.anki2");
+            std::fs::copy(&remote, &copy)?;
+            let mut stored = CollectionBuilder::new(&copy).build()?;
+            assert_eq!(
+                stored.search_notes_unordered("")?.len(),
+                2,
+                "the stored copy lost the synced note"
+            );
+            Ok(())
+        },
+    )
+    .await
 }
 
 fn unwrap_sync_err_kind(err: AnkiError) -> SyncErrorKind {

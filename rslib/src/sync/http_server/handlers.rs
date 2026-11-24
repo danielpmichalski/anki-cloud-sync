@@ -154,14 +154,9 @@ impl SyncProtocol for Arc<SimpleServer> {
             let _ = req.json()?;
             let now = user.with_sync_state(req.skey()?, |col, _state| server_finish(col))?;
             user.sync_state = None;
-            let col_path = user.folder.join("collection.anki2");
-            let backend = user
-                .backend_resolver
-                .resolve_for_user(&user.name)
-                .or_internal_err("resolve storage backend")?;
-            backend
-                .commit(&user.name, &col_path)
-                .or_internal_err("commit collection to storage")?;
+            // The synced changes sit in the WAL until a checkpoint, and storage only
+            // receives the main file, so checkpoint before committing.
+            user.commit_open_col()?;
             SyncResponse::try_from_obj(now)
         })
         .await
