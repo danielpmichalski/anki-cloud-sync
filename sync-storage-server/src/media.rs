@@ -52,6 +52,12 @@ const fn s(mime: &'static str, kind: Kind) -> Option<Sniffed> {
 /// Identify the file from its first bytes (the `infer` crate), never from the name the caller
 /// gives. Only the allowlisted types come back; everything else, including video, is `None`.
 pub fn sniff(b: &[u8]) -> Option<Sniffed> {
+    // 3GP is what AnkiDroid records voice notes as. `infer` has no matcher for it; the brand in
+    // the `ftyp` box starts with "3gp". (A 3GP *video* has the same brand: the container cannot
+    // tell them apart without parsing its tracks, and Anki plays both.)
+    if b.len() >= 12 && &b[4..8] == b"ftyp" && &b[8..11] == b"3gp" {
+        return s("audio/3gpp", Kind::Audio);
+    }
     match infer::get(b)?.mime_type() {
         "image/png" => s("image/png", Kind::Image),
         "image/jpeg" => s("image/jpeg", Kind::Image),
@@ -61,6 +67,7 @@ pub fn sniff(b: &[u8]) -> Option<Sniffed> {
         "audio/ogg" => s("audio/ogg", Kind::Audio),
         "audio/x-wav" => s("audio/wav", Kind::Audio),
         "audio/m4a" => s("audio/mp4", Kind::Audio),
+        "audio/amr" => s("audio/amr", Kind::Audio),
         _ => None,
     }
 }
@@ -137,7 +144,7 @@ pub async fn add_media(
         None => {
             return err_response(
                 StatusCode::UNSUPPORTED_MEDIA_TYPE,
-                "unsupported file type (png, jpg, gif, webp, svg, mp3, ogg, wav and m4a are accepted)",
+                "unsupported file type (png, jpg, gif, webp, svg, mp3, ogg, wav, m4a, 3gp and amr are accepted)",
             )
             .into_response();
         }
@@ -316,6 +323,8 @@ mod tests {
         assert_eq!(sniff(b"ID3\x04\0").unwrap().mime, "audio/mpeg");
         assert_eq!(sniff(&[0xFF, 0xFB, 0x90, 0]).unwrap().mime, "audio/mpeg");
         assert_eq!(sniff(b"\0\0\0\x20ftypM4A \0\0").unwrap().mime, "audio/mp4");
+        assert_eq!(sniff(b"\0\0\0\x14ftyp3gp4\0\0\0\0").unwrap().mime, "audio/3gpp");
+        assert_eq!(sniff(b"#!AMR\n\x3c\0\0\0\0\0\0").unwrap().mime, "audio/amr");
     }
 
     #[test]
