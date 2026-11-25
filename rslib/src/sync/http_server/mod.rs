@@ -5,6 +5,7 @@ mod handlers;
 mod logging;
 mod media_bridge;
 mod media_manager;
+mod media_sidecar;
 mod routes;
 mod user;
 
@@ -46,6 +47,9 @@ use crate::sync::login::HostKeyResponse;
 use crate::sync::request::SyncRequest;
 use crate::sync::request::MAXIMUM_SYNC_PAYLOAD_BYTES;
 use crate::sync::response::SyncResponse;
+
+pub use crate::sync::http_server::media_sidecar::SidecarMediaEntry;
+pub use crate::sync::http_server::media_sidecar::SidecarStoredMedia;
 
 pub struct SimpleServer {
     state: Mutex<SimpleServerInner>,
@@ -197,6 +201,23 @@ impl<'a> SidecarUserHandle<'a> {
         F: FnOnce(&mut crate::collection::Collection) -> HttpResult<R>,
     {
         self.user.with_col_and_commit(op)
+    }
+
+    /// Add a media file (Anki's name rules and dedupe) and push it to storage.
+    pub fn add_media(&mut self, name: &str, data: Vec<u8>) -> HttpResult<SidecarStoredMedia> {
+        self.user.sidecar_add_media(name, data)
+    }
+
+    pub fn list_media(&self) -> HttpResult<Vec<SidecarMediaEntry>> {
+        self.user.sidecar_list_media()
+    }
+
+    pub fn get_media(&mut self, name: &str) -> HttpResult<Option<Vec<u8>>> {
+        self.user.sidecar_get_media(name)
+    }
+
+    pub fn delete_media(&mut self, name: &str) -> HttpResult<bool> {
+        self.user.sidecar_delete_media(name)
     }
 }
 

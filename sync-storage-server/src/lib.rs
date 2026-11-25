@@ -1,5 +1,6 @@
 mod auth;
 mod handlers;
+mod media;
 mod resolver;
 mod review;
 mod sidecar;

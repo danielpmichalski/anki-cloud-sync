@@ -4,18 +4,21 @@ use std::net::IpAddr;
 use std::sync::Arc;
 
 use anki::sync::http_server::SimpleServer;
+use axum::extract::DefaultBodyLimit;
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::middleware;
 use axum::middleware::Next;
 use axum::response::IntoResponse;
 use axum::response::Response;
+use axum::routing::delete;
 use axum::routing::get;
 use axum::routing::post;
 use axum::Router;
 use tokio::net::TcpListener;
 
 use crate::handlers;
+use crate::media;
 use crate::review;
 
 pub struct InternalServer {
@@ -61,6 +64,20 @@ impl InternalServer {
             .route(
                 "/internal/v1/note-types/{id}",
                 get(handlers::get_note_type),
+            )
+            .route(
+                "/internal/v1/media",
+                get(media::list_media)
+                    .post(media::add_media)
+                    .layer(DefaultBodyLimit::max(media::MAX_BODY_BYTES)),
+            )
+            .route(
+                "/internal/v1/media/{name}",
+                get(media::get_media).merge(delete(media::delete_media)),
+            )
+            .route(
+                "/internal/v1/media/{name}/metadata",
+                get(media::media_metadata),
             )
             .route("/internal/v1/review/next", get(review::next_cards))
             .route("/internal/v1/review/counts", get(review::review_counts))
