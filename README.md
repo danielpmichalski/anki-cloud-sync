@@ -59,8 +59,8 @@ Fork of [`ankitects/anki@26.09.4`](https://github.com/ankitects/anki/tree/26.09.
 ### rslib delta — what we keep in upstream code
 
 `rslib/` is replaced wholesale by the fork script. After each replacement, **seven files** must be
-patched to wire in our auth and storage providers, and **one file is added**
-(`http_server/media_bridge.rs`, see below). All other rslib files stay verbatim.
+patched to wire in our auth and storage providers, and **two files are added**
+(`http_server/media_bridge.rs` and `http_server/media_sidecar.rs`, see below). All other rslib files stay verbatim.
 
 **Design:** three traits from `sync-platform-api` are injected at server startup via `SimpleServer::new(base_folder, auth, resolver)`;
 rslib never imports `sync-storage-config` or `sync-storage-backends` directly.
@@ -108,7 +108,7 @@ println!("{}", sync_storage_server::run());
 - Add `pub fn base_folder(&self) -> &Path` accessor
 - Remove `SimpleServer::run()` (replaced by `sync_storage_server::run()`)
 - Remove `mod internal_handlers` and `mod internal_server` declarations
-- Add `mod media_bridge;`
+- Add `mod media_bridge;` and `mod media_sidecar;` (plus `pub use` of `SidecarMediaEntry` and `SidecarStoredMedia`)
 - `ensure_user()` and `get_or_create_sidecar_user()`: one line before `ServerMediaManager::new()`:
   `media_bridge::fetch_media_index_if_missing(&backend_resolver, email, &folder)?;`
 
@@ -137,6 +137,23 @@ A watermark table (`drive_sync`) inside `media.db` records the highest USN alrea
 push is retried by the next call. It contains its own unit tests. When upgrading, copy the file back
 and re-apply the hook lines above; if upstream renames `ServerMediaManager` fields or
 `media_changes_chunk` / `get_entries_for_download`, adjust the file.
+
+#### `rslib/src/sync/http_server/media_sidecar.rs` — new file (not upstream)
+
+Media operations for the sidecar (internal API), so the REST layer can add, list, read and delete a
+user's media outside a client sync. It adds no media logic of its own: it normalises the name with
+Anki's `normalize_filename` (lowercase, forbidden characters removed), applies the same rule as
+`add_data_to_folder_uniquely` (identical content is a no-op, other content under the same name gets a
+hash suffix), writes through `ServerMediaManager::process_uploaded_changes` (so the file gets a normal
+USN and reaches clients on their next sync) and pushes with `push_media_to_storage()`, failing the
+call if the push fails. A failed push keeps the file on local disk above the watermark, so repeating
+the same add (or the next client media call) finishes it. Content rules (type allowlist, sizes, SVG
+sanitising) are NOT here: they live in `sync-storage-server/src/media.rs`. When upgrading, copy the
+file back and re-apply the `SidecarUserHandle` methods in `http_server/mod.rs`; if upstream changes
+`ServerMediaManager`, `normalize_filename` or `add_hash_suffix_to_file_stem`, adjust the file.
+It contains its own unit tests, which reuse the test doubles in `media_bridge.rs`: in that file the
+`tests` module is `pub(super)` and `Cloud`, `new_user`, `local_media` and two of `Cloud`'s fields are
+`pub(in crate::sync::http_server)`.
 
 #### `rslib/src/sync/collection/tests.rs`
 

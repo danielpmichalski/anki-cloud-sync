@@ -24,6 +24,9 @@ serde_json.workspace = true
 snafu.workspace = true
 tokio.workspace = true
 tracing.workspace = true
+imagesize = "0.15.0"
+infer = "0.22.0"
+svg-hush = "0.9.7"
 
 [dev-dependencies]
 reqwest.workspace = true

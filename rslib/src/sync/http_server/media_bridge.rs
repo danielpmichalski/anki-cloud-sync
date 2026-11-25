@@ -236,7 +236,7 @@ impl User {
 }
 
 #[cfg(test)]
-mod tests {
+pub(super) mod tests {
     use std::collections::HashMap;
     use std::collections::HashSet;
     use std::sync::atomic::AtomicBool;
@@ -249,10 +249,10 @@ mod tests {
 
     /// In-memory stand-in for Drive, shared between "server instances".
     #[derive(Default)]
-    struct Cloud {
-        files: Mutex<HashMap<String, Vec<u8>>>,
+    pub(in crate::sync::http_server) struct Cloud {
+        pub(in crate::sync::http_server) files: Mutex<HashMap<String, Vec<u8>>>,
         index: Mutex<Option<Vec<u8>>>,
-        fail_puts: AtomicBool,
+        pub(in crate::sync::http_server) fail_puts: AtomicBool,
         put_delay: Mutex<Duration>,
     }
 
@@ -325,7 +325,7 @@ mod tests {
         }
     }
 
-    fn new_user(cloud: &Arc<Cloud>, folder: &Path) -> User {
+    pub(in crate::sync::http_server) fn new_user(cloud: &Arc<Cloud>, folder: &Path) -> User {
         let resolver: Arc<dyn BackendResolver> = Arc::new(FakeResolver(Arc::clone(cloud)));
         fetch_media_index_if_missing(&resolver, "u@example.com", folder).unwrap();
         User {
@@ -350,7 +350,7 @@ mod tests {
         user.push_media_to_storage()
     }
 
-    fn local_media(folder: &Path) -> HashSet<String> {
+    pub(in crate::sync::http_server) fn local_media(folder: &Path) -> HashSet<String> {
         std::fs::read_dir(folder.join("media"))
             .unwrap()
             .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
