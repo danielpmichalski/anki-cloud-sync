@@ -4,6 +4,17 @@
 //
 // Content rules live here: files are identified by their bytes (never by the extension the
 // caller claims), only an allowlist of types is accepted, and sizes are capped.
+//
+// MEDIA-LIMITS: this file is the source of truth for the type allowlist (`sniff`, the 415 message
+// in `add_media`) and the size caps (`MAX_*_BYTES`). When either changes, also update every other
+// place tagged `MEDIA-LIMITS` (`grep -rn MEDIA-LIMITS` in anki-cloud and anki-cloud-sync):
+//   anki-cloud/api/src/lib/media-store.ts   fallback 413/415 messages
+//   anki-cloud/api/src/lib/upload-page.ts   <input accept=...> and the size hint text
+//   anki-cloud/api/src/routes/upload.ts     request body cap (largest file + multipart overhead)
+//   anki-cloud/api/src/routes/media.ts      SVG_MAX_BYTES, OpenAPI mimeType list, 413 text
+//   anki-cloud/api/src/lib/__tests__/media.test.ts   allowed MIME list
+//   sync-storage-server/src/sidecar.rs      DefaultBodyLimit on the media route
+//   anki-cloud/docs (API reference, mcp-integration.md) and the MCP tool descriptions
 
 use std::sync::Arc;
 
@@ -24,6 +35,7 @@ use crate::handlers::err_response;
 use crate::handlers::user_email;
 use crate::handlers::with_user;
 
+// MEDIA-LIMITS: size caps; see the list at the top of this file.
 pub const MAX_IMAGE_BYTES: usize = 5 * 1024 * 1024;
 /// SVG is text, so it also costs the model's context; larger drawings go through the upload link.
 pub const MAX_SVG_BYTES: usize = 200 * 1024;

@@ -69,6 +69,8 @@ impl InternalServer {
                 "/internal/v1/media",
                 get(media::list_media)
                     .post(media::add_media)
+                    // MEDIA-LIMITS: oversized bodies are rejected here with a plain-text 413 (no JSON
+                    // `error`), which the REST layer replaces with its own message.
                     .layer(DefaultBodyLimit::max(media::MAX_BODY_BYTES)),
             )
             .route(

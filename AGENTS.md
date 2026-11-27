@@ -363,6 +363,11 @@ and links in its own `sync-platform-cloud` crate (DB auth + OAuth token exchange
 5. **Upstream is upstream.** `rslib/`, `ftl/`, `proto/` are verbatim copies. No hand-edits, ever (exception: mechanical crate-import renames when our crate names change).
 6. **Conventional commits.** Required for automated changelog and semantic release.
 7. **AI Agents: Never auto-commit code.** Inform user that changes are ready; let user handle git commits themselves.
+8. **Media type allowlist and size limits are marked with `MEDIA-LIMITS`.** `sync-storage-server/src/media.rs` is the
+   source of truth (`sniff`, the 415 message, `MAX_*_BYTES`); the list at its top names every other place that
+   repeats the values (`sidecar.rs` body limit, and in `anki-cloud`: REST error messages, upload page, OpenAPI
+   text, tests). When you change a type or a cap, run `grep -rn MEDIA-LIMITS anki-cloud anki-cloud-sync` and update
+   every place. Add the marker to any new code that repeats these values.
 
 ---
 
